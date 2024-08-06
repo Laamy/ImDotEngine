@@ -57,7 +57,6 @@ class DefaultWindowBinds : BaseComponent
         }
 
         SetWindowLong(hwnd, GWL_STYLE, style & ~WS_BORDER & ~WS_CAPTION & ~WS_THICKFRAME | WS_POPUP);
-        SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width, System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_SHOWWINDOW);
 
         // update da window a bit 
         ShowWindow(hwnd, SW_MAXIMIZE);
@@ -68,7 +67,6 @@ class DefaultWindowBinds : BaseComponent
     private static void RestoreWindowStyle(IntPtr form, BorderlessInfo info)
     {
         SetWindowLong(form, GWL_STYLE, info.Style);
-        SetWindowPos(form, IntPtr.Zero, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_NOACTIVATE | SWP_SHOWWINDOW);
 
         int x = info.Dimensions.Left;
         int y = info.Dimensions.Top;
