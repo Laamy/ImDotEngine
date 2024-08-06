@@ -1,0 +1,81 @@
+using SFML.System;
+using SFML.Window;
+using System;
+using static Kernel32;
+
+class BorderlessInfo
+{
+    public int Style = 0;
+    public RECT Dimensions = new RECT();
+}
+
+class DefaultWindowBinds : BaseComponent
+{
+    public ClientInstance Instance = ClientInstance.GetSingle();
+
+    bool isFullScreen = false;
+
+    // old data from when it wasn't fullscreen
+    BorderlessInfo desktopMode;
+
+    public override void KeyPressed(KeyEventArgs e)
+    {
+        if (e.Code == Keyboard.Key.Escape)
+            Instance.RenderWindow.Close();
+
+        if (e.Code == Keyboard.Key.F11)
+        {
+            isFullScreen = !isFullScreen;
+
+            IntPtr hwnd = Instance.RenderWindow.SystemHandle;
+
+            if (isFullScreen)
+            {
+                desktopMode = SetBorderlessFullscreen(hwnd);
+            }
+            else
+            {
+                RestoreWindowStyle(hwnd, desktopMode);
+            }
+        }
+    }
+
+    // exclusive borderless fullscreen
+    private static BorderlessInfo SetBorderlessFullscreen(IntPtr hwnd)
+    {
+        int style = GetWindowLong(hwnd, GWL_STYLE);
+
+        BorderlessInfo result = new BorderlessInfo();
+
+        if (GetWindowRect(hwnd, out RECT rect))
+        {
+            result = new BorderlessInfo()
+            {
+                Style = style,
+                Dimensions = rect
+            };
+        }
+
+        SetWindowLong(hwnd, GWL_STYLE, style & ~WS_BORDER & ~WS_CAPTION & ~WS_THICKFRAME | WS_POPUP);
+        SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width, System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_SHOWWINDOW);
+
+        // update da window a bit 
+        ShowWindow(hwnd, SW_MAXIMIZE);
+
+        return result;
+    }
+
+    private static void RestoreWindowStyle(IntPtr form, BorderlessInfo info)
+    {
+        SetWindowLong(form, GWL_STYLE, info.Style);
+        SetWindowPos(form, IntPtr.Zero, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_NOACTIVATE | SWP_SHOWWINDOW);
+
+        int x = info.Dimensions.Left;
+        int y = info.Dimensions.Top;
+
+        int width = info.Dimensions.Right - x;
+        int height = info.Dimensions.Bottom - y;
+
+        SetWindowPos(form, HWND_NOTOPMOST, x, y, width, height, SWP_NOACTIVATE | SWP_SHOWWINDOW);
+    }
+}
