@@ -6,6 +6,7 @@ using SFML.Window;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.SymbolStore;
+using System.Management.Instrumentation;
 using System.Net.Http.Headers;
 using System.Runtime.CompilerServices;
 
@@ -43,18 +44,12 @@ internal class Game : GameEngine
             Instance.Level.CreateRectangle(LevelLayers.Background, new Vector2f(-260, -3), new Vector2f(250, 275), new Color(0x20, 0x20, 0x20));// in-world menu box
         }
 
-        // 7 FPS
-        // 34 FPS
-        // 58 FPS
-        {
-            for (int x = 0; x < 200; x++)
-            {
-                for (int z = 0; z < 200; z++)
-                {
-                    Instance.Level.CreateCircle(LevelLayers.Foreground, new Vector2f(12 * x, 12 * z), 4, Color.Red);
-                }
-            }
-        }
+        SolidConvex triangle = new SolidConvex();
+
+        triangle.Position = new Vector2f(10, 10);
+        triangle.LoadShape(BasicShapes.Triangle, 10);
+
+        Instance.Level.GetLayer(LevelLayers.Foreground).Add(triangle);
 
         // TODO: Implement scene
     }

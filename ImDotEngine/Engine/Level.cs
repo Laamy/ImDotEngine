@@ -14,20 +14,20 @@ internal class Level
     private bool init = false;
 
     // TODO: make layers
-    public List<Object>[] Layers;
+    public List<SolidActor>[] Layers;
 
     public void Initialize()
     {
-        Layers = new List<Object>[(int)LevelLayers.Count];
+        Layers = new List<SolidActor>[(int)LevelLayers.Count];
         Layers.Initialize();
 
         for (int i = 0; i < Layers.Length; ++i)
-            Layers[i] = new List<Object>();
+            Layers[i] = new List<SolidActor>();
 
         init = true;
     }
 
-    public List<Object> GetLayer(LevelLayers layer)
+    public List<SolidActor> GetLayer(LevelLayers layer)
     {
         if (!init) Initialize();
 
@@ -36,10 +36,21 @@ internal class Level
 
     public void Draw(RenderWindow e)
     {
+        //Camera2D camera = ClientInstance.GetSingle().Engine.Components.OfType<Camera2D>().FirstOrDefault();
+        //FloatRect bounds = camera.CameraBounds;
+
         foreach (var layer in Layers)
         {
             foreach (var child in layer)
+            {
+                //FloatRect childBounds = new FloatRect(child.Position, child.WorldSize);
+                //if (childBounds.Intersects(bounds))
+                //{
+                //    child.Draw(e);
+                //}
+
                 child.Draw(e);
+            }
         }
     }
 
@@ -63,15 +74,15 @@ internal class Level
         return result;
     }
 
-    public DotObject CreateCircle(LevelLayers layer, Vector2f position, float radius, Color colour)
+    public SolidCircle CreateCircle(LevelLayers layer, Vector2f position, float radius, Color colour)
     {
         // get pointers n references
         var Instance = ClientInstance.GetSingle();
 
         // temp
-        DotObject result;
+        SolidCircle result;
 
-        GetLayer(layer).Add(result = new DotObject(radius)
+        GetLayer(layer).Add(result = new SolidCircle(radius)
         {
             Position = position,
             Color = colour

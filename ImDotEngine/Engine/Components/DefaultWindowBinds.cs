@@ -1,7 +1,7 @@
 using SFML.Window;
 using System;
 
-using static Kernel32;
+using static User32;
 
 class BorderlessInfo
 {
@@ -21,13 +21,13 @@ class DefaultWindowBinds : BaseComponent
     public override void KeyPressed(KeyEventArgs e)
     {
         if (e.Code == Keyboard.Key.Escape)
-            Instance.RenderWindow.Close();
+            Instance.Engine.window.Close();
 
         if (e.Code == Keyboard.Key.F11)
         {
             isFullScreen = !isFullScreen;
 
-            IntPtr hwnd = Instance.RenderWindow.SystemHandle;
+            IntPtr hwnd = Instance.Engine.window.SystemHandle;
 
             if (isFullScreen)
             {

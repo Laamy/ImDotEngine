@@ -42,7 +42,7 @@ internal class GameEngine
         Instance.VideoMode = new VideoMode(800, 600);
         window = new RenderWindow(Instance.VideoMode, "Game Engine", Styles.Default);
 
-        Instance.RenderWindow = window;
+        Instance.Engine = this;
 
         window.Closed += (s, e) =>
         {

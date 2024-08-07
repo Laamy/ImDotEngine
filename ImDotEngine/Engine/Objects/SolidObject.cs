@@ -7,7 +7,7 @@ using System.Security.Cryptography;
 
 #endregion
 
-internal class SolidObject : Object
+internal class SolidObject : SolidActor
 {
     public SolidObject()
     {
@@ -17,14 +17,16 @@ internal class SolidObject : Object
     // cache
     private RectangleShape shape;
 
-    // custom/other properties
-    public List<string> Tags;
-
     // base
     public Vector2f Size
     {
         get => shape.Size;
-        set => shape.Size = value;
+        set
+        {
+            WorldSize = shape.Size;
+
+            shape.Size = value;
+        }
     }
 
     public Color? Color

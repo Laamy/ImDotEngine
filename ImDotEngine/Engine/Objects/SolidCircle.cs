@@ -6,9 +6,9 @@ using System.Collections.Generic;
 
 #endregion
 
-internal class DotObject : Object
+internal class SolidCircle : SolidActor
 {
-    public DotObject(float radius)
+    public SolidCircle(float radius)
     {
         shape = new CircleShape(radius);
     }
@@ -20,7 +20,13 @@ internal class DotObject : Object
     public float Radius
     {
         get => shape.Radius;
-        set => shape.Radius = value;
+        set
+        {
+            var C2R = (shape.Radius * 2) + 1;
+            WorldSize = new Vector2f(C2R, C2R);
+
+            shape.Radius = value;
+        }
     }
 
     public Color Color

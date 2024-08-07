@@ -11,7 +11,7 @@ public struct RECT
     public int Bottom;
 }
 
-internal class Kernel32
+internal class User32
 {
     public const int WS_OVERLAPPEDWINDOW = 0x00CF0000;
     public const int WS_POPUP = unchecked((int)0x80000000);

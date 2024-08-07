@@ -14,7 +14,7 @@ internal class ClientInstance
         return instance;
     }
 
-    public RenderWindow RenderWindow;
+    public GameEngine Engine;
     public VideoMode VideoMode;
 
     public Level Level = new Level();

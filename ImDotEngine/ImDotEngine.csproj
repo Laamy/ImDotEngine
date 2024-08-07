@@ -78,10 +78,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Engine\Components\BaseComponent.cs" />
+    <Compile Include="Engine\Objects\SolidConvex.cs" />
+    <Compile Include="Engine\BasicShapes.cs" />
     <Compile Include="Engine\System32\Winmm.cs" />
     <Compile Include="SDK\Components\CameraCursor.cs" />
     <Compile Include="Engine\Components\DefaultWindowBinds.cs" />
-    <Compile Include="Engine\System32\Kernel32.cs" />
+    <Compile Include="Engine\System32\User32.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="Engine\Window\GameEngine.cs" />
     <Compile Include="Program.cs" />
@@ -91,8 +93,8 @@
     <Compile Include="Engine\FontRepository.cs" />
     <Compile Include="Engine\GuiData.cs" />
     <Compile Include="Engine\Level.cs" />
-    <Compile Include="Engine\Objects\DotObject.cs" />
-    <Compile Include="Engine\Objects\Object.cs" />
+    <Compile Include="Engine\Objects\SolidCircle.cs" />
+    <Compile Include="Engine\Objects\SolidActor.cs" />
     <Compile Include="Engine\Objects\SolidObject.cs" />
     <Compile Include="Engine\Objects\SolidText.cs" />
     <Compile Include="SDK\Enums\LevelLayers.cs" />

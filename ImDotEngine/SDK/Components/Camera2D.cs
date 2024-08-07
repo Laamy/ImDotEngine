@@ -1,10 +1,14 @@
 using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
+using System;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 // funky debug camera I threw together
 internal class Camera2D : BaseComponent
 {
+    public ClientInstance Instance = ClientInstance.GetSingle();
+
     private View view = new View(new FloatRect(0, 0, 0, 0)); // main view
     
     // info for view
@@ -61,6 +65,17 @@ internal class Camera2D : BaseComponent
         view.Zoom(zoom);
 
         window.SetView(view);
+    }
+
+    public FloatRect CameraBounds
+    {
+        get
+        {
+            Vector2f topLeft = Instance.Engine.window.MapPixelToCoords(new Vector2i(0, 0));
+            Vector2f bottomRight = Instance.Engine.window.MapPixelToCoords(new Vector2i((int)size.X, (int)size.Y));
+
+            return new FloatRect(topLeft, bottomRight);
+        }
     }
 
     public Vector2f CursorToWorld(RenderWindow window, Vector2f mousePixelPos)
