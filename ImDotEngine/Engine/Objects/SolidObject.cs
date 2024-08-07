@@ -1,30 +1,49 @@
-﻿#region Includes
+#region Includes
 
 using SFML.Graphics;
 using SFML.System;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 
 #endregion
 
 internal class SolidObject : Object
 {
-    // base
-    public Vector2f Size;
+    public SolidObject()
+    {
+        shape = new RectangleShape();
+    }
 
-    public Color? Color;
-    public Texture Texture;
+    // cache
+    private RectangleShape shape;
 
+    // custom/other properties
     public List<string> Tags;
 
-    public override void Draw(RenderWindow e)
+    // base
+    public Vector2f Size
     {
-        RectangleShape shape = new RectangleShape(Size);
-        shape.Position = Position;
-
-        if (Color != null)
-            shape.FillColor = (Color)Color;
-        else shape.Texture = Texture;
-
-        e.Draw(shape);
+        get => shape.Size;
+        set => shape.Size = value;
     }
+
+    public Color? Color
+    {
+        get => shape.FillColor;
+        set => shape.FillColor = (Color)value;
+    }
+
+    public Texture Texture
+    {
+        get => shape.Texture;
+        set => shape.Texture = value;
+    }
+
+    public new Vector2f Position
+    {
+        get => shape.Position;
+        set => shape.Position = value;
+    }
+
+    public override void Draw(RenderWindow e) => e.Draw(shape);
 }

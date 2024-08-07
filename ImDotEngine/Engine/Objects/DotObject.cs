@@ -10,33 +10,30 @@ internal class DotObject : Object
 {
     public DotObject(float radius)
     {
-        Radius = radius;
         shape = new CircleShape(radius);
     }
 
-    // base
-    private float _radius = 2;
-    public float Radius
-    {
-        get => _radius;
-        set
-        {
-            _radius = value;
-            shape = new CircleShape(_radius);
-        }
-    }
-
-    public Color Color;
-    public Vector2f Velocity = new Vector2f(0, 0);
-
+    // cached object
     CircleShape shape;
 
-    // TODO: render in batch or on the GPU directly
-    public override void Draw(RenderWindow e)
+    // base
+    public float Radius
     {
-        shape.Position = Position - new Vector2f(Radius, Radius);
-        shape.FillColor = Color;
-
-        e.Draw(shape);
+        get => shape.Radius;
+        set => shape.Radius = value;
     }
+
+    public Color Color
+    {
+        get => shape.FillColor;
+        set => shape.FillColor = value;
+    }
+
+    public new Vector2f Position
+    {
+        get => shape.Position;
+        set => shape.Position = value;
+    }
+
+    public override void Draw(RenderWindow e) => e.Draw(shape);
 }

@@ -63,6 +63,23 @@ internal class Level
         return result;
     }
 
+    public DotObject CreateCircle(LevelLayers layer, Vector2f position, float radius, Color colour)
+    {
+        // get pointers n references
+        var Instance = ClientInstance.GetSingle();
+
+        // temp
+        DotObject result;
+
+        GetLayer(layer).Add(result = new DotObject(radius)
+        {
+            Position = position,
+            Color = colour
+        });
+
+        return result;
+    }
+
     public SolidText CreateText(LevelLayers layer, Vector2f position, Color color, float size = 16, string text = "")
     {
         // get pointers n references

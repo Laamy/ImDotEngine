@@ -14,8 +14,6 @@ using System.Runtime.CompilerServices;
 // TODO: gridify the world so I can process less things!!!!
 internal class Game : GameEngine
 {
-    public ClientInstance Instance = ClientInstance.GetSingle();
-
     public Game() => Start(); // we've finished so start the app
 
     // ui stuff
@@ -34,7 +32,7 @@ internal class Game : GameEngine
         base.Initialized(); // allow components to initialize
 
         TargetFramerate = 1000; // unlimited FPS
-        TargetPhysicsRate = 60; // physics rate at 60
+        TargetPhysicsRate = 20; // physics rate at 20
 
         // other bits and bobs
         {
@@ -43,6 +41,19 @@ internal class Game : GameEngine
 
             Instance.Level.CreateRectangle(LevelLayers.Background, new Vector2f(-3, -3), new Vector2f(500, 500), new Color(0x20, 0x20, 0x20));// bounds
             Instance.Level.CreateRectangle(LevelLayers.Background, new Vector2f(-260, -3), new Vector2f(250, 275), new Color(0x20, 0x20, 0x20));// in-world menu box
+        }
+
+        // 7 FPS
+        // 34 FPS
+        // 58 FPS
+        {
+            for (int x = 0; x < 200; x++)
+            {
+                for (int z = 0; z < 200; z++)
+                {
+                    Instance.Level.CreateCircle(LevelLayers.Foreground, new Vector2f(12 * x, 12 * z), 4, Color.Red);
+                }
+            }
         }
 
         // TODO: Implement scene
@@ -57,7 +68,8 @@ internal class Game : GameEngine
             $"Frames: {CurrentFPS}\n" +
             $"PhysicSteps: {CurrentPPS}\n" +
             $"\n" +
-            $"Layers: {Instance.Level.Layers.Length}\n";
+            $"Layers: {Instance.Level.Layers.Length}\n" +
+            $"Foreground Count: {Instance.Level.GetLayer(LevelLayers.Foreground).Count}\n";
 
         // TODO: Implement game physics
     }
