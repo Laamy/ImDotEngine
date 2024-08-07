@@ -55,17 +55,6 @@ internal class GameEngine
             Resize(e);
 
             Size = new Vector2u(e.Width, e.Height);
-
-            foreach (BaseComponent component in Components)
-            {
-                if (component.GetType() == typeof(Camera2D))
-                {
-                    Camera2D Camera = component as Camera2D;
-
-                    if (Camera.AutoResize)
-                        Camera.Size = Size;
-                }
-            }
         };
 
         window.GainedFocus += (s, e) => Focus();
@@ -97,6 +86,8 @@ internal class GameEngine
 
         Initialized();
 
+        Winmm.TimeBeginPeriod(1);
+
         // physics thread
         Task.Factory.StartNew(() =>
         {
@@ -125,8 +116,7 @@ internal class GameEngine
                     }
                 }
 
-                if (targetPPS <= 30)
-                    Thread.Sleep(1);
+                Thread.Sleep(1);
             }
         });
 
@@ -146,20 +136,6 @@ internal class GameEngine
 
                     window.DispatchEvents();
 
-                    // update the window with the camera info
-                    foreach (var comp in Components)
-                    {
-                        if (comp.GetType() == typeof(Camera2D))
-                        {
-                            Camera2D camera = comp as Camera2D;
-
-                            camera.Set(window);
-
-                            break; // cancel
-                            // TODO: Implement multiple camera's which are switchable
-                        }
-                    }
-
                     OnUpdate(window); // redraw window
 
                     window.Display(); // swapbuffers
@@ -175,10 +151,11 @@ internal class GameEngine
                     }
                 }
 
-                if (targetFPS <= 30) // temp cuz im gonna change systemn timer res later
-                    Thread.Sleep(1);
+                Thread.Sleep(1);
             }
         }
+
+        Winmm.TimeEndPeriod(1);
     }
 
     protected virtual void OnUpdate(RenderWindow ctx)

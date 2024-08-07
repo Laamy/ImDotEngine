@@ -27,8 +27,8 @@ internal class Game : GameEngine
     public override void Initialized()
     {
         // some start components
-        Components.Add(Camera = new Camera2D()); // movement & zooming
-        Components.Add(new DefaultWindowBinds()); // escape, f11, ect
+        Components.Add(new DefaultWindowBinds()); // Escape for quit, F11 for fullscreen (inbuilt to the engine)
+        Components.Add(Camera = new Camera2D()); // Example of 2D camera
         Components.Add(new CameraCursor() { Camera = Camera }); // cursor visualization
 
         base.Initialized(); // allow components to initialize

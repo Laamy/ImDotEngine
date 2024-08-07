@@ -2,6 +2,7 @@ using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
 
+// funky debug camera I threw together
 internal class Camera2D : BaseComponent
 {
     private View view = new View(new FloatRect(0, 0, 0, 0)); // main view
@@ -112,4 +113,15 @@ internal class Camera2D : BaseComponent
     }
 
     #endregion
+
+    public override void Resize(SizeEventArgs e)
+    {
+        if (AutoResize)
+            Size = new Vector2u(e.Width, e.Height);
+    }
+
+    public override void OnUpdate(RenderWindow ctx)
+    {
+        Set(ctx); // lol
+    }
 }

@@ -1,6 +1,6 @@
-using SFML.System;
 using SFML.Window;
 using System;
+
 using static Kernel32;
 
 class BorderlessInfo

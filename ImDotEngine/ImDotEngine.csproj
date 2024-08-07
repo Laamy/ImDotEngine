@@ -78,15 +78,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Engine\Components\BaseComponent.cs" />
-    <Compile Include="Engine\Components\CameraCursor.cs" />
+    <Compile Include="Engine\System32\Winmm.cs" />
+    <Compile Include="SDK\Components\CameraCursor.cs" />
     <Compile Include="Engine\Components\DefaultWindowBinds.cs" />
     <Compile Include="Engine\System32\Kernel32.cs" />
     <Compile Include="Game.cs" />
-    <Compile Include="GameEngine.cs" />
+    <Compile Include="Engine\Window\GameEngine.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Engine\ClientInstance.cs" />
-    <Compile Include="Engine\Components\Camera2D.cs" />
+    <Compile Include="SDK\ClientInstance.cs" />
+    <Compile Include="SDK\Components\Camera2D.cs" />
     <Compile Include="Engine\FontRepository.cs" />
     <Compile Include="Engine\GuiData.cs" />
     <Compile Include="Engine\Level.cs" />
@@ -94,7 +95,7 @@
     <Compile Include="Engine\Objects\Object.cs" />
     <Compile Include="Engine\Objects\SolidObject.cs" />
     <Compile Include="Engine\Objects\SolidText.cs" />
-    <Compile Include="Engine\Enums\LevelLayers.cs" />
+    <Compile Include="SDK\Enums\LevelLayers.cs" />
     <Compile Include="Engine\TextureRepository.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -103,6 +104,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />
+    <None Include="SDK\README.md" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="csfml-audio.dll">
@@ -121,9 +123,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="SDK\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
