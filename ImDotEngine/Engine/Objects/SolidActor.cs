@@ -5,11 +5,13 @@ using SFML.System;
 
 #endregion
 
-internal class SolidActor
+abstract class SolidActor
 {
     // base
     public Vector2f Position;
-    public Vector2f WorldSize = new Vector2f(0, 0); // for points
+
+    public abstract Vector2f GetPosition();
+    public abstract Vector2f GetSize();
 
     public virtual void Draw(RenderWindow e) { }
 }

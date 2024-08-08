@@ -21,12 +21,7 @@ internal class SolidObject : SolidActor
     public Vector2f Size
     {
         get => shape.Size;
-        set
-        {
-            WorldSize = shape.Size;
-
-            shape.Size = value;
-        }
+        set => shape.Size = value;
     }
 
     public Color? Color
@@ -46,6 +41,9 @@ internal class SolidObject : SolidActor
         get => shape.Position;
         set => shape.Position = value;
     }
+
+    public override Vector2f GetPosition() => Position;
+    public override Vector2f GetSize() => Size;
 
     public override void Draw(RenderWindow e) => e.Draw(shape);
 }

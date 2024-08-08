@@ -6,9 +6,11 @@ using SFML.Window;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.SymbolStore;
+using System.Linq;
 using System.Management.Instrumentation;
 using System.Net.Http.Headers;
 using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
 
 #endregion
 
@@ -44,13 +46,21 @@ internal class Game : GameEngine
             Instance.Level.CreateRectangle(LevelLayers.Background, new Vector2f(-260, -3), new Vector2f(250, 275), new Color(0x20, 0x20, 0x20));// in-world menu box
         }
 
-        SolidConvex triangle = new SolidConvex();
+        {
+            // add 500x500 grid of triangles
+            for (int x = 0; x < 500; ++x)
+            {
+                for (int y = 0; y < 500; ++y)
+                {
+                    SolidCircle triangle = new SolidCircle(4);
 
-        triangle.Position = new Vector2f(10, 10);
-        triangle.LoadShape(BasicShapes.Triangle, 10);
+                    triangle.Position = new Vector2f(y * 12, x * 12);
 
-        Instance.Level.GetLayer(LevelLayers.Foreground).Add(triangle);
-
+                    Instance.Level.GetLayer(LevelLayers.Foreground).Add(triangle);
+                }
+            }
+        }
+        
         // TODO: Implement scene
     }
 
@@ -74,6 +84,29 @@ internal class Game : GameEngine
         ctx.Clear(new Color(0x10, 0x10, 0x10)); // clear buffer ready for next frame
 
         Instance.Level.Draw(ctx); // draw scene
+
+        var bounds = Components.OfType<Camera2D>().FirstOrDefault().CameraBounds;
+
+        // debug markers
+        //{
+        //    RectangleShape shape = new RectangleShape();
+        //
+        //    shape.Position = new Vector2f(bounds.Left, bounds.Top);// bounds.Left, bounds.Top
+        //    shape.Size = new Vector2f(10, 10);
+        //    shape.FillColor = Color.Red;
+        //
+        //    ctx.Draw(shape);
+        //}
+        //
+        //{
+        //    RectangleShape shape = new RectangleShape();
+        //
+        //    shape.Position = new Vector2f(bounds.Left + bounds.Width - 10, bounds.Top + bounds.Height - 10);// bounds.Left, bounds.Top
+        //    shape.Size = new Vector2f(10, 10);
+        //    shape.FillColor = Color.Red;
+        //
+        //    ctx.Draw(shape);
+        //}
 
         // TODO: Implement game rendering
 

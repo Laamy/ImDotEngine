@@ -36,20 +36,26 @@ internal class Level
 
     public void Draw(RenderWindow e)
     {
-        //Camera2D camera = ClientInstance.GetSingle().Engine.Components.OfType<Camera2D>().FirstOrDefault();
-        //FloatRect bounds = camera.CameraBounds;
+        Camera2D camera = ClientInstance.GetSingle().Engine.Components.OfType<Camera2D>().FirstOrDefault();
+
+        FloatRect bounds = camera.CameraBounds;
 
         foreach (var layer in Layers)
         {
             foreach (var child in layer)
             {
-                //FloatRect childBounds = new FloatRect(child.Position, child.WorldSize);
-                //if (childBounds.Intersects(bounds))
-                //{
-                //    child.Draw(e);
-                //}
+                var position = child.GetPosition();
+                var size = child.GetSize();
 
-                child.Draw(e);
+                if (position.X + size.X > bounds.Left &&
+                    position.X < bounds.Left + bounds.Width &&
+                    position.Y + size.Y > bounds.Top &&
+                    position.Y < bounds.Top + bounds.Height
+                )
+                {
+                    child.Draw(e);
+                }
+                //child.Draw(e);
             }
         }
     }

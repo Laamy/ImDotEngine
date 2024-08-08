@@ -86,8 +86,6 @@ internal class GameEngine
 
         Initialized();
 
-        Winmm.TimeBeginPeriod(1);
-
         // physics thread
         Task.Factory.StartNew(() =>
         {
@@ -116,7 +114,6 @@ internal class GameEngine
                     }
                 }
 
-                Thread.Sleep(1);
             }
         });
 
@@ -151,11 +148,9 @@ internal class GameEngine
                     }
                 }
 
-                Thread.Sleep(1);
             }
         }
 
-        Winmm.TimeEndPeriod(1);
     }
 
     protected virtual void OnUpdate(RenderWindow ctx)

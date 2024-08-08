@@ -2,6 +2,7 @@ using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
 using System;
+using System.Runtime.InteropServices;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 // funky debug camera I threw together
@@ -71,10 +72,12 @@ internal class Camera2D : BaseComponent
     {
         get
         {
+            Console.WriteLine(size.X);
+
             Vector2f topLeft = Instance.Engine.window.MapPixelToCoords(new Vector2i(0, 0));
             Vector2f bottomRight = Instance.Engine.window.MapPixelToCoords(new Vector2i((int)size.X, (int)size.Y));
 
-            return new FloatRect(topLeft, bottomRight);
+            return new FloatRect(topLeft, bottomRight - topLeft);
         }
     }
 

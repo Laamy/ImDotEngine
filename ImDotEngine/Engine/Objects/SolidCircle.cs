@@ -20,13 +20,7 @@ internal class SolidCircle : SolidActor
     public float Radius
     {
         get => shape.Radius;
-        set
-        {
-            var C2R = (shape.Radius * 2) + 1;
-            WorldSize = new Vector2f(C2R, C2R);
-
-            shape.Radius = value;
-        }
+        set => shape.Radius = value;
     }
 
     public Color Color
@@ -42,4 +36,7 @@ internal class SolidCircle : SolidActor
     }
 
     public override void Draw(RenderWindow e) => e.Draw(shape);
+
+    public override Vector2f GetPosition() => Position;
+    public override Vector2f GetSize() => new Vector2f((Radius * 2) + 1, (Radius * 2) + 1);
 }

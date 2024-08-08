@@ -48,5 +48,8 @@ internal class SolidText : SolidActor
         set => shape.Position = value;
     }
 
+    public override Vector2f GetPosition() => Position;
+    public override Vector2f GetSize() => new Vector2f(200, 200); // TODO: actual size for this
+
     public override void Draw(RenderWindow e) => e.Draw(shape);
 }
