@@ -34,7 +34,9 @@ internal class Game : GameEngine
 
         base.Initialized(); // allow components to initialize
 
-        TargetFramerate = 1000; // unlimited FPS
+        TargetFramerate = 0; // unlimited FPS
+        VSync = false; // fuck vsync
+
         TargetPhysicsRate = 20; // physics rate at 20
 
         // other bits and bobs
@@ -48,9 +50,9 @@ internal class Game : GameEngine
 
         {
             // add 500x500 grid of triangles
-            for (int x = 0; x < 500; ++x)
+            for (int x = 0; x < 4; ++x)
             {
-                for (int y = 0; y < 500; ++y)
+                for (int y = 0; y < 4; ++y)
                 {
                     SolidCircle triangle = new SolidCircle(4);
 

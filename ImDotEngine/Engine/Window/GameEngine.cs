@@ -14,7 +14,6 @@ using View = SFML.Graphics.View;
 
 internal class GameEngine
 {
-    private int targetFPS = 165;
     private int targetPPS = 30;
 
     public int CurrentFPS = 0;
@@ -35,6 +34,28 @@ internal class GameEngine
 
     // all the game things insida here !
     public ClientInstance Instance = ClientInstance.GetSingle();
+
+    private bool vsync = false;
+    public bool VSync
+    {
+        get => vsync;
+        set
+        {
+            vsync = value;
+            window.SetVerticalSyncEnabled(value);
+        }
+    }
+
+    private uint framerate = 0;
+    public uint TargetFramerate
+    {
+        get => framerate;
+        set
+        {
+            framerate = value;
+            window.SetFramerateLimit(value);
+        }
+    }
 
     public void Start()
     {
@@ -113,44 +134,28 @@ internal class GameEngine
                         lastPhysicsStep = curTime;
                     }
                 }
-
             }
         });
 
+
+        while (window.IsOpen)
         {
-            long targetTicksPerFrame = TimeSpan.TicksPerSecond / targetFPS;
-            long prevTicks = DateTime.Now.Ticks;
+            window.DispatchEvents();
 
-            while (window.IsOpen)
+            OnUpdate(window); // redraw window
+
+            window.Display(); // swapbuffers
+
+            frameCount++;
+
+            long curTime = DateTime.Now.Ticks;
+            if (curTime - fpsLastTime >= TimeSpan.TicksPerSecond)
             {
-                long currTicks = DateTime.Now.Ticks;
-                long elapsedTicks = currTicks - prevTicks;
-
-                if (elapsedTicks >= targetTicksPerFrame)
-                {
-                    // update the camera
-                    prevTicks = currTicks;
-
-                    window.DispatchEvents();
-
-                    OnUpdate(window); // redraw window
-
-                    window.Display(); // swapbuffers
-
-                    frameCount++;
-
-                    long curTime = DateTime.Now.Ticks;
-                    if (curTime - fpsLastTime >= TimeSpan.TicksPerSecond)
-                    {
-                        CurrentFPS = frameCount;
-                        frameCount = 0;
-                        fpsLastTime = curTime;
-                    }
-                }
-
+                CurrentFPS = frameCount;
+                frameCount = 0;
+                fpsLastTime = curTime;
             }
         }
-
     }
 
     protected virtual void OnUpdate(RenderWindow ctx)
@@ -186,13 +191,6 @@ internal class GameEngine
     /// </summary>
     public String Title
     { set => window.SetTitle(value); }
-
-    public int TargetFramerate
-    {
-        get => targetFPS;
-        set => targetFPS = value;
-    }
-
     public int TargetPhysicsRate
     {
         get => targetPPS;

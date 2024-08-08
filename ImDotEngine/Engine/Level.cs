@@ -55,7 +55,6 @@ internal class Level
                 {
                     child.Draw(e);
                 }
-                //child.Draw(e);
             }
         }
     }
