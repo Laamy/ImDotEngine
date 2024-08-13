@@ -1,6 +1,8 @@
 using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
+using System;
+using System.Data;
 
 // funky debug camera I threw together
 internal class Camera2D : BaseComponent
@@ -34,7 +36,22 @@ internal class Camera2D : BaseComponent
         get => new Vector2u((uint)size.X, (uint)size.Y);
         set
         {
+            View temp = new View(new FloatRect(position, size));
+            temp.Zoom(zoom);
+
+            Console.WriteLine(temp.Viewport);
+
+            var center = view.Center;
+
             size = new Vector2f(value.X, value.Y);
+
+            temp.Reset(new FloatRect(position, size));
+            temp.Zoom(zoom);
+            temp.Center = center;
+
+            Console.WriteLine(temp.Viewport);
+
+            position = new Vector2f(view.Center.X - size.X / 2, view.Center.Y - size.Y / 2);
         }
     }
 
