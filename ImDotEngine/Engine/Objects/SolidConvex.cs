@@ -48,7 +48,7 @@ internal class SolidConvex : SolidActor
         shape.SetPointCount((uint)vertices.Length + 1);
 
         for (uint i = 0; i < vertices.Length; ++i)
-            shape.SetPoint(i, vertices[i] * (size));
+            shape.SetPoint(i, vertices[i] * (size / 10));
     }
 
     public override void Draw(RenderWindow e) => e.Draw(shape);

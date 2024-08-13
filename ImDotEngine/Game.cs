@@ -51,9 +51,9 @@ internal class Game : GameEngine
 
         {
             // grid of shapes for performance debugging
-            for (int x = 0; x < 250; ++x)
+            for (int x = 0; x < 50; ++x)
             {
-                for (int y = 0; y < 250; ++y)
+                for (int y = 0; y < 50; ++y)
                 {
                     SolidObject square = new SolidObject();
 
@@ -64,15 +64,28 @@ internal class Game : GameEngine
                 }
             }
 
-            for (int x = 250; x < 500; ++x)
+            for (int x = 50; x < 100; ++x)
             {
-                for (int y = 0; y < 250; ++y)
+                for (int y = 0; y < 50; ++y)
                 {
-                    SolidCircle circle = new SolidCircle(4);
+                    SolidCircle circle = new SolidCircle(5);
 
-                    circle.Position = new Vector2f(y * 12, x * 12);
+                    circle.Position = new Vector2f(x * 12, y * 12);
 
                     Instance.Level.GetLayer(LevelLayers.Foreground).AddObject(circle);
+                }
+            }
+
+            for (int x = 0; x < 50; ++x)
+            {
+                for (int y = 50; y < 100; ++y)
+                {
+                    SolidConvex triangle = new SolidConvex();
+
+                    triangle.LoadShape(BasicShapes.Triangle, 10);
+                    triangle.Position = new Vector2f(x * 12, y * 12);
+
+                    Instance.Level.GetLayer(LevelLayers.Foreground).AddObject(triangle);
                 }
             }
         }
