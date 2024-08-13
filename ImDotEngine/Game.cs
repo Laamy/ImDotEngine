@@ -88,6 +88,18 @@ internal class Game : GameEngine
                     Instance.Level.GetLayer(LevelLayers.Foreground).AddObject(triangle);
                 }
             }
+
+            for (int x = 50; x < 100; ++x)
+            {
+                for (int y = 50; y < 100; ++y)
+                {
+                    SolidCircle circle = new SolidCircle(5, 5);
+
+                    circle.Position = new Vector2f(x * 12, y * 12);
+
+                    Instance.Level.GetLayer(LevelLayers.Foreground).AddObject(circle);
+                }
+            }
         }
         
         // TODO: Implement scene

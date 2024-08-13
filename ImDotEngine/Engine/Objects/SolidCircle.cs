@@ -8,9 +8,9 @@ using System.Collections.Generic;
 
 internal class SolidCircle : SolidActor
 {
-    public SolidCircle(float radius)
+    public SolidCircle(float radius, uint points = 20)
     {
-        shape = new CircleShape(radius);
+        shape = new CircleShape(radius, points);
     }
 
     // cached object
