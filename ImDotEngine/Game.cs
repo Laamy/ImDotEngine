@@ -14,7 +14,6 @@ using System.Security.Cryptography;
 
 #endregion
 
-// TODO: gridify the world so I can process less things!!!!
 internal class Game : GameEngine
 {
     public Game() => Start(); // we've finished so start the app
@@ -30,12 +29,14 @@ internal class Game : GameEngine
         // some start components
         Components.Add(new DefaultWindowBinds()); // Escape for quit, F11 for fullscreen (inbuilt to the engine)
         Components.Add(Camera = new Camera2D()); // Example of 2D camera
-        Components.Add(new CameraCursor() { Camera = Camera }); // cursor visualization
+        Components.Add(new CameraCursor()); // cursor visualization
+
+        Components.Add(new DebugComponent());
 
         base.Initialized(); // allow components to initialize
 
         TargetFramerate = 0; // unlimited FPS
-        VSync = false; // fuck vsync
+        VSync = false; // fuck vsync, here for completeness
 
         TargetPhysicsRate = 20; // physics rate at 20
 
@@ -49,16 +50,29 @@ internal class Game : GameEngine
         }
 
         {
-            // add 500x500 grid of triangles
-            for (int x = 0; x < 4; ++x)
+            // grid of shapes for performance debugging
+            for (int x = 0; x < 250; ++x)
             {
-                for (int y = 0; y < 4; ++y)
+                for (int y = 0; y < 250; ++y)
                 {
-                    SolidCircle triangle = new SolidCircle(4);
+                    SolidObject square = new SolidObject();
 
-                    triangle.Position = new Vector2f(y * 12, x * 12);
+                    square.Position = new Vector2f(y * 12, x * 12);
+                    square.Size = new Vector2f(10, 10);
 
-                    Instance.Level.GetLayer(LevelLayers.Foreground).Add(triangle);
+                    Instance.Level.GetLayer(LevelLayers.Foreground).AddObject(square);
+                }
+            }
+
+            for (int x = 250; x < 500; ++x)
+            {
+                for (int y = 0; y < 250; ++y)
+                {
+                    SolidCircle circle = new SolidCircle(4);
+
+                    circle.Position = new Vector2f(y * 12, x * 12);
+
+                    Instance.Level.GetLayer(LevelLayers.Foreground).AddObject(circle);
                 }
             }
         }
@@ -86,29 +100,6 @@ internal class Game : GameEngine
         ctx.Clear(new Color(0x10, 0x10, 0x10)); // clear buffer ready for next frame
 
         Instance.Level.Draw(ctx); // draw scene
-
-        var bounds = Components.OfType<Camera2D>().FirstOrDefault().CameraBounds;
-
-        // debug markers
-        //{
-        //    RectangleShape shape = new RectangleShape();
-        //
-        //    shape.Position = new Vector2f(bounds.Left, bounds.Top);// bounds.Left, bounds.Top
-        //    shape.Size = new Vector2f(10, 10);
-        //    shape.FillColor = Color.Red;
-        //
-        //    ctx.Draw(shape);
-        //}
-        //
-        //{
-        //    RectangleShape shape = new RectangleShape();
-        //
-        //    shape.Position = new Vector2f(bounds.Left + bounds.Width - 10, bounds.Top + bounds.Height - 10);// bounds.Left, bounds.Top
-        //    shape.Size = new Vector2f(10, 10);
-        //    shape.FillColor = Color.Red;
-        //
-        //    ctx.Draw(shape);
-        //}
 
         // TODO: Implement game rendering
 

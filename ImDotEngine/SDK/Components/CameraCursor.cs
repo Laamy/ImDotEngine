@@ -1,19 +1,24 @@
 using SFML.Graphics;
 using SFML.System;
 using System;
+using System.Linq;
 
 class CameraCursor : BaseComponent
 {
-    private Camera2D _camera;
-
-    public Camera2D Camera
-    {
-        get => _camera;
-        set => _camera = value;
-    }
-
     public override void OnUpdate(RenderWindow ctx)
     {
+        // get the client instance
+        var Instance = ClientInstance.GetSingle();
+
+        // get the engine from the client instance
+        var Engine = Instance.Engine;
+
+        // get the components list from the engine
+        var Components = Engine.Components;
+
+        // get the camera component
+        Camera2D Camera = Components.OfType<Camera2D>().FirstOrDefault();
+
         // visualize cursor
         CircleShape shape = new CircleShape();
 

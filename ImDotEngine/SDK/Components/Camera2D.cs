@@ -1,9 +1,6 @@
 using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
-using System;
-using System.Runtime.InteropServices;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 // funky debug camera I threw together
 internal class Camera2D : BaseComponent
@@ -14,7 +11,7 @@ internal class Camera2D : BaseComponent
     
     // info for view
     private Vector2f position = new Vector2f(0, 0);
-    private Vector2f size = new Vector2f(700, 700);
+    private Vector2f size = new Vector2f(800, 700);
     private float zoom = 1;
 
     // for camera zooming
@@ -23,6 +20,11 @@ internal class Camera2D : BaseComponent
 
     // basic settings for the camera
     public bool AutoResize = true;
+
+    public Camera2D()
+    {
+        size = (Vector2f)Instance.Engine.Size;
+    }
 
     /// <summary>
     /// Camera Size
@@ -72,8 +74,6 @@ internal class Camera2D : BaseComponent
     {
         get
         {
-            Console.WriteLine(size.X);
-
             Vector2f topLeft = Instance.Engine.window.MapPixelToCoords(new Vector2i(0, 0));
             Vector2f bottomRight = Instance.Engine.window.MapPixelToCoords(new Vector2i((int)size.X, (int)size.Y));
 

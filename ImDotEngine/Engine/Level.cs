@@ -13,21 +13,20 @@ internal class Level
 {
     private bool init = false;
 
-    // TODO: make layers
-    public List<SolidActor>[] Layers;
+    public SpatialHash[] Layers;
 
     public void Initialize()
     {
-        Layers = new List<SolidActor>[(int)LevelLayers.Count];
+        Layers = new SpatialHash[(int)LevelLayers.Count];
         Layers.Initialize();
 
         for (int i = 0; i < Layers.Length; ++i)
-            Layers[i] = new List<SolidActor>();
+            Layers[i] = new SpatialHash(50);
 
         init = true;
     }
 
-    public List<SolidActor> GetLayer(LevelLayers layer)
+    public SpatialHash GetLayer(LevelLayers layer)
     {
         if (!init) Initialize();
 
@@ -42,7 +41,7 @@ internal class Level
 
         foreach (var layer in Layers)
         {
-            foreach (var child in layer)
+            foreach (var child in layer.GetObjectsInBounds(bounds))
             {
                 var position = child.GetPosition();
                 var size = child.GetSize();
@@ -69,7 +68,7 @@ internal class Level
         // temp
         SolidObject result;
 
-        GetLayer(layer).Add(result = new SolidObject()
+        GetLayer(layer).AddObject(result = new SolidObject()
         {
             Position = position,
             Size = size,
@@ -87,7 +86,7 @@ internal class Level
         // temp
         SolidCircle result;
 
-        GetLayer(layer).Add(result = new SolidCircle(radius)
+        GetLayer(layer).AddObject(result = new SolidCircle(radius)
         {
             Position = position,
             Color = colour
@@ -104,7 +103,7 @@ internal class Level
         // temp
         SolidText result;
 
-        GetLayer(layer).Add(result = new SolidText()
+        GetLayer(layer).AddObject(result = new SolidText()
         {
             Position = position,
             Size = (uint)size,

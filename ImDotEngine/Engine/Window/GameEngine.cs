@@ -3,17 +3,17 @@
 using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
+
 using System;
 using System.Collections.Generic;
-using System.Drawing.Imaging;
-using System.Threading;
 using System.Threading.Tasks;
-using View = SFML.Graphics.View;
 
 #endregion
 
 internal class GameEngine
 {
+    #region Internal Crap
+
     private int targetPPS = 30;
 
     public int CurrentFPS = 0;
@@ -24,44 +24,35 @@ internal class GameEngine
     private int physicStepCount = 0;
     private long lastPhysicsStep = DateTime.Now.Ticks;
 
+    private bool vsync = false;
+    private uint framerate = 0;
+
     private Vector2u _Size;
+
+    #endregion
 
     // sdl/sfml stuff
     public RenderWindow window;
 
-    // ECS stuff
+    // Components that inherit game overrides
     public List<BaseComponent> Components = new List<BaseComponent>();
 
     // all the game things insida here !
     public ClientInstance Instance = ClientInstance.GetSingle();
 
-    private bool vsync = false;
-    public bool VSync
-    {
-        get => vsync;
-        set
-        {
-            vsync = value;
-            window.SetVerticalSyncEnabled(value);
-        }
-    }
-
-    private uint framerate = 0;
-    public uint TargetFramerate
-    {
-        get => framerate;
-        set
-        {
-            framerate = value;
-            window.SetFramerateLimit(value);
-        }
-    }
-
     public void Start()
     {
+        // initialize starter assets
+        // NOTE: put your game assets in Game.cs NOT assets class else this will halt the window from loading
+        Assets.Initialize();
+
         // sdl renderer
         Instance.VideoMode = new VideoMode(800, 600);
-        window = new RenderWindow(Instance.VideoMode, "Game Engine", Styles.Default);
+        window = new RenderWindow(Instance.VideoMode, "ImDotEngine", Styles.Default);
+
+        Size = new Vector2u(800, 600);
+
+        window.SetIcon(32, 32, Assets.Image_x32.Pixels);
 
         Instance.Engine = this;
 
@@ -77,6 +68,34 @@ internal class GameEngine
 
             Size = new Vector2u(e.Width, e.Height);
         };
+
+        // Intro loop, I'll probably embed this into a component later for actual game assets loading
+        // for now its cuz when loading the actual level it'll keep the last rendered frame til its done
+        {
+            long prevTicks = DateTime.Now.Ticks;
+            long targetTicks = TimeSpan.TicksPerSecond * 1;
+
+            View view = new View();
+            RectangleShape shape = new RectangleShape
+            {
+                Size = (Vector2f)Assets.Intro_x580.Size,
+                Texture = new Texture(Assets.Intro_x580)
+            };
+
+            while (window.IsOpen && DateTime.Now.Ticks - prevTicks < targetTicks)
+            {
+                window.DispatchEvents();
+
+                view.Reset(new FloatRect(new Vector2f(0, 0), (Vector2f)Size));
+                view.Zoom(1.5f);
+                view.Center = new Vector2f(Assets.Intro_x580.Size.X / 2, Assets.Intro_x580.Size.Y / 2);
+                window.SetView(view);
+
+                window.Clear(Color.White);
+                window.Draw(shape);
+                window.Display();
+            }
+        }
 
         window.GainedFocus += (s, e) => Focus();
         window.LostFocus += (s, e) => LostFocus();
@@ -137,7 +156,6 @@ internal class GameEngine
             }
         });
 
-
         while (window.IsOpen)
         {
             window.DispatchEvents();
@@ -158,6 +176,66 @@ internal class GameEngine
         }
     }
 
+    #region Easy Game Properties
+
+    /// <summary>
+    /// Vertical Sync, if true, the game will wait for the vertical blank to update the screen.
+    /// </summary>
+    public bool VSync
+    {
+        get => vsync;
+        set
+        {
+            vsync = value;
+            window.SetVerticalSyncEnabled(value);
+        }
+    }
+
+    /// <summary>
+    /// Target framerate, 0 for unlimited
+    /// </summary>
+    public uint TargetFramerate
+    {
+        get => framerate;
+        set
+        {
+            framerate = value;
+            window.SetFramerateLimit(value);
+        }
+    }
+
+    /// <summary>
+    /// Camera Size
+    /// </summary>
+    public Vector2u Size
+    {
+        get => _Size;
+        set
+        {
+            _Size = value;
+            window.Size = value;
+        }
+    }
+
+    /// <summary>
+    /// Window Title
+    /// </summary>
+    public String Title
+    { set => window.SetTitle(value); }
+
+    /// <summary>
+    /// Target physics update rate (fixed)
+    /// </summary>
+    public int TargetPhysicsRate
+    {
+        get => targetPPS;
+        set => targetPPS = value;
+    }
+
+    #endregion
+
+    #region Overrides
+
     protected virtual void OnUpdate(RenderWindow ctx)
     {
         // bad version of ECS
@@ -171,130 +249,87 @@ internal class GameEngine
         foreach (BaseComponent component in Components)
             component.OnFixedUpdate();
     }
-
-    #region Easy Game Properties
-
-    /// <summary>
-    /// Camera Size
-    /// </summary>
-    public Vector2u Size
-    {
-        get => _Size;
-        set
-        {
-            _Size = value;
-        }
-    }
-
-    /// <summary>
-    /// Window Title
-    /// </summary>
-    public String Title
-    { set => window.SetTitle(value); }
-    public int TargetPhysicsRate
-    {
-        get => targetPPS;
-        set => targetPPS = value;
-    }
-
-    #endregion
-
-    #region Overrides
     
     public virtual void Initialized()
     {
-        // bad version of ECS
         foreach (BaseComponent component in Components)
             component.Initialized();
     }
 
     public virtual void Closing()
     {
-        // bad version of ECS
         foreach (BaseComponent component in Components)
             component.Closing();
     }
 
     public virtual void Resize(SizeEventArgs e)
     {
-        // bad version of ECS
         foreach (BaseComponent component in Components)
             component.Resize(e);
     }
 
     public virtual void Focus()
     {
-        // bad version of ECS
         foreach (BaseComponent component in Components)
             component.Focus();
     }
 
     public virtual void LostFocus()
     {
-        // bad version of ECS
         foreach (BaseComponent component in Components)
             component.LostFocus();
     }
 
     public virtual void JoystickButtonPressed(JoystickButtonEventArgs e)
     {
-        // bad version of ECS
         foreach (BaseComponent component in Components)
             component.JoystickButtonPressed(e);
     }
 
     public virtual void JoystickButtonReleased(JoystickButtonEventArgs e)
     {
-        // bad version of ECS
         foreach (BaseComponent component in Components)
             component.JoystickButtonReleased(e);
     }
 
     public virtual void JoystickConnected(JoystickConnectEventArgs e)
     {
-        // bad version of ECS
         foreach (BaseComponent component in Components)
             component.JoystickConnected(e);
     }
 
     public virtual void JoystickDisconnected(JoystickConnectEventArgs e)
     {
-        // bad version of ECS
         foreach (BaseComponent component in Components)
             component.JoystickDisconnected(e);
     }
 
     public virtual void JoystickMoved(JoystickMoveEventArgs e)
     {
-        // bad version of ECS
         foreach (BaseComponent component in Components)
             component.JoystickMoved(e);
     }
 
     public virtual void KeyPressed(KeyEventArgs e)
     {
-        // bad version of ECS
         foreach (BaseComponent component in Components)
             component.KeyPressed(e);
     }
 
     public virtual void KeyReleased(KeyEventArgs e)
     {
-        // bad version of ECS
         foreach (BaseComponent component in Components)
             component.KeyReleased(e);
     }
 
     public virtual void MouseButtonPressed(MouseButtonEventArgs e)
     {
-        // bad version of ECS
         foreach (BaseComponent component in Components)
             component.MouseButtonPressed(e);
     }
 
     public virtual void MouseButtonReleased(MouseButtonEventArgs e)
     {
-        // bad version of ECS
         foreach (BaseComponent component in Components)
             component.MouseButtonReleased(e);
     }
@@ -304,63 +339,54 @@ internal class GameEngine
         //update guidata
         Instance.GuiData.CursorPos = new Vector2f(e.X, e.Y);
 
-        // bad version of ECS
         foreach (BaseComponent component in Components)
             component.MouseMoved(e);
     }
 
     public virtual void MouseWheelScrolled(MouseWheelScrollEventArgs e)
     {
-        // bad version of ECS
         foreach (BaseComponent component in Components)
             component.MouseWheelScrolled(e);
     }
 
     public virtual void MouseEntered()
     {
-        // bad version of ECS
         foreach (BaseComponent component in Components)
             component.MouseEntered();
     }
 
     public virtual void MouseLeft()
     {
-        // bad version of ECS
         foreach (BaseComponent component in Components)
             component.MouseLeft();
     }
 
     public virtual void SensorChanged(SensorEventArgs e)
     {
-        // bad version of ECS
         foreach (BaseComponent component in Components)
             component.SensorChanged(e);
     }
 
     public virtual void TextEntered(TextEventArgs e)
     {
-        // bad version of ECS
         foreach (BaseComponent component in Components)
             component.TextEntered(e);
     }
 
     public virtual void TouchBegan(TouchEventArgs e)
     {
-        // bad version of ECS
         foreach (BaseComponent component in Components)
             component.TouchBegan(e);
     }
 
     public virtual void TouchEnded(TouchEventArgs e)
     {
-        // bad version of ECS
         foreach (BaseComponent component in Components)
             component.TouchEnded(e);
     }
 
     public virtual void TouchMoved(TouchEventArgs e)
     {
-        // bad version of ECS
         foreach (BaseComponent component in Components)
             component.TouchMoved(e);
     }

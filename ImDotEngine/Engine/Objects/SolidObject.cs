@@ -17,6 +17,8 @@ internal class SolidObject : SolidActor
     // cache
     private RectangleShape shape;
 
+    public RectangleShape Drawable { get => shape; }
+
     // base
     public Vector2f Size
     {

@@ -8,7 +8,7 @@
     <ProjectGuid>{EBB7B2BB-D301-4C11-8B18-A345D87DBABD}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>ImDotEngine</RootNamespace>
-    <AssemblyName>Game Engine %28.net framework%291</AssemblyName>
+    <AssemblyName>ImDotEngine</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -55,6 +55,9 @@
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Data/Assets/icon_x64.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="SFML.Graphics, Version=2.5.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SFML.Graphics.2.5.1\lib\netstandard2.0\SFML.Graphics.dll</HintPath>
@@ -78,9 +81,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Engine\Components\BaseComponent.cs" />
+    <Compile Include="Engine\Internal\Assets.cs" />
     <Compile Include="Engine\Objects\SolidConvex.cs" />
     <Compile Include="Engine\BasicShapes.cs" />
+    <Compile Include="Engine\Objects\SolidGroup.cs" />
+    <Compile Include="Engine\Rendering\Spatial\SpatialHash.cs" />
     <Compile Include="Engine\System32\Winmm.cs" />
+    <Compile Include="Engine\Rendering\TextureAtlas.cs" />
     <Compile Include="SDK\Components\CameraCursor.cs" />
     <Compile Include="Engine\Components\DefaultWindowBinds.cs" />
     <Compile Include="Engine\System32\User32.cs" />
@@ -97,6 +104,7 @@
     <Compile Include="Engine\Objects\SolidActor.cs" />
     <Compile Include="Engine\Objects\SolidObject.cs" />
     <Compile Include="Engine\Objects\SolidText.cs" />
+    <Compile Include="SDK\Components\DebugComponent.cs" />
     <Compile Include="SDK\Enums\LevelLayers.cs" />
     <Compile Include="Engine\TextureRepository.cs" />
   </ItemGroup>
@@ -107,6 +115,7 @@
     </None>
     <None Include="packages.config" />
     <None Include="SDK\README.md" />
+    <None Include="TODO.md" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="csfml-audio.dll">
@@ -119,6 +128,21 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="csfml-window.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\Assets\icon_intro.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\Assets\icon_x32.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\Assets\icon_x32.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\Assets\icon_x64.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\Assets\icon_x64.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="openal32.dll">
