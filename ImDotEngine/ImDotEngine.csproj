@@ -115,7 +115,6 @@
     </None>
     <None Include="packages.config" />
     <None Include="SDK\README.md" />
-    <None Include="TODO.md" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="csfml-audio.dll">
