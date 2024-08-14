@@ -43,17 +43,7 @@ internal class Level
         {
             foreach (var child in layer.GetObjectsInBounds(bounds))
             {
-                var position = child.GetPosition();
-                var size = child.GetSize();
-
-                if (position.X + size.X > bounds.Left &&
-                    position.X < bounds.Left + bounds.Width &&
-                    position.Y + size.Y > bounds.Top &&
-                    position.Y < bounds.Top + bounds.Height
-                )
-                {
-                    child.Draw(e);
-                }
+                child.Draw(e);
             }
         }
     }

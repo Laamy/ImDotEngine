@@ -7,6 +7,7 @@ class SpatialHash
 {
     private readonly int cellSize;
     private readonly Dictionary<int, HashSet<SolidActor>> hashGrid;
+    private readonly Dictionary<SolidActor, int[]> objectToHashesMap;
 
     public int Count { get; private set; } = 0;
     public int Hashes { get; private set; } = 0;
@@ -15,6 +16,7 @@ class SpatialHash
     {
         this.cellSize = cellSize;
         this.hashGrid = new Dictionary<int, HashSet<SolidActor>>();
+        this.objectToHashesMap = new Dictionary<SolidActor, int[]>();
     }
 
     private int HashPosition(Vector2f position)
@@ -24,8 +26,9 @@ class SpatialHash
         return x + y * 73856093;
     }
 
-    private IEnumerable<int> GetHashesForBounds(FloatRect bounds)
+    private void GetHashesForBounds(FloatRect bounds, int[] hashes)
     {
+        int index = 0;
         int minX = (int)Math.Floor(bounds.Left / cellSize);
         int maxX = (int)Math.Floor((bounds.Left + bounds.Width) / cellSize);
         int minY = (int)Math.Floor(bounds.Top / cellSize);
@@ -35,7 +38,7 @@ class SpatialHash
         {
             for (int y = minY; y <= maxY; ++y)
             {
-                yield return x + y * 73856093;
+                hashes[index++] = x + y * 73856093;
             }
         }
     }
@@ -43,9 +46,13 @@ class SpatialHash
     public void AddObject(SolidActor obj)
     {
         var bounds = new FloatRect(obj.GetPosition(), obj.GetSize());
-        var added = false;
+        var numHashes = GetHashCount(bounds);
+        int[] objectHashes = new int[numHashes];
 
-        foreach (var hash in GetHashesForBounds(bounds))
+        GetHashesForBounds(bounds, objectHashes);
+        bool added = false;
+
+        foreach (var hash in objectHashes)
         {
             if (!hashGrid.ContainsKey(hash))
             {
@@ -54,73 +61,77 @@ class SpatialHash
             }
 
             if (hashGrid[hash].Add(obj))
+            {
                 added = true;
+                Count++;
+            }
         }
 
         if (added)
-            Count++;
-
-        if (!added)
-        {
-            // If the object was not added, remove it (could happen if object was already present)
-            foreach (var hash in GetHashesForBounds(bounds))
-            {
-                if (hashGrid.ContainsKey(hash))
-                {
-                    hashGrid[hash].Remove(obj);
-                    if (hashGrid[hash].Count == 0)
-                    {
-                        hashGrid.Remove(hash);
-                        Hashes--;
-                    }
-                }
-            }
-        }
+            objectToHashesMap[obj] = objectHashes;
     }
 
     public void RemoveObject(SolidActor obj)
     {
-        var bounds = new FloatRect(obj.GetPosition(), obj.GetSize());
-        foreach (var hash in GetHashesForBounds(bounds))
+        if (!objectToHashesMap.TryGetValue(obj, out var objectHashes))
+            return;
+
+        foreach (var hash in objectHashes)
         {
-            if (hashGrid.ContainsKey(hash))
+            if (hashGrid[hash].Remove(obj) && hashGrid[hash].Count == 0)
             {
-                if (hashGrid[hash].Remove(obj))
-                {
-                    if (hashGrid[hash].Count == 0)
-                    {
-                        hashGrid.Remove(hash);
-                        Hashes--;
-                    }
-                }
+                hashGrid.Remove(hash);
+                Hashes--;
             }
         }
+
+        objectToHashesMap.Remove(obj);
         Count--;
+    }
+
+    public void UpdateObject(SolidActor obj)
+    {
+        RemoveObject(obj);
+        AddObject(obj);
     }
 
     public IEnumerable<SolidActor> GetObjectsInBounds(FloatRect bounds)
     {
-        var result = new HashSet<SolidActor>();
-        foreach (var hash in GetHashesForBounds(bounds))
+        var seenObjects = new HashSet<SolidActor>();
+        var numHashes = GetHashCount(bounds);
+        int[] hashes = new int[numHashes];
+
+        GetHashesForBounds(bounds, hashes);
+
+        foreach (var hash in hashes)
         {
-            if (hashGrid.ContainsKey(hash))
+            if (hashGrid.TryGetValue(hash, out var objects))
             {
-                foreach (var obj in hashGrid[hash])
+                foreach (var obj in objects)
                 {
-                    var objBounds = new FloatRect(obj.GetPosition(), obj.GetSize());
-                    if (objBounds.Intersects(bounds))
+                    if (!seenObjects.Contains(obj) && new FloatRect(obj.GetPosition(), obj.GetSize()).Intersects(bounds))
                     {
-                        result.Add(obj);
+                        seenObjects.Add(obj);
+                        yield return obj;
                     }
                 }
             }
         }
-        return result;
     }
 
     public IEnumerable<SolidActor> GetNearbyObjects(Vector2f position, int radius)
     {
         var bounds = new FloatRect(position.X - radius, position.Y - radius, radius * 2, radius * 2);
         return GetObjectsInBounds(bounds);
+    }
+
+    private int GetHashCount(FloatRect bounds)
+    {
+        int minX = (int)Math.Floor(bounds.Left / cellSize);
+        int maxX = (int)Math.Floor((bounds.Left + bounds.Width) / cellSize);
+        int minY = (int)Math.Floor(bounds.Top / cellSize);
+        int maxY = (int)Math.Floor((bounds.Top + bounds.Height) / cellSize);
+
+        return (maxX - minX + 1) * (maxY - minY + 1);
     }
 }

@@ -89,9 +89,9 @@ internal class Game : GameEngine
                 }
             }
 
-            for (int x = 50; x < 100; ++x)
+            for (int x = 50; x < 600; ++x)
             {
-                for (int y = 50; y < 100; ++y)
+                for (int y = 50; y < 600; ++y)
                 {
                     SolidCircle circle = new SolidCircle(5, 5);
 
