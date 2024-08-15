@@ -40,7 +40,7 @@ class DefaultWindowBinds : BaseComponent
         }
     }
 
-    // exclusive borderless fullscreen
+    // borderless fullscreen
     private static BorderlessInfo SetBorderlessFullscreen(IntPtr hwnd)
     {
         int style = GetWindowLong(hwnd, GWL_STYLE);
@@ -56,7 +56,7 @@ class DefaultWindowBinds : BaseComponent
             };
         }
 
-        SetWindowLong(hwnd, GWL_STYLE, style & ~WS_BORDER & ~WS_CAPTION & ~WS_THICKFRAME | WS_POPUP);
+        SetWindowLong(hwnd, GWL_STYLE, style & ~WS_BORDER);
 
         // update da window a bit 
         ShowWindow(hwnd, SW_MAXIMIZE);
@@ -74,7 +74,6 @@ class DefaultWindowBinds : BaseComponent
         int width = info.Dimensions.Right - x;
         int height = info.Dimensions.Bottom - y;
 
-        // TODO: fix bug where exclusive fullscreen flashes when toggling off for the second time
         SetWindowPos(form, HWND_NOTOPMOST, x, y, width, height, SWP_NOACTIVATE | SWP_SHOWWINDOW);
     }
 }
