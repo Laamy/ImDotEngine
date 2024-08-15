@@ -23,3 +23,4 @@ you can see a basic showcase of the sample scene & engine
 # Bug fixes (TODO)
 
 SolidConvex:57 - check largest/farthest vertex and use as size for both X & Y
+DefaultWindowBinds:78 - fix bug where exclusive fullscreen flashes when toggling off for the second time

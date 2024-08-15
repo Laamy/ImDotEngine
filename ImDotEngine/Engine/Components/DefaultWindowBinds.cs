@@ -74,6 +74,7 @@ class DefaultWindowBinds : BaseComponent
         int width = info.Dimensions.Right - x;
         int height = info.Dimensions.Bottom - y;
 
+        // TODO: fix bug where exclusive fullscreen flashes when toggling off for the second time
         SetWindowPos(form, HWND_NOTOPMOST, x, y, width, height, SWP_NOACTIVATE | SWP_SHOWWINDOW);
     }
 }
