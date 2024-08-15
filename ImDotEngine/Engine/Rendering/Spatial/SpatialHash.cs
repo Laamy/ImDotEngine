@@ -1,8 +1,10 @@
 ﻿using SFML.Graphics;
 using SFML.System;
+
 using System;
 using System.Collections.Generic;
 
+// TODO: add a quick way to update/move objects around without reinserting constantly
 class SpatialHash
 {
     private readonly int cellSize;

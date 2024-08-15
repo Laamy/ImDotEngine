@@ -23,3 +23,4 @@ you can see a basic showcase of the sample scene & engine
 # Bug fixes (TODO)
 
 SolidConvex:57 - check largest/farthest vertex and use as size for both X & Y
+SpatialHash:~ - TODO: add a quick way to update/move objects around without reinserting constantly

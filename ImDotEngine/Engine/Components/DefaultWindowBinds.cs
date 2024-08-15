@@ -74,6 +74,6 @@ class DefaultWindowBinds : BaseComponent
         int width = info.Dimensions.Right - x;
         int height = info.Dimensions.Bottom - y;
 
-        SetWindowPos(form, HWND_NOTOPMOST, x, y, width, height, SWP_NOACTIVATE | SWP_SHOWWINDOW);
+        SetWindowPos(form, HWND_NOTOPMOST, x, y, width, height, SWP_SHOWWINDOW);
     }
 }
