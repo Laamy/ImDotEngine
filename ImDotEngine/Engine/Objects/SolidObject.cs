@@ -46,6 +46,7 @@ internal class SolidObject : SolidActor
     public override Vector2f GetSize() => Size;
     public override Shape GetShape() => shape;
     public override Drawable GetDrawable() => null;
+    public override int ObjectCount() => 1;
 
     public override void Draw(RenderWindow e) => e.Draw(shape);
 }

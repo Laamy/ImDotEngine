@@ -33,6 +33,7 @@ internal class SolidGroup : SolidActor
     public override Vector2f GetSize() => Size;
     public override Shape GetShape() => shape;
     public override Drawable GetDrawable() => null;
+    public override int ObjectCount() => Children.Count;
 
     public SolidGroup(TextureAtlas atlas)
     {

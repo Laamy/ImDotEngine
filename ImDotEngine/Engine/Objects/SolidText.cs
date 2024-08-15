@@ -53,6 +53,7 @@ internal class SolidText : SolidActor
 
     public override Shape GetShape() => null;
     public override Drawable GetDrawable() => drawable;
+    public override int ObjectCount() => 1;
 
     public override void Draw(RenderWindow e) => e.Draw(drawable);
 }

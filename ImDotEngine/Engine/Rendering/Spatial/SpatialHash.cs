@@ -70,7 +70,8 @@ class SpatialHash
 
         if (added)
         {
-            Count++;
+            // TODO: i really dont care about this counter (add a second counter in level to calculate the accurate count)
+            Count += obj.ObjectCount();
             objectToHashesMap[obj] = objectHashes;
         }
     }
@@ -90,7 +91,7 @@ class SpatialHash
         }
 
         objectToHashesMap.Remove(obj);
-        Count--;
+        Count -= obj.ObjectCount();
     }
 
     public void UpdateObject(SolidActor obj)

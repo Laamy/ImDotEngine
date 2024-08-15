@@ -24,3 +24,4 @@ you can see a basic showcase of the sample scene & engine
 
 SolidConvex:57 - check largest/farthest vertex and use as size for both X & Y
 SpatialHash:~ - TODO: add a quick way to update/move objects around without reinserting constantly
+SpatialHash:74 - TODO: add a second counter in level to calculate the accurate count

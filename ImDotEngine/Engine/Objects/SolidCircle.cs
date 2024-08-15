@@ -41,4 +41,5 @@ internal class SolidCircle : SolidActor
     public override Vector2f GetSize() => new Vector2f((Radius * 2) + 1, (Radius * 2) + 1);
     public override Shape GetShape() => shape;
     public override Drawable GetDrawable() => null;
+    public override int ObjectCount() => 1;
 }
