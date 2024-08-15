@@ -65,12 +65,14 @@ class SpatialHash
             if (hashGrid[hash].Add(obj))
             {
                 added = true;
-                Count++;
             }
         }
 
         if (added)
+        {
+            Count++;
             objectToHashesMap[obj] = objectHashes;
+        }
     }
 
     public void RemoveObject(SolidActor obj)
