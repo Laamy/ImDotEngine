@@ -1,10 +1,27 @@
 using SFML.Graphics;
 using SFML.System;
-using System;
 using System.Linq;
 
 class CameraCursor : BaseComponent
 {
+    public const int Radius = 1;
+
+    SolidGroup shape;
+
+    public override void Initialized()
+    {
+        shape = new SolidGroup(new TextureAtlas(100, 100));
+
+        {
+            SolidCircle circle = new SolidCircle(Radius * 50);
+
+            circle.Color = new Color(255, 255, 255, 128);
+
+            shape.AddObject(circle);
+            shape.Invalidate();
+        }
+    }
+
     public override void OnUpdate(RenderWindow ctx)
     {
         // get the client instance
@@ -20,12 +37,8 @@ class CameraCursor : BaseComponent
         Camera2D Camera = Components.OfType<Camera2D>().FirstOrDefault();
 
         // visualize cursor
-        CircleShape shape = new CircleShape();
+        shape.Position = Camera.CursorToWorld(ctx, ClientInstance.GetSingle().GuiData.CursorPos) - new Vector2f(Radius, Radius);
 
-        shape.FillColor = new Color(255, 255, 255, 128); // temp colour
-        shape.Radius = 1;
-        shape.Position = Camera.CursorToWorld(ctx, ClientInstance.GetSingle().GuiData.CursorPos) - new Vector2f(shape.Radius, shape.Radius);
-
-        ctx.Draw(shape);
+        //shape.Draw(ctx);
     }
 }

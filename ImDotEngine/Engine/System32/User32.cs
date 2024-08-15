@@ -28,7 +28,9 @@ internal class User32
     public const int WS_CAPTION = 0x00C00000;
     public const int WS_THICKFRAME = 0x00040000;
 
+    public const int SW_NORMAL = 1;
     public const int SW_MAXIMIZE = 3;
+    public const int SW_MINIMIZE = 6;
 
     public static readonly IntPtr HWND_TOPMOST = new IntPtr(-1);
     public static readonly IntPtr HWND_NOTOPMOST = new IntPtr(-2);

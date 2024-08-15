@@ -59,6 +59,7 @@ class DefaultWindowBinds : BaseComponent
         SetWindowLong(hwnd, GWL_STYLE, style & ~WS_BORDER);
 
         // update da window a bit 
+        ShowWindow(hwnd, SW_MINIMIZE);
         ShowWindow(hwnd, SW_MAXIMIZE);
 
         return result;

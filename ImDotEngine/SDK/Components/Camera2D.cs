@@ -39,8 +39,6 @@ internal class Camera2D : BaseComponent
             View temp = new View(new FloatRect(position, size));
             temp.Zoom(zoom);
 
-            Console.WriteLine(temp.Viewport);
-
             var center = view.Center;
 
             size = new Vector2f(value.X, value.Y);
