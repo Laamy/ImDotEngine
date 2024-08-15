@@ -3,6 +3,7 @@ using SFML.System;
 
 using System;
 using System.Collections.Generic;
+using static SFML.Graphics.BlendMode;
 
 internal class SolidGroup : SolidActor
 {
@@ -22,8 +23,16 @@ internal class SolidGroup : SolidActor
         set => shape.Size = value;
     }
 
+    public Vector2f Scale
+    {
+        get => shape.Scale;
+        set => shape.Scale = value;
+    }
+
     public override Vector2f GetPosition() => Position;
     public override Vector2f GetSize() => Size;
+    public override Shape GetShape() => shape;
+    public override Drawable GetDrawable() => null;
 
     public SolidGroup(TextureAtlas atlas)
     {
@@ -36,7 +45,18 @@ internal class SolidGroup : SolidActor
         UpdateTexture();
     }
 
-    public void AddObjects(IEnumerable<SolidActor> actors)
+    public void AddObject(SolidActor obj)
+    {
+        Children.Add(obj); // i must be high or smth
+    }
+
+    public void Invalidate()
+    {
+        textureAtlas.AddObjects(Children);
+        UpdateTexture();
+    }
+
+    public void SetObjects(IEnumerable<SolidActor> actors)
     {
         textureAtlas.AddObjects(actors);
 
@@ -47,7 +67,6 @@ internal class SolidGroup : SolidActor
     {
         shape.Texture = textureAtlas.Texture;
         shape.Size = (Vector2f)textureAtlas.Texture.Size;
-        Console.WriteLine(shape.Size);
     }
 
     public override void Draw(RenderWindow ctx)

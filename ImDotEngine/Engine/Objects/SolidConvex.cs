@@ -55,4 +55,6 @@ internal class SolidConvex : SolidActor
 
     public override Vector2f GetPosition() => Position;
     public override Vector2f GetSize() => new Vector2f(10, 10); // TODO: check largest/farthest polygon and use as size for both X & Y
+    public override Shape GetShape() => shape;
+    public override Drawable GetDrawable() => null;
 }

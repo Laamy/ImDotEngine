@@ -5,51 +5,54 @@ internal class SolidText : SolidActor
 {
     public SolidText()
     {
-        shape = new Text();
+        drawable = new Text();
     }
 
     // cached shape
-    Text shape;
+    Text drawable;
 
     // shape properties
     public Color Color
     {
-        get => shape.FillColor;
-        set => shape.FillColor = value;
+        get => drawable.FillColor;
+        set => drawable.FillColor = value;
     }
 
     public string Text
     {
-        get => shape.DisplayedString;
-        set => shape.DisplayedString = value;
+        get => drawable.DisplayedString;
+        set => drawable.DisplayedString = value;
     }
 
     public Font Font
     {
-        get => shape.Font;
-        set => shape.Font = value;
+        get => drawable.Font;
+        set => drawable.Font = value;
     }
 
     public uint Size
     {
-        get => shape.CharacterSize;
-        set => shape.CharacterSize = value;
+        get => drawable.CharacterSize;
+        set => drawable.CharacterSize = value;
     }
 
     public float Rotation
     {
-        get => shape.Rotation;
-        set => shape.Rotation = value;
+        get => drawable.Rotation;
+        set => drawable.Rotation = value;
     }
 
     public new Vector2f Position
     {
-        get => shape.Position;
-        set => shape.Position = value;
+        get => drawable.Position;
+        set => drawable.Position = value;
     }
 
     public override Vector2f GetPosition() => Position;
     public override Vector2f GetSize() => new Vector2f(200, 200); // TODO: actual size for this
 
-    public override void Draw(RenderWindow e) => e.Draw(shape);
+    public override Shape GetShape() => null;
+    public override Drawable GetDrawable() => drawable;
+
+    public override void Draw(RenderWindow e) => e.Draw(drawable);
 }

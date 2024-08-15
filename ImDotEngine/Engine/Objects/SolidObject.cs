@@ -17,8 +17,6 @@ internal class SolidObject : SolidActor
     // cache
     private RectangleShape shape;
 
-    public RectangleShape Drawable { get => shape; }
-
     // base
     public Vector2f Size
     {
@@ -46,6 +44,8 @@ internal class SolidObject : SolidActor
 
     public override Vector2f GetPosition() => Position;
     public override Vector2f GetSize() => Size;
+    public override Shape GetShape() => shape;
+    public override Drawable GetDrawable() => null;
 
     public override void Draw(RenderWindow e) => e.Draw(shape);
 }

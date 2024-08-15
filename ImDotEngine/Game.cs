@@ -51,54 +51,111 @@ internal class Game : GameEngine
 
         {
             // grid of shapes for performance debugging
-            for (int x = 0; x < 50; ++x)
             {
-                for (int y = 0; y < 50; ++y)
+                // texture atlas/object group (not scaled up or down cuz its a fucking square)
+                SolidGroup group = new SolidGroup(new TextureAtlas(50 * 12, 50 * 12));
+
+                group.Position = new Vector2f(0, 0);
+
+                for (int x = 0; x < 50; ++x)
                 {
-                    SolidObject square = new SolidObject();
+                    for (int y = 0; y < 50; ++y)
+                    {
+                        SolidObject square = new SolidObject();
 
-                    square.Position = new Vector2f(y * 12, x * 12);
-                    square.Size = new Vector2f(10, 10);
+                        square.Position = new Vector2f(y * 12, x * 12);
+                        square.Size = new Vector2f(10, 10);
 
-                    Instance.Level.GetLayer(LevelLayers.Foreground).AddObject(square);
+                        group.AddObject(square);
+                    }
                 }
+
+                group.Invalidate(); // refresh texture atlas
+
+                Instance.Level.GetLayer(LevelLayers.Foreground).AddObject(group);
             }
 
-            for (int x = 50; x < 100; ++x)
             {
-                for (int y = 0; y < 50; ++y)
+                // texture atlas/object group
+                // rendered at 7 times the resolution then scaled down
+                uint scale = 7;
+
+                SolidGroup group = new SolidGroup(new TextureAtlas(50 * 12 * scale, 50 * 12 * scale));
+
+                group.Position = new Vector2f(50 * 12, 0);
+
+                for (int x = 0; x < 50; ++x)
                 {
-                    SolidCircle circle = new SolidCircle(5);
+                    for (int y = 0; y < 50; ++y)
+                    {
+                        SolidCircle circle = new SolidCircle(5 * scale);
 
-                    circle.Position = new Vector2f(x * 12, y * 12);
+                        circle.Position = new Vector2f(y * (12 * scale), x * (12 * scale));
 
-                    Instance.Level.GetLayer(LevelLayers.Foreground).AddObject(circle);
+                        group.AddObject(circle);
+                    }
                 }
+
+                group.Scale = new Vector2f(1f / scale, 1f / scale);
+                group.Invalidate(); // refresh texture atlas
+
+                Instance.Level.GetLayer(LevelLayers.Foreground).AddObject(group);
             }
 
-            for (int x = 0; x < 50; ++x)
             {
-                for (int y = 50; y < 100; ++y)
+                // texture atlas/object group
+                // rendered at 7 times the resolution then scaled down
+                uint scale = 7;
+
+                SolidGroup group = new SolidGroup(new TextureAtlas(50 * 12 * scale, 50 * 12 * scale));
+
+                group.Position = new Vector2f(0, 50 * 12);
+
+                for (int x = 0; x < 50; ++x)
                 {
-                    SolidConvex triangle = new SolidConvex();
+                    for (int y = 0; y < 50; ++y)
+                    {
+                        SolidConvex triangle = new SolidConvex();
 
-                    triangle.LoadShape(BasicShapes.Triangle, 10);
-                    triangle.Position = new Vector2f(x * 12, y * 12);
+                        triangle.LoadShape(BasicShapes.Triangle, 10 * scale);
+                        triangle.Position = new Vector2f(x * (12 * scale), y * (12 * scale));
 
-                    Instance.Level.GetLayer(LevelLayers.Foreground).AddObject(triangle);
+                        group.AddObject(triangle);
+                    }
                 }
+
+                group.Scale = new Vector2f(1f / scale, 1f / scale);
+                group.Invalidate(); // refresh texture atlas
+
+                Instance.Level.GetLayer(LevelLayers.Foreground).AddObject(group);
             }
 
-            for (int x = 50; x < 600; ++x)
+
             {
-                for (int y = 50; y < 600; ++y)
+                // texture atlas/object group
+                // rendered at 7 times the resolution then scaled down
+                uint scale = 7;
+
+                SolidGroup group = new SolidGroup(new TextureAtlas(50 * 12 * scale, 50 * 12 * scale));
+
+                group.Position = new Vector2f(50 * 12, 50 * 12);
+
+                for (int x = 0; x < 50; ++x)
                 {
-                    SolidCircle circle = new SolidCircle(5, 5);
+                    for (int y = 0; y < 50; ++y)
+                    {
+                        SolidCircle hexagon = new SolidCircle(5 * scale, 5);
 
-                    circle.Position = new Vector2f(x * 12, y * 12);
+                        hexagon.Position = new Vector2f(y * (12 * scale), x * (12 * scale));
 
-                    Instance.Level.GetLayer(LevelLayers.Foreground).AddObject(circle);
+                        group.AddObject(hexagon);
+                    }
                 }
+
+                group.Scale = new Vector2f(1f / scale, 1f / scale);
+                group.Invalidate(); // refresh texture atlas
+
+                Instance.Level.GetLayer(LevelLayers.Foreground).AddObject(group);
             }
         }
         

@@ -1,5 +1,6 @@
 ﻿using SFML.Graphics;
 using SFML.System;
+
 using System.Collections.Generic;
 
 internal class TextureAtlas
@@ -18,11 +19,6 @@ internal class TextureAtlas
         objectPositions = new Dictionary<SolidActor, Vector2f>();
     }
 
-    private void Invalidate()
-    {
-        m_renderTexture.Clear(Color.Transparent);
-    }
-
     public Texture Texture => m_Texture;
 
     public void AddObjects(IEnumerable<SolidActor> objects)
@@ -33,12 +29,19 @@ internal class TextureAtlas
         {
             var position = obj.Position;
             var size = obj.GetSize();
-            var drawable = obj as SolidObject;
 
-            if (drawable != null)
+            if (obj != null)
             {
-                m_renderTexture.Draw(drawable.Drawable);
-                objectPositions[drawable] = position;
+                if (obj.GetShape() != null)
+                {
+                    m_renderTexture.Draw(obj.GetShape());
+                }
+                else
+                {
+                    m_renderTexture.Draw(obj.GetDrawable());
+                }
+
+                objectPositions[obj] = position;
             }
         }
     }
