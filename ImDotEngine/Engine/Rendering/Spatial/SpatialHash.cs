@@ -8,6 +8,8 @@ using System.Collections.Generic;
 class SpatialHash
 {
     private readonly int cellSize;
+
+    // I gotta figure out a new way to do this that allows me an infinite grid, dynamic shapes & sizes, constant updating of shapes (10k+..) (second TODO note)
     private readonly Dictionary<int, HashSet<SolidActor>> hashGrid;
     private readonly Dictionary<SolidActor, int[]> objectToHashesMap;
 
@@ -70,7 +72,7 @@ class SpatialHash
 
         if (added)
         {
-            // TODO: i really dont care about this counter (add a second counter in level to calculate the accurate count)
+            // TODO: i really dont care about this counter (add a second counter in level that calculates the accurate count)
             Count += obj.ObjectCount();
             objectToHashesMap[obj] = objectHashes;
         }
