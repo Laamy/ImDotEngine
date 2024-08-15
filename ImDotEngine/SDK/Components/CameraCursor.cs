@@ -8,6 +8,11 @@ class CameraCursor : BaseComponent
 
     SolidGroup shape;
 
+    public CameraCursor()
+    {
+        DebugLogger.Log("Components", $"Initialized : CameraCursor");
+    }
+
     public override void Initialized()
     {
         shape = new SolidGroup(new TextureAtlas(100, 100));

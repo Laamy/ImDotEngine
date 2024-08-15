@@ -1,17 +1,12 @@
-﻿#region Includes
+﻿using SFML.Graphics;
 
-using SFML.Graphics;
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Xml.Linq;
 
-#endregion
-
-internal class TextureRepository
+internal class Materials
 {
-    const string DataPath = "Data\\Assets";
-    private Dictionary<string, Texture> m_cache = new Dictionary<string, Texture>();
+    const string DataPath = "Data\\Shaders";
+    private Dictionary<string, Shader> m_cache = new Dictionary<string, Shader>();
 
     public void Initialize()
     {
@@ -19,18 +14,18 @@ internal class TextureRepository
 
         foreach (var file in Directory.GetFiles(DataPath, "*.*", SearchOption.AllDirectories))
         {
-            if (Path.GetExtension(file).Equals(".png"))
+            if (Path.GetExtension(file).Equals(".frag"))
             {
                 // initialize the cache the texture
-                var texture = new Texture(file);
+                var texture = new Shader(null, null, file);
                 m_cache[file.ToLower()] = texture;
 
-                DebugLogger.Log("Assets", $"Loaded : {file.ToLower()}");
+                DebugLogger.Log("Materials", $"Loaded : {file.ToLower()}");
             }
         }
     }
 
-    public Texture GetTexture(string name)
+    public Shader GetTexture(string name)
     {
         string path = Path.Combine(DataPath, name).ToLower();
 
@@ -40,6 +35,6 @@ internal class TextureRepository
         if (m_cache.ContainsKey(path))
             return m_cache[path];
 
-        return new Texture(Path.Combine(DataPath, name));
+        return new Shader(null, null, Path.Combine(DataPath, name));
     }
 }

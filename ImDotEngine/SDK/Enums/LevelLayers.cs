@@ -1,7 +1,8 @@
 enum LevelLayers : uint
 {
     Background,
-    Foreground,
+    BackBlocks,
+    ForeBlocks,
     UI,
     Count
 }

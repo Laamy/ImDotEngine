@@ -75,25 +75,52 @@ internal class GameEngine
             long prevTicks = DateTime.Now.Ticks;
             long targetTicks = TimeSpan.TicksPerSecond * 1;
 
+            // camera view
             View view = new View();
+
+            // background
             RectangleShape shape = new RectangleShape
             {
                 Size = (Vector2f)Assets.Intro_x580.Size,
                 Texture = new Texture(Assets.Intro_x580)
             };
 
+            // info text
+            Text infoText = new Text()
+            {
+                CharacterSize = 32,
+                FillColor = Color.Black,
+                Position = new Vector2f(10, 10),
+                Font = Instance.FontRepository.GetFont("arial"),
+                DisplayedString = "Caching assets.."
+            };
+
+            bool init = false;
+
             while (window.IsOpen && DateTime.Now.Ticks - prevTicks < targetTicks)
             {
                 window.DispatchEvents();
+
+                window.Clear(Color.White);
 
                 view.Reset(new FloatRect(new Vector2f(0, 0), (Vector2f)Size));
                 view.Zoom(1.5f);
                 view.Center = new Vector2f(Assets.Intro_x580.Size.X / 2, Assets.Intro_x580.Size.Y / 2);
                 window.SetView(view);
 
-                window.Clear(Color.White);
                 window.Draw(shape);
+                window.Draw(infoText);
+
                 window.Display();
+
+                // temp code
+                if (!init)
+                {
+                    init = true;
+
+                    LoadAssets();
+                    infoText.DisplayedString = "Initializing scene..";
+                }
             }
         }
 
@@ -249,7 +276,7 @@ internal class GameEngine
         foreach (BaseComponent component in Components)
             component.OnFixedUpdate();
     }
-    
+
     public virtual void Initialized()
     {
         foreach (BaseComponent component in Components)
@@ -390,6 +417,8 @@ internal class GameEngine
         foreach (BaseComponent component in Components)
             component.TouchMoved(e);
     }
+
+    public virtual void LoadAssets() { }
 
     #endregion
 }

@@ -80,6 +80,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DebugLogger.cs" />
     <Compile Include="Engine\Components\BaseComponent.cs" />
     <Compile Include="Engine\Internal\Assets.cs" />
     <Compile Include="Engine\Objects\SolidConvex.cs" />
@@ -107,10 +108,17 @@
     <Compile Include="SDK\Components\DebugComponent.cs" />
     <Compile Include="SDK\Enums\LevelLayers.cs" />
     <Compile Include="Engine\TextureRepository.cs" />
+    <Compile Include="SDK\Materials.cs" />
+    <Compile Include="SDK\Terrain\Blocks\BlockEnum.cs" />
+    <Compile Include="SDK\Terrain\SimplexPerlin.cs" />
+    <Compile Include="SDK\Terrain\TerrainGenerator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="Data\Font\Arial.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Shaders\skybox.frag">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />
@@ -148,6 +156,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Data\Assets\Texture\grass.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\Assets\Texture\grassy_stone.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Data\Assets\Texture\stone.png">

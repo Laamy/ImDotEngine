@@ -18,6 +18,11 @@ class DefaultWindowBinds : BaseComponent
     // old data from when it wasn't fullscreen
     BorderlessInfo desktopMode;
 
+    public DefaultWindowBinds()
+    {
+        DebugLogger.Log("Components", $"Initialized : DefaultWindowBinds");
+    }
+
     public override void KeyPressed(KeyEventArgs e)
     {
         if (e.Code == Keyboard.Key.Escape)

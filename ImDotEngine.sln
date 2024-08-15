@@ -10,6 +10,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Misc", "Misc", "{1BF2A4E9-4
 		README.md = README.md
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TerrainGenDemo", "TerrainGenDemo\TerrainGenDemo.csproj", "{29911FAA-1D48-4AAF-B49D-63A0BF88D727}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,6 +28,14 @@ Global
 		{EBB7B2BB-D301-4C11-8B18-A345D87DBABD}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EBB7B2BB-D301-4C11-8B18-A345D87DBABD}.Release|x64.ActiveCfg = Release|x64
 		{EBB7B2BB-D301-4C11-8B18-A345D87DBABD}.Release|x64.Build.0 = Release|x64
+		{29911FAA-1D48-4AAF-B49D-63A0BF88D727}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{29911FAA-1D48-4AAF-B49D-63A0BF88D727}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{29911FAA-1D48-4AAF-B49D-63A0BF88D727}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{29911FAA-1D48-4AAF-B49D-63A0BF88D727}.Debug|x64.Build.0 = Debug|Any CPU
+		{29911FAA-1D48-4AAF-B49D-63A0BF88D727}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{29911FAA-1D48-4AAF-B49D-63A0BF88D727}.Release|Any CPU.Build.0 = Release|Any CPU
+		{29911FAA-1D48-4AAF-B49D-63A0BF88D727}.Release|x64.ActiveCfg = Release|Any CPU
+		{29911FAA-1D48-4AAF-B49D-63A0BF88D727}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

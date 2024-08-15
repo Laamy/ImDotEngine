@@ -4,6 +4,11 @@ using System.Linq;
 
 class DebugComponent : BaseComponent
 {
+    public DebugComponent()
+    {
+        DebugLogger.Log("Components", $"Initialized : DebugComponent");
+    }
+
     public override void Initialized()
     {
         var Instance = ClientInstance.GetSingle();

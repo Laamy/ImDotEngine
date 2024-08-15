@@ -72,9 +72,16 @@ internal class SolidGroup : SolidActor
 
     public override void Draw(RenderWindow ctx)
     {
-        if (textureAtlas.Texture != null)
+        //foreach (var child in Children)
+        //{
+        //    ctx.Draw(child.GetShape());
+        //}
+
         {
-            ctx.Draw(shape);
+            if (textureAtlas.Texture != null)
+            {
+                ctx.Draw(shape);
+            }
         }
     }
 }

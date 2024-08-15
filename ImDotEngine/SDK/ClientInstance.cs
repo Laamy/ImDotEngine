@@ -21,4 +21,6 @@ internal class ClientInstance
     public FontRepository FontRepository = new FontRepository();
     public TextureRepository TextureRepository = new TextureRepository();
     public GuiData GuiData = new GuiData();
+
+    public Materials Materials = new Materials();
 }

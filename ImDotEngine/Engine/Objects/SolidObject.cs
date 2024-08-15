@@ -41,6 +41,11 @@ internal class SolidObject : SolidActor
         get => shape.Position;
         set => shape.Position = value;
     }
+    public float Rotation
+    {
+        get => shape.Rotation;
+        set => shape.Rotation = value;
+    }
 
     public override Vector2f GetPosition() => Position;
     public override Vector2f GetSize() => Size;

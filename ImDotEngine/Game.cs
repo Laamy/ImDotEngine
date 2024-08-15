@@ -2,15 +2,8 @@
 
 using SFML.Graphics;
 using SFML.System;
-using SFML.Window;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.SymbolStore;
+
 using System.Linq;
-using System.Management.Instrumentation;
-using System.Net.Http.Headers;
-using System.Runtime.CompilerServices;
-using System.Security.Cryptography;
 
 #endregion
 
@@ -24,14 +17,33 @@ internal class Game : GameEngine
     // components
     public Camera2D Camera;
 
+    public override void LoadAssets()
+    {
+        base.LoadAssets();
+
+        DebugLogger.Log("Assets", "Caching assets..");
+        Instance.TextureRepository.Initialize(); // load all assets
+        DebugLogger.Log("Assets", $"Cached all assets");
+
+        DebugLogger.Log("Materials", "Compiling shaders..");
+        Instance.Materials.Initialize(); // load all assets
+        DebugLogger.Log("Materials", $"Compiled all shaders!");
+    }
+
     public override void Initialized()
     {
-        // some start components
-        Components.Add(new DefaultWindowBinds()); // Escape for quit, F11 for fullscreen (inbuilt to the engine)
-        Components.Add(Camera = new Camera2D()); // Example of 2D camera
-        Components.Add(new CameraCursor()); // cursor visualization
+        {
+            DebugLogger.Log("Components", $"Initializing Components..");
 
-        Components.Add(new DebugComponent());
+            // some start components
+            Components.Add(new DefaultWindowBinds()); // Escape for quit, F11 for fullscreen (inbuilt to the engine)
+            Components.Add(Camera = new Camera2D()); // Example of 2D camera
+            Components.Add(new CameraCursor()); // cursor visualization
+
+            Components.Add(new DebugComponent());
+
+            DebugLogger.Log("Components", $"Initialized Components");
+        }
 
         base.Initialized(); // allow components to initialize
 
@@ -45,42 +57,76 @@ internal class Game : GameEngine
             // debug stuff
             debugOverlay = Instance.Level.CreateText(LevelLayers.UI, new Vector2f(-250, 10), Color.Red);
 
-            Instance.Level.CreateRectangle(LevelLayers.Background, new Vector2f(-3, -3), new Vector2f(500, 500), new Color(0x20, 0x20, 0x20));// bounds
             Instance.Level.CreateRectangle(LevelLayers.Background, new Vector2f(-260, -3), new Vector2f(250, 275), new Color(0x20, 0x20, 0x20));// in-world menu box
         }
 
+        //TerrainGenerator.Seed = 1;
+
+        // basic sample world
         {
-            uint cellSize = 100;
+            uint cellScale = 128;
 
             // grid of shapes for performance debugging
             {
-                // texture atlas/object group (not scaled up or down cuz its a fucking square)
-                SolidGroup group = new SolidGroup(new TextureAtlas((uint)(cellSize * 11), (uint)(cellSize * 11)));
-
-                group.Position = new Vector2f(0, 0);
-
-                for (int x = 0; x < cellSize; ++x)
+                for (int cX = 0; cX < 10; ++cX)
                 {
-                    for (int y = 0; y < cellSize; ++y)
+                    for (int cY = 0; cY < 10; ++cY)
                     {
-                        SolidObject square = new SolidObject();
+                        // texture atlas/object group (not scaled up or down cuz its a fucking square)
+                        SolidGroup group = new SolidGroup(new TextureAtlas((uint)(24 * cellScale), (uint)(24 * cellScale)));
 
-                        square.Position = new Vector2f(y * 11, x * 11);
-                        square.Size = new Vector2f(10, 10);
-                        //square.Texture = Instance.TextureRepository.GetTexture("Assets\\Texture\\dirt.png");
+                        group.Position = new Vector2f(cX * (cellScale * (cellScale / 19)), cY * (cellScale * (cellScale / 19)));
 
-                        group.AddObject(square);
+                        var chunk = TerrainGenerator.GenerateChunk(cX * 24, cY * 24);
+
+                        for (int y = 0; y < 24; ++y)
+                        {
+                            for (int x = 0; x < 24; ++x)
+                            {
+                                var block = chunk[y][x];
+
+                                if (block == BlockEnum.Air)
+                                    continue;
+
+                                SolidObject chunkBlock = new SolidObject();
+
+                                chunkBlock.Position = new Vector2f(x * cellScale, y * cellScale);
+                                chunkBlock.Size = new Vector2f(cellScale, cellScale);
+
+                                // TODO: loop over enum and find matching textures instead
+                                if (block == BlockEnum.Dirt)
+                                    chunkBlock.Texture = Instance.TextureRepository.GetTexture("Texture\\dirt.png");
+
+                                if (block == BlockEnum.Grass)
+                                    chunkBlock.Texture = Instance.TextureRepository.GetTexture("Texture\\grass.png");
+
+                                if (block == BlockEnum.Stone)
+                                    chunkBlock.Texture = Instance.TextureRepository.GetTexture("Texture\\stone.png");
+
+                                if (block == BlockEnum.Grassy_Stone)
+                                    chunkBlock.Texture = Instance.TextureRepository.GetTexture("Texture\\grassy_stone.png");
+
+                                group.AddObject(chunkBlock);
+                            }
+                        }
+
+                        group.Scale = new Vector2f(0.25f, 0.25f);
+                        group.Invalidate(); // refresh texture atlas
+
+                        Instance.Level.GetLayer(LevelLayers.ForeBlocks).AddObject(group);
                     }
                 }
-
-                group.Invalidate(); // refresh texture atlas
-
-                Instance.Level.GetLayer(LevelLayers.Foreground).AddObject(group);
             }
         }
-        
+
+        DebugLogger.Log("Components", $"Game started with settings:" +
+            $"\r\n\tTargetFramerate: {TargetFramerate}" +
+            $"\r\n\tTargetPhysicsRate: {TargetPhysicsRate}" +
+            $"\r\n\tVSync: {VSync}");
+
         // TODO: Implement scene
     }
+
 
     protected override void OnFixedUpdate()
     {
@@ -92,16 +138,38 @@ internal class Game : GameEngine
             $"PhysicSteps: {CurrentPPS}\n" +
             $"\n" +
             $"Layers: {Instance.Level.Layers.Length}\n" +
-            $"Foreground Count: {Instance.Level.GetLayer(LevelLayers.Foreground).Count}\n";
+            $"Block Count: {Instance.Level.GetLayer(LevelLayers.ForeBlocks).Count}\n";
 
         // TODO: Implement game physics
     }
 
     protected override void OnUpdate(RenderWindow ctx)
     {
-        ctx.Clear(new Color(0x10, 0x10, 0x10)); // clear buffer ready for next frame
+        //ctx.Clear(new Color(0, 72, 105)); // clear buffer ready for next frame
+        {
+            var camera = Components.OfType<Camera2D>().FirstOrDefault();
+
+            var skybox = Instance.Materials.GetTexture("skybox.frag");
+
+            skybox.SetUniform("u_res_y", Size.Y);
+
+            RectangleShape skyboxScreen = new RectangleShape();
+
+            View temp = new View(new FloatRect(camera.Position, (Vector2f)camera.Size));
+            temp.Zoom(camera.Zoom);
+
+            skyboxScreen.Position = temp.Center - new Vector2f(
+                (Size.X / 2) * camera.Zoom,
+                (Size.Y / 2) * camera.Zoom
+            );
+            skyboxScreen.Size = (Vector2f)Size;
+            skyboxScreen.Scale = new Vector2f(camera.Zoom, camera.Zoom);
+
+            skyboxScreen.Draw(ctx, new RenderStates(skybox));
+        }
 
         Instance.Level.Draw(ctx); // draw scene
+
 
         // TODO: Implement game rendering
 

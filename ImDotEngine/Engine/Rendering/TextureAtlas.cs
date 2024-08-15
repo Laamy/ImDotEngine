@@ -27,7 +27,7 @@ internal class TextureAtlas
 
         foreach (var obj in objects)
         {
-            var position = obj.Position;
+            var position = obj.GetPosition();
             var size = obj.GetSize();
 
             if (obj != null)
@@ -44,5 +44,7 @@ internal class TextureAtlas
                 objectPositions[obj] = position;
             }
         }
+
+        m_renderTexture.Display();
     }
 }

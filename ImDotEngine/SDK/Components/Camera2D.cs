@@ -26,6 +26,21 @@ internal class Camera2D : BaseComponent
     public Camera2D()
     {
         size = (Vector2f)Instance.Engine.Size;
+
+        DebugLogger.Log("Components", $"Initialized : Camera2D");
+    }
+
+    public Vector2f Origin
+    {
+        get
+        {
+            View temp = new View(new FloatRect(position, size));
+            temp.Zoom(zoom);
+
+            var center = view.Center;
+
+            return center;
+        }
     }
 
     /// <summary>
@@ -46,8 +61,6 @@ internal class Camera2D : BaseComponent
             temp.Reset(new FloatRect(position, size));
             temp.Zoom(zoom);
             temp.Center = center;
-
-            Console.WriteLine(temp.Viewport);
 
             position = new Vector2f(view.Center.X - size.X / 2, view.Center.Y - size.Y / 2);
         }
