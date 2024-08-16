@@ -1,6 +1,7 @@
 #region Includes
 
 using SFML.Graphics;
+using SFML.Graphics.Glsl;
 using SFML.System;
 using System;
 using System.Linq;
@@ -147,35 +148,17 @@ internal class Game : GameEngine
     protected override void OnUpdate(RenderWindow ctx)
     {
         //ctx.Clear(new Color(0, 72, 105)); // clear buffer ready for next frame
-        {
-            var camera = Components.OfType<Camera2D>().FirstOrDefault();
+        var camera = Components.OfType<Camera2D>().FirstOrDefault();
 
-            var skybox = Instance.Materials.GetTexture("skybox.frag");
-
-            Vector2i topLeft = Instance.Engine.window.MapCoordsToPixel(new Vector2f(0, 0));
-
-            skybox.SetUniform("u_res_y", Size.Y);
-            skybox.SetUniform("u_pos_y", topLeft.Y);
-            //skybox.SetUniform("u_zoom", camera.Zoom);
-
-            RectangleShape skyboxScreen = new RectangleShape();
-
-            View temp = new View(new FloatRect(camera.Position, (Vector2f)camera.Size));
-            temp.Zoom(camera.Zoom);
-
-            skyboxScreen.Position = temp.Center - new Vector2f(
-                (Size.X / 2) * camera.Zoom,
-                (Size.Y / 2) * camera.Zoom
-            );
-            skyboxScreen.Size = (Vector2f)Size;
-            skyboxScreen.Scale = new Vector2f(camera.Zoom, camera.Zoom);
-
-            skyboxScreen.Draw(ctx, new RenderStates(skybox));
-        }
+        Instance.Level.ApplyShader("skybox.frag", (skybox) => { });
 
         Instance.Level.Draw(ctx); // draw scene
 
-        // TODO: Implement game rendering
+        //Instance.Level.ApplyShader("postprocessing.frag", (postShader) =>
+        //{
+        //    postShader.SetUniform("u_fog_width", 200.0f);
+        //    postShader.SetUniform("u_fog_color", new Vector3f(0.5f, 0.5f, 0.5f));
+        //});
 
         base.OnUpdate(ctx); // call to allow components access to them
     }

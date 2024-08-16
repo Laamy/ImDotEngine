@@ -25,7 +25,7 @@ internal class Materials
         }
     }
 
-    public Shader GetTexture(string name)
+    public Shader GetShader(string name)
     {
         string path = Path.Combine(DataPath, name).ToLower();
 

@@ -3,9 +3,7 @@
 using SFML.Graphics;
 using SFML.System;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 #endregion
 
@@ -45,6 +43,40 @@ internal class Level
             {
                 child.Draw(e);
             }
+        }
+    }
+
+    public void ApplyShader(string shader, Action<Shader> Init)
+    {
+        var Instance = ClientInstance.GetSingle();
+        var Components = Instance.Engine.Components;
+
+        var Size = Instance.Engine.Size;
+
+        var camera = Components.OfType<Camera2D>().FirstOrDefault();
+
+        Vector2i topLeft = Instance.Engine.window.MapCoordsToPixel(new Vector2f(0, 0));
+
+        var shaderFrag = Instance.Materials.GetShader(shader);
+        Init(shaderFrag);
+
+        shaderFrag.SetUniform("u_res", (Vector2f)Size);
+        shaderFrag.SetUniform("u_pos", (Vector2f)topLeft);
+
+        View temp = new View(new FloatRect(camera.Position, (Vector2f)camera.Size));
+        temp.Zoom(camera.Zoom);
+
+        {
+            RectangleShape shaderScreen = new RectangleShape();
+
+            shaderScreen.Position = temp.Center - new Vector2f(
+                (Size.X / 2) * camera.Zoom,
+                (Size.Y / 2) * camera.Zoom
+            );
+            shaderScreen.Size = (Vector2f)Size;
+            shaderScreen.Scale = new Vector2f(camera.Zoom, camera.Zoom);
+
+            shaderScreen.Draw(Instance.Engine.window, new RenderStates(shaderFrag));
         }
     }
 
