@@ -68,9 +68,9 @@ internal class Game : GameEngine
 
             // grid of shapes for performance debugging
             {
-                for (int cX = 0; cX < 10; ++cX)
+                for (int cX = 0; cX < 20; ++cX)
                 {
-                    for (int cY = 0; cY < 10; ++cY)
+                    for (int cY = 0; cY < 4; ++cY)
                     {
                         // texture atlas/object group (not scaled up or down cuz its a fucking square)
                         SolidGroup group = new SolidGroup(new TextureAtlas((uint)(24 * cellScale), (uint)(24 * cellScale)));

@@ -58,50 +58,48 @@ class TerrainGenerator
             }
         }
 
-        //float baseCaveWeight = 0.3f;
-        //int caveThresholdY = 20;
-        //
-        //for (int y = Y; y < height + Y; y++)
-        //{
-        //    int chunkY = y - Y;
-        //
-        //    if (y >= caveThresholdY)
-        //
-        //    {
-        //
-        //        for (int x = X; x < width + X; x++)
-        //        {
-        //            int chunkX = x - X;
-        //
-        //            double wormNoiseX = perlin.GetValue((float)(x * caveThresholdY) / 20, (float)(y * caveThresholdY));
-        //            double wormNoiseY = perlin.GetValue((float)(x * caveThresholdY), (float)(y * caveThresholdY) * 2);
-        //
-        //            if (wormNoiseX > 0.3f || wormNoiseY > 0.2f)
-        //            {
-        //                rawChunk[chunkY][chunkX] = BlockEnum.Air;
-        //            }
-        //        }
-        //    }
-        //}
-        //
-        //for (int y = Y; y < height + Y; y++)
-        //{
-        //    int chunkY = y - Y;
-        //
-        //    for (int x = X; x < width + X; x++)
-        //    {
-        //        int chunkX = x - X;
-        //
-        //        var block = GetBlock(rawChunk, chunkX, chunkY);
-        //
-        //        if (block == BlockEnum.Stone &&
-        //            GetBlock(rawChunk, chunkX, chunkY - 1) == BlockEnum.Air
-        //        )
-        //        {
-        //            rawChunk[chunkY][chunkX] = BlockEnum.Grassy_Stone;
-        //        }
-        //    }
-        //}
+        float baseCaveWeight = 0.1f;
+        int caveThresholdY = 20;
+        
+        for (int y = Y; y < height + Y; y++)
+        {
+            int chunkY = y - Y;
+        
+            if (y >= caveThresholdY)
+            {
+                for (int x = X; x < width + X; x++)
+                {
+                    int chunkX = x - X;
+        
+                    double wormNoiseX = perlin.GetValue((float)(x * baseCaveWeight) / 20, (float)(y * baseCaveWeight));
+                    double wormNoiseY = perlin.GetValue((float)(x * baseCaveWeight), (float)(y * baseCaveWeight));
+        
+                    if (wormNoiseX > 0.5f || wormNoiseY > 0.6f)
+                    {
+                        rawChunk[chunkY][chunkX] = BlockEnum.Air;
+                    }
+                }
+            }
+        }
+        
+        for (int y = Y; y < height + Y; y++)
+        {
+            int chunkY = y - Y;
+        
+            for (int x = X; x < width + X; x++)
+            {
+                int chunkX = x - X;
+        
+                var block = GetBlock(rawChunk, chunkX, chunkY);
+        
+                if (block == BlockEnum.Stone &&
+                    GetBlock(rawChunk, chunkX, chunkY - 1) == BlockEnum.Air
+                )
+                {
+                    rawChunk[chunkY][chunkX] = BlockEnum.Grassy_Stone;
+                }
+            }
+        }
 
         return rawChunk;
     }
