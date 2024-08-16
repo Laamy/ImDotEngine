@@ -93,7 +93,8 @@ class TerrainGenerator
                 var block = GetBlock(rawChunk, chunkX, chunkY);
         
                 if (block == BlockEnum.Stone &&
-                    GetBlock(rawChunk, chunkX, chunkY - 1) == BlockEnum.Air
+                    GetBlock(rawChunk, chunkX, chunkY - 1) == BlockEnum.Air &&
+                    GetBlock(rawChunk, chunkX, chunkY - 2) == BlockEnum.Air
                 )
                 {
                     rawChunk[chunkY][chunkX] = BlockEnum.Grassy_Stone;

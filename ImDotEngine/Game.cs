@@ -2,8 +2,9 @@
 
 using SFML.Graphics;
 using SFML.System;
-
+using System;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 #endregion
 
@@ -151,7 +152,11 @@ internal class Game : GameEngine
 
             var skybox = Instance.Materials.GetTexture("skybox.frag");
 
+            Vector2i topLeft = Instance.Engine.window.MapCoordsToPixel(new Vector2f(0, 0));
+
             skybox.SetUniform("u_res_y", Size.Y);
+            skybox.SetUniform("u_pos_y", topLeft.Y);
+            //skybox.SetUniform("u_zoom", camera.Zoom);
 
             RectangleShape skyboxScreen = new RectangleShape();
 
@@ -169,7 +174,6 @@ internal class Game : GameEngine
         }
 
         Instance.Level.Draw(ctx); // draw scene
-
 
         // TODO: Implement game rendering
 

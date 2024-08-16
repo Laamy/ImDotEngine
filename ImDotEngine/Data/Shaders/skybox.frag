@@ -1,19 +1,20 @@
-uniform float u_res_y;
+uniform float u_res_y; // screen height
+uniform int u_pos_y; // worldpos y
+//uniform float u_zoom; // camera zoom
 
 void main()
 {
-    // bk colour
+    // Background color (deep blue)
     vec3 baseColor = vec3(0.0, 72.0 / 255.0, 105.0 / 255.0);
 
-    // vertical gradient
-    float gradient = (gl_FragCoord.y / u_res_y);
-    vec3 gradientColor = mix(baseColor, vec3(1.0, 1.0, 1.0), gradient * 0.5);
+    // normalized (TODO: FIX ZOOM)
+    float normalizedY = (gl_FragCoord.y / u_res_y) + u_pos_y / u_res_y;
 
-    // adjust brightness
-    float brightnessAdjust = (gl_FragCoord.y / u_res_y - 0.5) * 0.4;
+    // gradient factor stuff
+    float gradientFactor = clamp(normalizedY, -0.3, 0.6);
 
-    // calculate final & clamp
-    vec3 finalColor = clamp(gradientColor + brightnessAdjust, 0.0, 1.0);
+    // final colour
+    vec3 finalColor = mix(baseColor, vec3(1.0), gradientFactor);
 
     gl_FragColor = vec4(finalColor, 1.0);
 }
