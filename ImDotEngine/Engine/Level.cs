@@ -62,6 +62,7 @@ internal class Level
 
         shaderFrag.SetUniform("u_res", (Vector2f)Size);
         shaderFrag.SetUniform("u_pos", (Vector2f)topLeft);
+        shaderFrag.SetUniform("u_time", Convert.ToSingle(Instance.Engine.stopwatch.Elapsed.TotalSeconds));
 
         View temp = new View(new FloatRect(camera.Position, (Vector2f)camera.Size));
         temp.Zoom(camera.Zoom);

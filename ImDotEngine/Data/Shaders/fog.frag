@@ -4,8 +4,6 @@ uniform vec3 u_fog_color;
 
 void main()
 {
-	// fog baseColour
-	
     // calc dist to nearest edge
     float distX = min(gl_FragCoord.x, u_res.x - gl_FragCoord.x);
     float distY = min(gl_FragCoord.y, u_res.y - gl_FragCoord.y);

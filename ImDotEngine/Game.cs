@@ -108,6 +108,18 @@ internal class Game : GameEngine
                                 if (block == BlockEnum.Grassy_Stone)
                                     chunkBlock.Texture = Instance.TextureRepository.GetTexture("Texture\\grassy_stone.png");
 
+                                if (block == BlockEnum.Grass_Right)
+                                    chunkBlock.Texture = Instance.TextureRepository.GetTexture("Texture\\grass_right.png");
+
+                                if (block == BlockEnum.Grass_Left)
+                                    chunkBlock.Texture = Instance.TextureRepository.GetTexture("Texture\\grass_left.png");
+
+                                if (block == BlockEnum.Grass_Left_Dirt)
+                                    chunkBlock.Texture = Instance.TextureRepository.GetTexture("Texture\\grass_left_dirt.png");
+
+                                if (block == BlockEnum.Grass_Right_Dirt)
+                                    chunkBlock.Texture = Instance.TextureRepository.GetTexture("Texture\\grass_right_dirt.png");
+
                                 group.AddObject(chunkBlock);
                             }
                         }
@@ -154,11 +166,11 @@ internal class Game : GameEngine
 
         Instance.Level.Draw(ctx); // draw scene
 
-        //Instance.Level.ApplyShader("postprocessing.frag", (postShader) =>
-        //{
-        //    postShader.SetUniform("u_fog_width", 200.0f);
-        //    postShader.SetUniform("u_fog_color", new Vector3f(0.5f, 0.5f, 0.5f));
-        //});
+        Instance.Level.ApplyShader("fog.frag", (fogFrag) =>
+        {
+            fogFrag.SetUniform("u_fog_width", 2000.0f);
+            fogFrag.SetUniform("u_fog_color", new Vec3(0.5f, 0.5f, 0.5f));
+        });
 
         base.OnUpdate(ctx); // call to allow components access to them
     }

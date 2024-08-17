@@ -6,7 +6,7 @@ class TerrainGenerator
 
     public static BlockEnum GetBlock(BlockEnum[][] rawChunk, int x, int y)
     {
-        if (y > rawChunk.Length || x > rawChunk.Length)
+        if (y > rawChunk.Length - 1 || x > rawChunk.Length - 1)
             return BlockEnum.None;
 
         if (y < 0 || x < 0)
@@ -82,6 +82,7 @@ class TerrainGenerator
             }
         }
         
+        // experiments
         for (int y = Y; y < height + Y; y++)
         {
             int chunkY = y - Y;
@@ -98,6 +99,23 @@ class TerrainGenerator
                 )
                 {
                     rawChunk[chunkY][chunkX] = BlockEnum.Grassy_Stone;
+                }
+
+                // experimental grass corners
+                {
+                    if (block == BlockEnum.Grass &&
+                    GetBlock(rawChunk, chunkX - 1, chunkY - 1) == BlockEnum.Grass)
+                    {
+                        rawChunk[chunkY - 1][chunkX] = BlockEnum.Grass_Right;
+                        rawChunk[chunkY][chunkX] = BlockEnum.Grass_Right_Dirt;
+                    }
+
+                    if (block == BlockEnum.Grass &&
+                        GetBlock(rawChunk, chunkX + 1, chunkY - 1) == BlockEnum.Grass)
+                    {
+                        rawChunk[chunkY - 1][chunkX] = BlockEnum.Grass_Left;
+                        rawChunk[chunkY][chunkX] = BlockEnum.Grass_Left_Dirt;
+                    }
                 }
             }
         }

@@ -6,6 +6,7 @@ using SFML.Window;
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 #endregion
@@ -39,6 +40,9 @@ internal class GameEngine
 
     // all the game things insida here !
     public ClientInstance Instance = ClientInstance.GetSingle();
+
+    // some animation stuff
+    public Stopwatch stopwatch = Stopwatch.StartNew();
 
     public void Start()
     {
