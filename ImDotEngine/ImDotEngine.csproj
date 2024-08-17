@@ -89,6 +89,7 @@
     <Compile Include="Engine\Rendering\Spatial\SpatialHash.cs" />
     <Compile Include="Engine\System32\Winmm.cs" />
     <Compile Include="Engine\Rendering\TextureAtlas.cs" />
+    <Compile Include="SDK\BlockRegistry.cs" />
     <Compile Include="SDK\Components\CameraCursor.cs" />
     <Compile Include="Engine\Components\DefaultWindowBinds.cs" />
     <Compile Include="Engine\System32\User32.cs" />
@@ -109,6 +110,7 @@
     <Compile Include="SDK\Enums\LevelLayers.cs" />
     <Compile Include="Engine\TextureRepository.cs" />
     <Compile Include="SDK\Materials.cs" />
+    <Compile Include="SDK\Terrain\Blocks\BiomeEnum.cs" />
     <Compile Include="SDK\Terrain\Blocks\BlockEnum.cs" />
     <Compile Include="SDK\Terrain\SimplexPerlin.cs" />
     <Compile Include="SDK\Terrain\TerrainGenerator.cs" />
@@ -158,25 +160,28 @@
     <Content Include="Data\Assets\icon_x64.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Data\Assets\Texture\biome\cave\grassy_stone.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\Assets\Texture\biome\desert\sand.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\Assets\Texture\biome\plain\grass.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\Assets\Texture\biome\plain\grass_left.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\Assets\Texture\biome\plain\grass_left_dirt.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\Assets\Texture\biome\plain\grass_right.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\Assets\Texture\biome\plain\grass_right_dirt.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Data\Assets\Texture\dirt.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Data\Assets\Texture\grass.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Data\Assets\Texture\grassy_stone.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Data\Assets\Texture\grass_left.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Data\Assets\Texture\grass_left_dirt.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Data\Assets\Texture\grass_right.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Data\Assets\Texture\grass_right_dirt.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Data\Assets\Texture\stone.png">

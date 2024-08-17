@@ -70,9 +70,9 @@ internal class Game : GameEngine
 
             // grid of shapes for performance debugging
             {
-                for (int cX = 0; cX < 20; ++cX)
+                for (int cX = 0; cX < 40; ++cX)
                 {
-                    for (int cY = 0; cY < 4; ++cY)
+                    for (int cY = 0; cY < 3; ++cY)
                     {
                         // texture atlas/object group (not scaled up or down cuz its a fucking square)
                         SolidGroup group = new SolidGroup(new TextureAtlas((uint)(24 * cellScale), (uint)(24 * cellScale)));
@@ -95,30 +95,10 @@ internal class Game : GameEngine
                                 chunkBlock.Position = new Vector2f(x * cellScale, y * cellScale);
                                 chunkBlock.Size = new Vector2f(cellScale, cellScale);
 
-                                // TODO: loop over enum and find matching textures instead
-                                if (block == BlockEnum.Dirt)
-                                    chunkBlock.Texture = Instance.TextureRepository.GetTexture("Texture\\dirt.png");
+                                var blockResource = BlockRegistry.GetBlock(block);
 
-                                if (block == BlockEnum.Grass)
-                                    chunkBlock.Texture = Instance.TextureRepository.GetTexture("Texture\\grass.png");
-
-                                if (block == BlockEnum.Stone)
-                                    chunkBlock.Texture = Instance.TextureRepository.GetTexture("Texture\\stone.png");
-
-                                if (block == BlockEnum.Grassy_Stone)
-                                    chunkBlock.Texture = Instance.TextureRepository.GetTexture("Texture\\grassy_stone.png");
-
-                                if (block == BlockEnum.Grass_Right)
-                                    chunkBlock.Texture = Instance.TextureRepository.GetTexture("Texture\\grass_right.png");
-
-                                if (block == BlockEnum.Grass_Left)
-                                    chunkBlock.Texture = Instance.TextureRepository.GetTexture("Texture\\grass_left.png");
-
-                                if (block == BlockEnum.Grass_Left_Dirt)
-                                    chunkBlock.Texture = Instance.TextureRepository.GetTexture("Texture\\grass_left_dirt.png");
-
-                                if (block == BlockEnum.Grass_Right_Dirt)
-                                    chunkBlock.Texture = Instance.TextureRepository.GetTexture("Texture\\grass_right_dirt.png");
+                                if (blockResource != null) // valid block
+                                    chunkBlock.Texture = BlockRegistry.GetBlock(block);
 
                                 group.AddObject(chunkBlock);
                             }
@@ -162,13 +142,16 @@ internal class Game : GameEngine
         //ctx.Clear(new Color(0, 72, 105)); // clear buffer ready for next frame
         var camera = Components.OfType<Camera2D>().FirstOrDefault();
 
-        Instance.Level.ApplyShader("skybox.frag", (skybox) => { });
+        Instance.Level.ApplyShader("skybox.frag", (skybox) =>
+        {
+            skybox.SetUniform("u_basecolor", new Vec3(0.0f, 72.0f / 255.0f, 105.0f / 255.0f));
+        });
 
         Instance.Level.Draw(ctx); // draw scene
 
         Instance.Level.ApplyShader("fog.frag", (fogFrag) =>
         {
-            fogFrag.SetUniform("u_fog_width", 2000.0f);
+            fogFrag.SetUniform("u_fog_width", 0);
             fogFrag.SetUniform("u_fog_color", new Vec3(0.5f, 0.5f, 0.5f));
         });
 

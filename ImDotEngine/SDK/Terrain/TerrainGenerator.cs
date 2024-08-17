@@ -23,6 +23,10 @@ class TerrainGenerator
         BlockEnum[][] rawChunk = new BlockEnum[height][];
         SimplexPerlin perlin = new SimplexPerlin(Seed);
 
+        // for biomes
+        SimplexPerlin temperaturePerlin = new SimplexPerlin(Seed);
+        SimplexPerlin humidityPerlin = new SimplexPerlin(Seed);
+
         for (int y = Y; y < height + Y; y++)
         {
             int chunkY = y - Y;
@@ -32,6 +36,11 @@ class TerrainGenerator
             {
                 int chunkX = x - X;
 
+                double tempatureValue = temperaturePerlin.GetValue((float)(x * 0.001), (float)(y * 0.001));
+                double humidityValue = humidityPerlin.GetValue((float)(x * 0.001), (float)(y * 0.001));
+
+                BiomeEnum biome = DetermineBiome(tempatureValue, humidityValue);
+
                 double noiseValue = perlin.GetValue((float)(x * 0.03), (float)(y * 0.03));
                 int terrainHeight = (int)(5 + (noiseValue * 9));
                 if (y > terrainHeight)
@@ -39,17 +48,52 @@ class TerrainGenerator
                     // TODO: dont set until ready
                     rawChunk[chunkY][chunkX] = BlockEnum.Stone; // Terrain
 
-                    // grass check
-                    if (GetBlock(rawChunk, chunkX, chunkY - 1) == BlockEnum.Air)
-                        rawChunk[chunkY][chunkX] = BlockEnum.Grass;
+                    if (biome == BiomeEnum.Plains)
+                    {
+                        // grass check
+                        if (GetBlock(rawChunk, chunkX, chunkY - 1) == BlockEnum.Air)
+                            rawChunk[chunkY][chunkX] = BlockEnum.Grass;
 
-                    // dirt check, TODO: clean generation code
-                    if (
-                        GetBlock(rawChunk, chunkX, chunkY - 1) == BlockEnum.Grass ||
-                        GetBlock(rawChunk, chunkX, chunkY - 2) == BlockEnum.Grass ||
-                        GetBlock(rawChunk, chunkX, chunkY - 3) == BlockEnum.Grass
-                    )
-                        rawChunk[chunkY][chunkX] = BlockEnum.Dirt;
+                        // dirt check, TODO: clean generation code
+                        if (
+                            GetBlock(rawChunk, chunkX, chunkY - 1) == BlockEnum.Grass ||
+                            GetBlock(rawChunk, chunkX, chunkY - 2) == BlockEnum.Grass ||
+                            GetBlock(rawChunk, chunkX, chunkY - 3) == BlockEnum.Grass
+                        )
+                            rawChunk[chunkY][chunkX] = BlockEnum.Dirt;
+                    }
+
+                    if (biome == BiomeEnum.Mountain)
+                    {
+                        if (GetBlock(rawChunk, chunkX, chunkY - 1) == BlockEnum.Air)
+                        {
+                            rawChunk[chunkY-1][chunkX] = BlockEnum.Stone;
+                        }
+                    }
+
+                    if (biome == BiomeEnum.Forest)
+                    {
+                        // grass check
+                        if (GetBlock(rawChunk, chunkX, chunkY - 1) == BlockEnum.Air)
+                            rawChunk[chunkY][chunkX] = BlockEnum.Grass;
+
+                        // dirt check, TODO: clean generation code
+                        if (
+                            GetBlock(rawChunk, chunkX, chunkY - 1) == BlockEnum.Grass ||
+                            GetBlock(rawChunk, chunkX, chunkY - 2) == BlockEnum.Grass ||
+                            GetBlock(rawChunk, chunkX, chunkY - 3) == BlockEnum.Grass
+                        )
+                            rawChunk[chunkY][chunkX] = BlockEnum.Dirt;
+                    }
+
+                    if (biome == BiomeEnum.Desert)
+                    {
+                        // dirt check, TODO: clean generation code
+                        if (
+                            GetBlock(rawChunk, chunkX, chunkY) == BlockEnum.Stone
+                        )
+                            rawChunk[chunkY][chunkX] = BlockEnum.Sand;
+                    }
                 }
                 else
                 {
@@ -121,5 +165,30 @@ class TerrainGenerator
         }
 
         return rawChunk;
+    }
+
+    private static BiomeEnum DetermineBiome(double tempatureValue, double humidityValue)
+    {
+        tempatureValue = (tempatureValue + 1) / 2.0;
+        humidityValue = (humidityValue + 1) / 2.0;
+
+        if (tempatureValue > 0.7)
+        {
+            //if (humidityValue < 0.3)
+               return BiomeEnum.Desert;
+            //return BiomeEnum.Savanna;
+        }
+        else if (tempatureValue > 0.4)
+        {
+            if (humidityValue > 0.5)
+                return BiomeEnum.Forest;
+            return BiomeEnum.Plains;
+        }
+        else
+        {
+            //if (humidityValue > 0.6)
+            //    return BiomeEnum.Taiga;
+            return BiomeEnum.Mountain;
+        }
     }
 }

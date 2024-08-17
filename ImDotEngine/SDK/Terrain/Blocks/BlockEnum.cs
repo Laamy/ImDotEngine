@@ -8,6 +8,7 @@
     Grass_Left,
     Grass_Right_Dirt,
     Grass_Left_Dirt,
+    Sand,
     Stone,
     Grassy_Stone,
     Count
