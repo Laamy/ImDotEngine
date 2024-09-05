@@ -25,11 +25,11 @@ public class SimplexPerlin
 
     public float GetValue(float x, float y)
     {
-        int X = (int)Math.Floor(x) & 255,
-            Y = (int)Math.Floor(y) & 255;
+        int X = (int)Mathf.Floor(x) & 255,
+            Y = (int)Mathf.Floor(y) & 255;
 
-        x -= (float)Math.Floor(x);
-        y -= (float)Math.Floor(y);
+        x -= (float)Mathf.Floor(x);
+        y -= (float)Mathf.Floor(y);
 
         float u = Fade(x),
               v = Fade(y);

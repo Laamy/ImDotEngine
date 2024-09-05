@@ -71,6 +71,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -81,7 +82,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DebugLogger.cs" />
+    <Compile Include="Engine\BundleRepository.cs" />
     <Compile Include="Engine\Components\BaseComponent.cs" />
+    <Compile Include="Engine\Extensions\MathExtension.cs" />
+    <Compile Include="Engine\Extensions\Vector2fExtensions.cs" />
     <Compile Include="Engine\Internal\Assets.cs" />
     <Compile Include="Engine\Objects\SolidConvex.cs" />
     <Compile Include="Engine\BasicShapes.cs" />
@@ -107,9 +111,10 @@
     <Compile Include="Engine\Objects\SolidObject.cs" />
     <Compile Include="Engine\Objects\SolidText.cs" />
     <Compile Include="SDK\Components\DebugComponent.cs" />
+    <Compile Include="SDK\Components\LocalPlayer.cs" />
     <Compile Include="SDK\Enums\LevelLayers.cs" />
     <Compile Include="Engine\TextureRepository.cs" />
-    <Compile Include="SDK\Materials.cs" />
+    <Compile Include="SDK\MaterialRepository.cs" />
     <Compile Include="SDK\Terrain\Blocks\BiomeEnum.cs" />
     <Compile Include="SDK\Terrain\Blocks\BlockEnum.cs" />
     <Compile Include="SDK\Terrain\SimplexPerlin.cs" />
@@ -117,16 +122,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="Data\Font\Arial.ttf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Data\Shaders\fog.frag">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Data\Shaders\skybox.frag">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Data\Shaders\weather.frag">
+    <None Include="Data\Font\Arial.ttf" />
+    <None Include="Data\Shaders\fog.frag" />
+    <None Include="Data\Shaders\skybox.frag" />
+    <None Include="pack-assets.bat">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />
@@ -145,48 +144,23 @@
     <Content Include="csfml-window.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Data\Assets\icon_intro.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Data\Assets\icon_x32.ico">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Data\Assets\icon_x32.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Data\Assets\icon_x64.ico">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Data\Assets\icon_x64.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Data\Assets\Texture\biome\cave\grassy_stone.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Data\Assets\Texture\biome\desert\sand.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Data\Assets\Texture\biome\plain\grass.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Data\Assets\Texture\biome\plain\grass_left.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Data\Assets\Texture\biome\plain\grass_left_dirt.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Data\Assets\Texture\biome\plain\grass_right.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Data\Assets\Texture\biome\plain\grass_right_dirt.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Data\Assets\Texture\dirt.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Data\Assets\Texture\stone.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <Content Include="Data\Assets\icon_intro.png" />
+    <Content Include="Data\Assets\icon_x32.ico" />
+    <Content Include="Data\Assets\icon_x32.png" />
+    <Content Include="Data\Assets\icon_x64.ico" />
+    <Content Include="Data\Assets\icon_x64.png" />
+    <Content Include="Data\Assets\Noise\DebugTexture.png" />
+    <Content Include="Data\Assets\Noise\DebugTextureRed.png" />
+    <Content Include="Data\Assets\Noise\FogTexture_Tile.png" />
+    <Content Include="Data\Assets\Texture\biome\cave\grassy_stone.png" />
+    <Content Include="Data\Assets\Texture\biome\desert\sand.png" />
+    <Content Include="Data\Assets\Texture\biome\plain\grass.png" />
+    <Content Include="Data\Assets\Texture\biome\plain\grass_left.png" />
+    <Content Include="Data\Assets\Texture\biome\plain\grass_left_dirt.png" />
+    <Content Include="Data\Assets\Texture\biome\plain\grass_right.png" />
+    <Content Include="Data\Assets\Texture\biome\plain\grass_right_dirt.png" />
+    <Content Include="Data\Assets\Texture\dirt.png" />
+    <Content Include="Data\Assets\Texture\stone.png" />
     <Content Include="openal32.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -201,4 +175,11 @@
     <Error Condition="!Exists('..\packages\CSFML.2.5.2\build\netframework\CSFML.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\CSFML.2.5.2\build\netframework\CSFML.targets'))" />
   </Target>
   <Import Project="..\packages\CSFML.2.5.2\build\netframework\CSFML.targets" Condition="Exists('..\packages\CSFML.2.5.2\build\netframework\CSFML.targets')" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>pack-assets.bat</PostBuildEvent>
+  </PropertyGroup>
 </Project>

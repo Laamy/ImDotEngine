@@ -1,7 +1,4 @@
-using SFML.Graphics;
-using SFML.System;
 using SFML.Window;
-using System.Diagnostics.SymbolStore;
 
 internal class ClientInstance
 {
@@ -18,9 +15,12 @@ internal class ClientInstance
     public VideoMode VideoMode;
 
     public Level Level = new Level();
-    public FontRepository FontRepository = new FontRepository();
-    public TextureRepository TextureRepository = new TextureRepository();
     public GuiData GuiData = new GuiData();
 
-    public Materials Materials = new Materials();
+    // assets n shit
+    public BundleRepository BundleRepository = new BundleRepository();
+
+    public MaterialRepository MaterialRepository = new MaterialRepository();
+    public TextureRepository TextureRepository = new TextureRepository();
+    public FontRepository FontRepository = new FontRepository();
 }

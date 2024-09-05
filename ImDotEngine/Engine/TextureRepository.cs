@@ -4,42 +4,48 @@ using SFML.Graphics;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Xml.Linq;
 
 #endregion
 
 internal class TextureRepository
-{
-    const string DataPath = "Data\\Assets";
+{   
     private Dictionary<string, Texture> m_cache = new Dictionary<string, Texture>();
+
+    private BundleInfo m_assetBundle;
 
     public void Initialize()
     {
-        m_cache.Clear();
+        DebugLogger.Log("Assets", "Caching assets..");
 
-        foreach (var file in Directory.GetFiles(DataPath, "*.*", SearchOption.AllDirectories))
+        m_cache.Clear();
+        
+        ClientInstance Instance = ClientInstance.GetSingle();
+
+        m_assetBundle = Instance.BundleRepository.GetBundle("Assets");
+
+        foreach (var file in m_assetBundle.Contents)
         {
-            if (Path.GetExtension(file).Equals(".png"))
+            var fileName = file.Key;
+            if (fileName.EndsWith(".png"))
             {
                 // initialize the cache the texture
-                var texture = new Texture(file);
-                m_cache[file.ToLower()] = texture;
+                var texture = new Texture(file.Value);
+                m_cache[fileName] = texture;
 
-                DebugLogger.Log("Assets", $"Loaded : {file.ToLower()}");
+                DebugLogger.Log("Assets", $"Loaded : {fileName}");
             }
         }
+
+        DebugLogger.Log("Assets", $"Cached all assets");
     }
 
     public Texture GetTexture(string name)
     {
-        string path = Path.Combine(DataPath, name).ToLower();
+        if (m_cache.ContainsKey(name))
+            return m_cache[name];
 
-        if (!File.Exists(path))
-            return null; // doesnt exist
-
-        if (m_cache.ContainsKey(path))
-            return m_cache[path];
-
-        return new Texture(Path.Combine(DataPath, name));
+        throw new Exception("Invalid texture");
     }
 }

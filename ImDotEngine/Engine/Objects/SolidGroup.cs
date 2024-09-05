@@ -1,9 +1,7 @@
 ﻿using SFML.Graphics;
 using SFML.System;
 
-using System;
 using System.Collections.Generic;
-using static SFML.Graphics.BlendMode;
 
 internal class SolidGroup : SolidActor
 {
@@ -34,6 +32,7 @@ internal class SolidGroup : SolidActor
     public override Shape GetShape() => shape;
     public override Drawable GetDrawable() => null;
     public override int ObjectCount() => Children.Count;
+    public HashSet<SolidActor> GetObjects() => Children;
 
     public SolidGroup(TextureAtlas atlas)
     {

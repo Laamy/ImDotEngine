@@ -57,7 +57,7 @@ internal class Level
 
         Vector2i topLeft = Instance.Engine.window.MapCoordsToPixel(new Vector2f(0, 0));
 
-        var shaderFrag = Instance.Materials.GetShader(shader);
+        var shaderFrag = Instance.MaterialRepository.GetShader($"Shaders\\{shader}");
         Init(shaderFrag);
 
         shaderFrag.SetUniform("u_res", (Vector2f)Size);

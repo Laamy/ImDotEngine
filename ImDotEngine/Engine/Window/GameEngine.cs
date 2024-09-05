@@ -46,9 +46,14 @@ internal class GameEngine
 
     public void Start()
     {
+        // VERY FIRST THING YOU NEED TO DO IS LOAD THE BUNDLES!
+        Instance.BundleRepository.Initialize();
+
         // initialize starter assets
         // NOTE: put your game assets in Game.cs NOT assets class else this will halt the window from loading
         Assets.Initialize();
+
+        Instance.FontRepository.Initialize();
 
         // sdl renderer
         Instance.VideoMode = new VideoMode(800, 600);
@@ -77,7 +82,7 @@ internal class GameEngine
         // for now its cuz when loading the actual level it'll keep the last rendered frame til its done
         {
             long prevTicks = DateTime.Now.Ticks;
-            long targetTicks = TimeSpan.TicksPerSecond * 1;
+            long targetTicks = TimeSpan.TicksPerSecond / 8;
 
             // camera view
             View view = new View();
@@ -99,9 +104,7 @@ internal class GameEngine
                 DisplayedString = "Caching assets.."
             };
 
-            bool init = false;
-
-            while (window.IsOpen && DateTime.Now.Ticks - prevTicks < targetTicks)
+            // render intro frame while we load crap
             {
                 window.DispatchEvents();
 
@@ -116,16 +119,9 @@ internal class GameEngine
                 window.Draw(infoText);
 
                 window.Display();
-
-                // temp code
-                if (!init)
-                {
-                    init = true;
-
-                    LoadAssets();
-                    infoText.DisplayedString = "Initializing scene..";
-                }
             }
+
+            LoadAssets();
         }
 
         window.GainedFocus += (s, e) => Focus();
@@ -172,6 +168,7 @@ internal class GameEngine
                 {
                     // update the camera
                     prevTicks = currTicks;
+
                     OnFixedUpdate();
 
                     physicStepCount++;
@@ -183,26 +180,39 @@ internal class GameEngine
                         physicStepCount = 0;
                         lastPhysicsStep = curTime;
                     }
+
+                    Instance.GuiData.StepTime = Stopwatch.StartNew();
                 }
             }
         });
 
-        while (window.IsOpen)
         {
-            window.DispatchEvents();
 
-            OnUpdate(window); // redraw window
+            long prevTicks = DateTime.Now.Ticks;
 
-            window.Display(); // swapbuffers
-
-            frameCount++;
-
-            long curTime = DateTime.Now.Ticks;
-            if (curTime - fpsLastTime >= TimeSpan.TicksPerSecond)
+            while (window.IsOpen)
             {
-                CurrentFPS = frameCount;
-                frameCount = 0;
-                fpsLastTime = curTime;
+                long currTicks = DateTime.Now.Ticks;
+                long elapsedTicks = currTicks - prevTicks;
+
+                prevTicks = currTicks;
+
+                window.DispatchEvents();
+
+                OnUpdate(window); // redraw window
+
+                window.Display(); // swapbuffers
+
+                frameCount++;
+
+                if (currTicks - fpsLastTime >= TimeSpan.TicksPerSecond)
+                {
+                    CurrentFPS = frameCount;
+                    frameCount = 0;
+                    fpsLastTime = currTicks;
+                }
+
+                Instance.GuiData.FrameTime = Stopwatch.StartNew();
             }
         }
     }

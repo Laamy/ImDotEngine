@@ -4,6 +4,7 @@ using SFML.Graphics;
 using SFML.Graphics.Glsl;
 using SFML.System;
 using System;
+using System.Diagnostics.SymbolStore;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
@@ -21,15 +22,11 @@ internal class Game : GameEngine
 
     public override void LoadAssets()
     {
-        base.LoadAssets();
+        base.LoadAssets(); // send signal to components
 
-        DebugLogger.Log("Assets", "Caching assets..");
+        // TODO: make these classes inherit a repository class
         Instance.TextureRepository.Initialize(); // load all assets
-        DebugLogger.Log("Assets", $"Cached all assets");
-
-        DebugLogger.Log("Materials", "Compiling shaders..");
-        Instance.Materials.Initialize(); // load all assets
-        DebugLogger.Log("Materials", $"Compiled all shaders!");
+        Instance.MaterialRepository.Initialize(); // load all materials
     }
 
     public override void Initialized()
@@ -43,6 +40,7 @@ internal class Game : GameEngine
             Components.Add(new CameraCursor()); // cursor visualization
 
             Components.Add(new DebugComponent());
+            Components.Add(new LocalPlayer());
 
             DebugLogger.Log("Components", $"Initialized Components");
         }
@@ -70,9 +68,9 @@ internal class Game : GameEngine
 
             // grid of shapes for performance debugging
             {
-                for (int cX = 0; cX < 40; ++cX)
+                for (int cX = 0; cX < 20; ++cX)
                 {
-                    for (int cY = 0; cY < 3; ++cY)
+                    for (int cY = 0; cY < 2; ++cY)
                     {
                         // texture atlas/object group (not scaled up or down cuz its a fucking square)
                         SolidGroup group = new SolidGroup(new TextureAtlas((uint)(24 * cellScale), (uint)(24 * cellScale)));
@@ -113,10 +111,10 @@ internal class Game : GameEngine
             }
         }
 
-        DebugLogger.Log("Components", $"Game started with settings:" +
+        DebugLogger.Log("ImDotEngine", $"Game started with settings:" +
             $"\r\n\tTargetFramerate: {TargetFramerate}" +
             $"\r\n\tTargetPhysicsRate: {TargetPhysicsRate}" +
-            $"\r\n\tVSync: {VSync}");
+            $"\r\n\tVSync: {VSync}\r\n");
 
         // TODO: Implement scene
     }
@@ -149,11 +147,16 @@ internal class Game : GameEngine
 
         Instance.Level.Draw(ctx); // draw scene
 
-        Instance.Level.ApplyShader("fog.frag", (fogFrag) =>
-        {
-            fogFrag.SetUniform("u_fog_width", 0);
-            fogFrag.SetUniform("u_fog_color", new Vec3(0.5f, 0.5f, 0.5f));
-        });
+        //Instance.Level.ApplyShader("fog.frag", (fogFrag) =>
+        //{
+        //    var fogNoise = Instance.TextureRepository.GetTexture("Assets\\Noise\\FogTexture_Tile.png");
+        //    fogNoise.Repeated = true;
+        //    
+        //    fogFrag.SetUniform("u_fog_noise", fogNoise);
+        //    fogFrag.SetUniform("u_fog_width", 150.0f);
+        //    fogFrag.SetUniform("u_fog_strength", 0.2f);
+        //    fogFrag.SetUniform("u_fog_color_factor", new Vec3(1, 1, 1));
+        //});
 
         base.OnUpdate(ctx); // call to allow components access to them
     }
