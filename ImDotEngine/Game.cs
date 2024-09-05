@@ -65,9 +65,7 @@ internal class Game : GameEngine
         // basic sample world
         {
             uint cellScale = 128;
-            //TODO: use some kind of ECS to speed this up maybe
-            //for now i'll just make the chunks smaller
-
+            
             // grid of shapes for performance debugging
             {
                 for (int cX = 0; cX < 12; ++cX)
@@ -117,8 +115,6 @@ internal class Game : GameEngine
             $"\r\n\tTargetFramerate: {TargetFramerate}" +
             $"\r\n\tTargetPhysicsRate: {TargetPhysicsRate}" +
             $"\r\n\tVSync: {VSync}\r\n");
-
-        // TODO: Implement scene
     }
 
 
@@ -133,8 +129,6 @@ internal class Game : GameEngine
             $"\n" +
             $"Layers: {Instance.Level.Layers.Length}\n" +
             $"Block Count: {Instance.Level.GetLayer(LevelLayers.ForeBlocks).Count}\n";
-
-        // TODO: Implement game physics
     }
 
     protected override void OnUpdate(RenderWindow ctx)

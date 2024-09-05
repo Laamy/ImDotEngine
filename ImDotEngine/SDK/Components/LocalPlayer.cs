@@ -68,7 +68,6 @@ class LocalPlayer : BaseComponent
         Player.Position = curPos;
     }
 
-    // TODO: fix collision lag cuz im fucking stupid
     private void ResolveCollisions()
     {
         var Instance = ClientInstance.GetSingle();
