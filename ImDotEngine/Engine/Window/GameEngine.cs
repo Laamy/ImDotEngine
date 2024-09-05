@@ -50,7 +50,6 @@ internal class GameEngine
         Instance.BundleRepository.Initialize();
 
         // initialize starter assets
-        // NOTE: put your game assets in Game.cs NOT assets class else this will halt the window from loading
         Assets.Initialize();
 
         Instance.FontRepository.Initialize();

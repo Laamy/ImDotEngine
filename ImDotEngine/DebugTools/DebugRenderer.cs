@@ -5,7 +5,7 @@ using SFML.System;
 public class DebugRenderer
 {
     // not used thickness cuz i just realized the lines type doesnt support that
-    // TODO: use rectangleshape with an angle/rotation for lines allowing for thickness
+    // NOTE: use rectangleshape with an angle/rotation for lines allowing for thickness
     public static void DrawLine(RenderWindow ctx, Vector2f start, Vector2f end, Color color, float thickness)
     {
         VertexArray line = new VertexArray(PrimitiveType.Lines, 2); // 2 points

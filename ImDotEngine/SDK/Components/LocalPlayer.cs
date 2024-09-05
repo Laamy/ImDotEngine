@@ -9,7 +9,7 @@ using System.Linq;
 // it means I could make physics steps faster by a fuckton
 // I also want to move the booleans into "FLAGS" aka just putting an empty component on an entity
 // I want to do my own implementation of ENTT in a unique way that would make cheating harder but make modding easier if that makes sense(?)
-// TODO: port everything to C++
+// NOTE: port everything to C++
 class LocalPlayer : BaseComponent
 {
     public ClientInstance Instance = ClientInstance.GetSingle();
@@ -105,7 +105,7 @@ class LocalPlayer : BaseComponent
         }
 
         // world bottom
-        // TODO: call death functions once below this coordinate level (I might not do this cuz i want an infinite world height
+        // NOTE: call death functions once below this coordinate level (I might not do this cuz i want an infinite world height
         // NOTE: I might switch the world to a signed 32bit integer instead of floats, it'll make debugging easier & stop floating point errors
         if (Velocity.Y > 0 && playerPos.Y > 4750)
         {

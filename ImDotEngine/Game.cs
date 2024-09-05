@@ -24,7 +24,7 @@ internal class Game : GameEngine
     {
         base.LoadAssets(); // send signal to components
 
-        // TODO: make these classes inherit a repository class
+        // NOTE: make these classes inherit a repository class
         Instance.TextureRepository.Initialize(); // load all assets
         Instance.MaterialRepository.Initialize(); // load all materials
     }

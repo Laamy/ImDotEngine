@@ -4,7 +4,7 @@ using SFML.System;
 using System;
 using System.Collections.Generic;
 
-// TODO: add a quick way to update/move objects around without reinserting constantly
+// NOTE: add a quick way to update/move objects around without reinserting constantly
 class SpatialHash
 {
     private readonly int cellSize;
@@ -72,7 +72,7 @@ class SpatialHash
 
         if (added)
         {
-            // TODO: i really dont care about this counter (add a second counter in level that calculates the accurate count)
+            // NOTE: i really dont care about this counter (add a second counter in level that calculates the accurate count)
             Count += obj.ObjectCount();
             objectToHashesMap[obj] = objectHashes;
         }

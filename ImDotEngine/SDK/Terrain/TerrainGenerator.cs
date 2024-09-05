@@ -45,7 +45,7 @@ class TerrainGenerator
                 int terrainHeight = (int)(5 + (noiseValue * 9));
                 if (y > terrainHeight)
                 {
-                    // TODO: dont set until ready
+                    // NOTE: dont set until ready
                     rawChunk[chunkY][chunkX] = BlockEnum.Stone; // Terrain
 
                     if (biome == BiomeEnum.Plains)
