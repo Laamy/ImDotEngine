@@ -28,7 +28,7 @@ internal class SolidGroup : SolidActor
     }
 
     public override Vector2f GetPosition() => Position;
-    public override Vector2f GetSize() => Size;
+    public override Vector2f GetSize() => Size.Mul(Scale);
     public override Shape GetShape() => shape;
     public override Drawable GetDrawable() => null;
     public override int ObjectCount() => Children.Count;

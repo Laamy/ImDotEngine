@@ -24,14 +24,14 @@ class LocalPlayer : BaseComponent
     public Vector2f prevPos;
     public Vector2f curPos;
 
-    const float Gravity = 1;
+    const float Gravity = 2;
     const int MaxGravity = 240; // in units
 
     public bool OnGround = false;
-    public bool PrevOnGround = false;
     public bool InAir = false;
 
     public float Speed = 20;
+    public float JumpHeight = 16;
 
     #endregion
 
@@ -43,11 +43,21 @@ class LocalPlayer : BaseComponent
         {
             MovementVector = new Vector2f(); // clear
 
-            if (Keyboard.IsKeyPressed(Keyboard.Key.A) || Keyboard.IsKeyPressed(Keyboard.Key.Left))
+            if (Keyboard.IsKeyPressed(Keyboard.Key.A) ||
+                Keyboard.IsKeyPressed(Keyboard.Key.Left))
                 MovementVector.X--;
 
-            if (Keyboard.IsKeyPressed(Keyboard.Key.D) || Keyboard.IsKeyPressed(Keyboard.Key.Right))
+            if (Keyboard.IsKeyPressed(Keyboard.Key.D) ||
+                Keyboard.IsKeyPressed(Keyboard.Key.Right))
                 MovementVector.X++;
+
+            if (Keyboard.IsKeyPressed(Keyboard.Key.W) ||
+                Keyboard.IsKeyPressed(Keyboard.Key.Space) ||
+                Keyboard.IsKeyPressed(Keyboard.Key.Up))
+            {
+                if (OnGround) // make sure the player is grounded before applying velocity
+                    Velocity.Y = -JumpHeight;
+            }
         }
 
         prevPos = curPos;
@@ -72,7 +82,8 @@ class LocalPlayer : BaseComponent
     {
         var Instance = ClientInstance.GetSingle();
 
-        Console.WriteLine("Getting nearby tiles");
+        InAir = true;
+        
         var nearbyChunks = Instance.Level.GetLayer(LevelLayers.ForeBlocks).GetNearbyObjects(Player.Position, 75);
 
         var playerPos = curPos;
@@ -83,6 +94,7 @@ class LocalPlayer : BaseComponent
         {
             if (_chunk != null)
             {
+                // its just accured to me that i scale the group
                 var chunk = _chunk as SolidGroup;
 
                 var blocks = chunk.GetObjects();
@@ -90,14 +102,13 @@ class LocalPlayer : BaseComponent
                 foreach (var block in blocks)
                 {
                     // convert blockRect to worldspace
-                    var blockRect = new FloatRect(chunk.GetPosition() + block.GetPosition(), block.GetSize());
+                    var blockRect = new FloatRect(chunk.GetPosition() + block.GetPosition().Mul(chunk.Scale), block.GetSize().Mul(chunk.Scale));
 
                     if (playerRect.Intersects(blockRect))
                     {
                         if (Velocity.Y > 0 && playerPos.Y <= blockRect.Top)
                         {
-                            Velocity.Y = 0;
-                            curPos.Y = blockRect.Top;
+                            GroundPlayer(null, blockRect.Top);
                         }
                     }
                 }
@@ -108,11 +119,22 @@ class LocalPlayer : BaseComponent
         // NOTE: call death functions once below this coordinate level (I might not do this cuz i want an infinite world height
         // NOTE: I might switch the world to a signed 32bit integer instead of floats, it'll make debugging easier & stop floating point errors
         if (Velocity.Y > 0 && playerPos.Y > 4750)
-        {
-            Velocity.Y = 0;
-            curPos.Y = 4750;
-            //Player.Position = curPos;
-        }
+            GroundPlayer(null, 4750);
+
+        if (InAir)
+            OnGround = false;
+    }
+
+    // hacky helper function to ground the player properly
+    public void GroundPlayer(float? x = null, float? y = null)
+    {
+        OnGround = true; // NOTE: probably better to move this up to where i set onground to false
+
+        Velocity.Y = 0;
+        curPos.X = x == null ? curPos.X : x.Value;
+        curPos.Y = y == null ? curPos.Y : y.Value;
+
+        InAir = false;
     }
 
     public override void OnUpdate(RenderWindow ctx)
@@ -135,7 +157,7 @@ class LocalPlayer : BaseComponent
         {
             var camera = Instance.Engine.Components.OfType<Camera2D>().FirstOrDefault();
 
-            //camera.AllowMove = false;
+            camera.AllowMove = false;
             camera.AllowZoom = false;
 
             camera.Zoom = 1;

@@ -1,6 +1,5 @@
 ﻿using SFML.Graphics;
 using SFML.System;
-using System.Windows.Forms;
 
 class DebugPhysicsDetails
 {
@@ -8,6 +7,37 @@ class DebugPhysicsDetails
 
     public static void Draw(LocalPlayer entity, RenderWindow ctx)
     {
+        // push nearby collidables as red partially transparent squares
+        {
+            var nearbyChunks = Instance.Level.GetLayer(LevelLayers.ForeBlocks).GetNearbyObjects(entity.Player.Position, 75);
+            
+            foreach (var _chunk in nearbyChunks)
+            {
+                if (_chunk != null)
+                {
+                    // its just accured to me that i scale the group
+                    var chunk = _chunk as SolidGroup;
+
+                    var blocks = chunk.GetObjects();
+
+                    foreach (var block in blocks)
+                    {
+                        // convert blockRect to worldspace
+                        var blockRect = new FloatRect(chunk.GetPosition() + block.GetPosition().Mul(chunk.Scale), block.GetSize().Mul(chunk.Scale));
+
+                        RectangleShape debugBox = new RectangleShape(new Vector2f(blockRect.Width, blockRect.Height));
+                        
+                        debugBox.Position = new Vector2f(blockRect.Left, blockRect.Top);
+                        debugBox.FillColor = new Color(255, 0, 0, 255 / 5);
+                        debugBox.OutlineThickness = 2;
+                        debugBox.OutlineColor = new Color(0, 255, 0, 255);
+
+                        ctx.Draw(debugBox);
+                    }
+                }
+            }
+        }
+
         // Draw the velocity vector & debug text for the speed
         {
             Vector2f lineDiff = new Vector2f(entity.curPos.X - entity.prevPos.X, entity.curPos.Y - entity.prevPos.Y);
@@ -26,8 +56,9 @@ class DebugPhysicsDetails
                               + $" X:{Mathf.Abs(lineDiff.X)}u/s\r\n"
                               + $" Y:{Mathf.Abs(lineDiff.Y)}u/s\r\n"
                               + $"\r\n"
-                              + $"Pos:{entity.curPos}";
-            speedDisplay.Position = lineStart + new Vector2f(20, lineDiff.Y / 3);
+                              + $"Pos:{entity.curPos}\r\n"
+                              + $"OnGround: {entity.OnGround}";
+            speedDisplay.Position = lineStart + new Vector2f(20, lineDiff.Y);
 
             ctx.Draw(speedDisplay.GetDrawable());
         }

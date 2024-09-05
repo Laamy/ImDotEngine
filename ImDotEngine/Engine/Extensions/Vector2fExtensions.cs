@@ -26,4 +26,46 @@ public static class Vector2fExtensions
         float retY = Mathf.Lerp(firstVector.Y, secondVector.Y, by);
         return new Vector2f(retX, retY);
     }
+
+    // turns out C# doesnt let you overload operators in extensions..
+
+    public static Vector2f Div(this Vector2f vector1, Vector2f vector2)
+    {
+        Vector2f result = vector1;
+
+        result.X /= vector2.X;
+        result.Y /= vector2.Y;
+
+        return result;
+    }
+
+    public static Vector2f Div(this Vector2f vector1, float scale)
+    {
+        Vector2f result = vector1;
+
+        result.X /= scale;
+        result.Y /= scale;
+
+        return result;
+    }
+
+    public static Vector2f Mul(this Vector2f vector1, Vector2f vector2)
+    {
+        Vector2f result = vector1;
+
+        result.X *= vector2.X;
+        result.Y *= vector2.Y;
+
+        return result;
+    }
+
+    public static Vector2f Mul(this Vector2f vector1, float scale)
+    {
+        Vector2f result = vector1;
+
+        result.X *= scale;
+        result.Y *= scale;
+
+        return result;
+    }
 }
