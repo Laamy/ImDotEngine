@@ -8,6 +8,11 @@ public static class Vector2fExtensions
         return length > 0 ? new Vector2f(vector.X / length, vector.Y / length) : new Vector2f(0, 0);
     }
 
+    public static float Magnitude(this Vector2f vector)
+    {
+        return (float)Mathf.Sqrt(vector.X * vector.X + vector.Y * vector.Y);
+    }
+
     public static Vector2f Clamp(this Vector2f vector, Vector2f min, Vector2f max)
     {
         float clampedX = Mathf.Clamp(vector.X, min.X, max.X);

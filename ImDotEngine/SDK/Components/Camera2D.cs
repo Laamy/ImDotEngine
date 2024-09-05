@@ -22,6 +22,8 @@ internal class Camera2D : BaseComponent
 
     // basic settings for the camera
     public bool AutoResize = true;
+    public bool AllowZoom = true;
+    public bool AllowMove = true;
 
     public Camera2D()
     {
@@ -120,7 +122,7 @@ internal class Camera2D : BaseComponent
 
     public override void MouseMoved(MouseMoveEventArgs e)
     {
-        if (moving)
+        if (AllowMove && moving)
         {
             Vector2f curMousePos = new Vector2f(e.X, e.Y);
             Vector2f offset = curMousePos - initMousePos;
@@ -133,7 +135,7 @@ internal class Camera2D : BaseComponent
 
     public override void MouseButtonPressed(MouseButtonEventArgs e)
     {
-        if (e.Button == Mouse.Button.Right)
+        if (AllowMove && e.Button == Mouse.Button.Right)
         {
             moving = true;
             initMousePos = new Vector2f(e.X, e.Y);
@@ -142,7 +144,7 @@ internal class Camera2D : BaseComponent
 
     public override void MouseButtonReleased(MouseButtonEventArgs e)
     {
-        if (e.Button == Mouse.Button.Right)
+        if (AllowMove && e.Button == Mouse.Button.Right)
         {
             moving = false;
         }
@@ -150,12 +152,15 @@ internal class Camera2D : BaseComponent
 
     public override void MouseWheelScrolled(MouseWheelScrollEventArgs e)
     {
-        float zoomAmount = 0.1f;
+        if (AllowZoom)
+        {
+            float zoomAmount = 0.1f;
 
-        if (e.Delta > 0)
-            Zoom /= (1 + zoomAmount);
-        else if (e.Delta < 0)
-            Zoom *= (1 + zoomAmount);
+            if (e.Delta > 0)
+                Zoom /= (1 + zoomAmount);
+            else if (e.Delta < 0)
+                Zoom *= (1 + zoomAmount);
+        }
     }
 
     #endregion

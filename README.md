@@ -16,12 +16,4 @@ you can see a basic showcase of the sample scene & engine
 
 # Planned
 
-1. A particle-life simulation as the sample scene that supports up to 100k particles
-2. group objects together as a texture for static scenes to reduce rendering costs
-3. batched rendering
-
-# Bug fixes (TODO)
-
-SolidConvex:57 - check largest/farthest vertex and use as size for both X & Y
-SpatialHash:~ - TODO: add a quick way to update/move objects around without reinserting constantly
-SpatialHash:74 - TODO: add a second counter in level to calculate the accurate count
+nothing as of now

@@ -126,7 +126,7 @@ class SpatialHash
         }
     }
 
-    public IEnumerable<SolidActor> GetNearbyObjects(Vector2f position, int radius)
+    public IEnumerable<SolidActor> GetNearbyObjects(Vector2f position, float radius)
     {
         var bounds = new FloatRect(position.X - radius, position.Y - radius, radius * 2, radius * 2);
         return GetObjectsInBounds(bounds);

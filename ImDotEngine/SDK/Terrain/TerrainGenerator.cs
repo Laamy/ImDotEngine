@@ -17,8 +17,8 @@ class TerrainGenerator
 
     public static BlockEnum[][] GenerateChunk(int X, int Y)
     {
-        int width = 24, 
-            height = 24;
+        int width = 12, 
+            height = 12;
 
         BlockEnum[][] rawChunk = new BlockEnum[height][];
         SimplexPerlin perlin = new SimplexPerlin(Seed);
@@ -146,6 +146,8 @@ class TerrainGenerator
                 }
 
                 // experimental grass corners
+                //BUG: need to sort out chunk boundaries not connecting properly
+                //BUG: if the block to the tops side is dirt aswell then it means its still an angle and needs the grass sides
                 {
                     if (block == BlockEnum.Grass &&
                     GetBlock(rawChunk, chunkX - 1, chunkY - 1) == BlockEnum.Grass)

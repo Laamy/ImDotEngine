@@ -37,7 +37,7 @@ internal class Game : GameEngine
             // some start components
             Components.Add(new DefaultWindowBinds()); // Escape for quit, F11 for fullscreen (inbuilt to the engine)
             Components.Add(Camera = new Camera2D()); // Example of 2D camera
-            Components.Add(new CameraCursor()); // cursor visualization
+            //Components.Add(new CameraCursor()); // cursor visualization
 
             Components.Add(new DebugComponent());
             Components.Add(new LocalPlayer());
@@ -65,23 +65,25 @@ internal class Game : GameEngine
         // basic sample world
         {
             uint cellScale = 128;
+            //TODO: use some kind of ECS to speed this up maybe
+            //for now i'll just make the chunks smaller
 
             // grid of shapes for performance debugging
             {
-                for (int cX = 0; cX < 20; ++cX)
+                for (int cX = 0; cX < 12; ++cX)
                 {
-                    for (int cY = 0; cY < 2; ++cY)
+                    for (int cY = 0; cY < 12; ++cY)
                     {
                         // texture atlas/object group (not scaled up or down cuz its a fucking square)
-                        SolidGroup group = new SolidGroup(new TextureAtlas((uint)(24 * cellScale), (uint)(24 * cellScale)));
+                        SolidGroup group = new SolidGroup(new TextureAtlas((uint)(12 * cellScale), (uint)(12 * cellScale)));
 
-                        group.Position = new Vector2f(cX * (cellScale * (cellScale / 19)), cY * (cellScale * (cellScale / 19)));
+                        group.Position = new Vector2f(cX * (cellScale * (cellScale / 33)), cY * (cellScale * (cellScale / 33)));
 
-                        var chunk = TerrainGenerator.GenerateChunk(cX * 24, cY * 24);
+                        var chunk = TerrainGenerator.GenerateChunk(cX * 12, cY * 12);
 
-                        for (int y = 0; y < 24; ++y)
+                        for (int y = 0; y < 12; ++y)
                         {
-                            for (int x = 0; x < 24; ++x)
+                            for (int x = 0; x < 12; ++x)
                             {
                                 var block = chunk[y][x];
 

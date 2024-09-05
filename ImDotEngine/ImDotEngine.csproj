@@ -81,7 +81,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DebugLogger.cs" />
+    <Compile Include="DebugTools\DebugLogger.cs" />
+    <Compile Include="DebugTools\DebugConfig.cs" />
+    <Compile Include="DebugTools\DebugOverlay\DebugPhysicsDetails.cs" />
+    <Compile Include="DebugTools\DebugRenderer.cs" />
     <Compile Include="Engine\BundleRepository.cs" />
     <Compile Include="Engine\Components\BaseComponent.cs" />
     <Compile Include="Engine\Extensions\MathExtension.cs" />
