@@ -25,18 +25,9 @@ class DebugComponent : BaseComponent
     {
         var Instance = ClientInstance.GetSingle();
 
-        if (e.Code == Keyboard.Key.B)
+        if (e.Code == Keyboard.Key.S)
         {
-            // Instance -> Engine -> Components -> Camera2D
-            var Camera = Instance.Engine.Components.OfType<Camera2D>().FirstOrDefault();
-
-            Camera.Position = new Vector2f(0, 0);
-            Camera.Zoom = 1;
-        }
-
-        if (e.Code == Keyboard.Key.C)
-        {
-            Instance.Engine.Size = new Vector2u(800, 600);
+            DebugConfig.ShowPhysicsDetails = !DebugConfig.ShowPhysicsDetails;
         }
     }
 }

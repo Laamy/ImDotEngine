@@ -106,10 +106,14 @@ class LocalPlayer : BaseComponent
 
                     if (playerRect.Intersects(blockRect))
                     {
+                        // top face
                         if (Velocity.Y > 0 && playerPos.Y <= blockRect.Top)
                         {
-                            GroundPlayer(null, blockRect.Top);
+                            GroundPlayer(null, blockRect.Top - playerSize.Y);
                         }
+
+                        // left face
+                        //if ((Velocity.X > 0 || MovementVector.X != 0) &&)
                     }
                 }
             }

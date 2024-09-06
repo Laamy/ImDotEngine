@@ -6,7 +6,7 @@
     /// 
     /// FILE: DebugOverlay\DebugPhysicsDetails.cs
     /// </summary>
-    public static bool ShowPhysicsDetails { get; set; } = true;
+    public static bool ShowPhysicsDetails { get; set; } = false;
 
     /// <summary>
     /// show the game FPS, CPU usage, GPU usage latency between frames & physic steps aswell

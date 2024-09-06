@@ -68,20 +68,20 @@ internal class Game : GameEngine
             
             // grid of shapes for performance debugging
             {
-                for (int cX = 0; cX < 12; ++cX)
+                for (int cX = 0; cX < 150; ++cX)
                 {
-                    for (int cY = 0; cY < 12; ++cY)
+                    for (int cY = 0; cY < 2; ++cY)
                     {
                         // texture atlas/object group (not scaled up or down cuz its a fucking square)
-                        SolidGroup group = new SolidGroup(new TextureAtlas((uint)(12 * cellScale), (uint)(12 * cellScale)));
+                        SolidGroup group = new SolidGroup(new TextureAtlas((uint)(24 * cellScale), (uint)(24 * cellScale)));
 
-                        group.Position = new Vector2f(cX * (cellScale * (cellScale / 33)), cY * (cellScale * (cellScale / 33)));
+                        group.Position = new Vector2f(cX * (cellScale * (cellScale / 19)), cY * (cellScale * (cellScale / 19)));
 
-                        var chunk = TerrainGenerator.GenerateChunk(cX * 12, cY * 12);
+                        var chunk = TerrainGenerator.GenerateChunk(cX * 24, cY * 24);
 
-                        for (int y = 0; y < 12; ++y)
+                        for (int y = 0; y < 24; ++y)
                         {
-                            for (int x = 0; x < 12; ++x)
+                            for (int x = 0; x < 24; ++x)
                             {
                                 var block = chunk[y][x];
 
