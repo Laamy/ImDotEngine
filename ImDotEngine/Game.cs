@@ -68,20 +68,20 @@ internal class Game : GameEngine
             
             // grid of shapes for performance debugging
             {
-                for (int cX = 0; cX < 150; ++cX)
+                for (int cX = 0; cX < 20; ++cX)
                 {
                     for (int cY = 0; cY < 2; ++cY)
                     {
                         // texture atlas/object group (not scaled up or down cuz its a fucking square)
-                        SolidGroup group = new SolidGroup(new TextureAtlas((uint)(24 * cellScale), (uint)(24 * cellScale)));
+                        SolidGroup group = new SolidGroup(new TextureAtlas((uint)(16 * cellScale), (uint)(16 * cellScale)));
 
-                        group.Position = new Vector2f(cX * (cellScale * (cellScale / 19)), cY * (cellScale * (cellScale / 19)));
+                        group.Position = new Vector2f(cX * (cellScale * (cellScale / 30)), cY * (cellScale * (cellScale / 30)));
 
-                        var chunk = TerrainGenerator.GenerateChunk(cX * 24, cY * 24);
+                        var chunk = TerrainGenerator.GenerateChunk(cX * 16, cY * 16);
 
-                        for (int y = 0; y < 24; ++y)
+                        for (int y = 0; y < 16; ++y)
                         {
-                            for (int x = 0; x < 24; ++x)
+                            for (int x = 0; x < 16; ++x)
                             {
                                 var block = chunk[y][x];
 
@@ -135,6 +135,8 @@ internal class Game : GameEngine
     {
         //ctx.Clear(new Color(0, 72, 105)); // clear buffer ready for next frame
         var camera = Components.OfType<Camera2D>().FirstOrDefault();
+
+        //ctx.Clear(new Color(0, 72, 105));
 
         Instance.Level.ApplyShader("skybox.frag", (skybox) =>
         {

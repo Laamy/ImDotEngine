@@ -1,5 +1,6 @@
 ﻿using SFML.Graphics;
 using SFML.System;
+using System.Diagnostics;
 
 class DebugPhysicsDetails
 {
@@ -7,6 +8,12 @@ class DebugPhysicsDetails
 
     public static void Draw(LocalPlayer entity, RenderWindow ctx)
     {
+        // gonna just reuse this
+        RectangleShape debugBox = new RectangleShape(new Vector2f(0, 0));
+        debugBox.FillColor = new Color(255, 0, 0, 255 / 5);
+        debugBox.OutlineThickness = 2;
+        debugBox.OutlineColor = new Color(0, 255, 0, 255);
+
         // push nearby collidables as red partially transparent squares
         {
             var nearbyChunks = Instance.Level.GetLayer(LevelLayers.ForeBlocks).GetNearbyObjects(entity.Player.Position, 75);
@@ -25,12 +32,10 @@ class DebugPhysicsDetails
                         // convert blockRect to worldspace
                         var blockRect = new FloatRect(chunk.GetPosition() + block.GetPosition().Mul(chunk.Scale), block.GetSize().Mul(chunk.Scale));
 
-                        RectangleShape debugBox = new RectangleShape(new Vector2f(blockRect.Width, blockRect.Height));
-                        
+                        if (debugBox.Size.X == 0)
+                            debugBox.Size = new Vector2f(blockRect.Width, blockRect.Height);
+
                         debugBox.Position = new Vector2f(blockRect.Left, blockRect.Top);
-                        debugBox.FillColor = new Color(255, 0, 0, 255 / 5);
-                        debugBox.OutlineThickness = 2;
-                        debugBox.OutlineColor = new Color(0, 255, 0, 255);
 
                         ctx.Draw(debugBox);
                     }

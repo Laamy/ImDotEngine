@@ -17,8 +17,8 @@ class TerrainGenerator
 
     public static BlockEnum[][] GenerateChunk(int X, int Y)
     {
-        int width = 24, 
-            height = 24;
+        int width = 16, 
+            height = 16;
 
         BlockEnum[][] rawChunk = new BlockEnum[height][];
         SimplexPerlin perlin = new SimplexPerlin(Seed);
