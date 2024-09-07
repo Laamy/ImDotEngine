@@ -9,4 +9,9 @@ class DebugLogger
 
         Console.WriteLine(logEntry);
     }
+
+    public static void Warn(string message)
+    {
+        Log("DEBUG", message);
+    }
 }

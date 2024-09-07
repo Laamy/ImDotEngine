@@ -129,6 +129,7 @@
     <None Include="Data\Font\Arial.ttf" />
     <None Include="Data\Shaders\fog.frag" />
     <None Include="Data\Shaders\skybox.frag" />
+    <None Include="Data\Shaders\texture_noise.frag" />
     <None Include="pack-assets.bat">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -156,6 +157,7 @@
     <Content Include="Data\Assets\Noise\DebugTexture.png" />
     <Content Include="Data\Assets\Noise\DebugTextureRed.png" />
     <Content Include="Data\Assets\Noise\FogTexture_Tile.png" />
+    <Content Include="Data\Assets\Noise\TextureNoise.png" />
     <Content Include="Data\Assets\Texture\biome\cave\grassy_stone.png" />
     <Content Include="Data\Assets\Texture\biome\desert\sand.png" />
     <Content Include="Data\Assets\Texture\biome\plain\grass.png" />

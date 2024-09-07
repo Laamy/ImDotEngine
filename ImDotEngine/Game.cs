@@ -88,8 +88,10 @@ internal class Game : GameEngine
                                 if (block == BlockEnum.Air)
                                     continue;
 
+                                //var shader = Instance.MaterialRepository.GetShader($"Shaders\\texture_noise.frag");
+                                
                                 SolidObject chunkBlock = new SolidObject();
-
+                                                                
                                 chunkBlock.Tags.Add(block);
                                 chunkBlock.Position = new Vector2f(x * cellScale, y * cellScale);
                                 chunkBlock.Size = new Vector2f(cellScale, cellScale);

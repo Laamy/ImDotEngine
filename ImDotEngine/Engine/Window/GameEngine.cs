@@ -42,7 +42,7 @@ internal class GameEngine
     public ClientInstance Instance = ClientInstance.GetSingle();
 
     // some animation stuff
-    public Stopwatch stopwatch = Stopwatch.StartNew();
+    public Stopwatch TimeSinceStart = Stopwatch.StartNew();
 
     public void Start()
     {
