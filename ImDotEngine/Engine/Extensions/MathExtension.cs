@@ -23,4 +23,16 @@ public static class Mathf
     }
 
     public static float Pow(double x, double y) => (float)System.Math.Pow(x, y);
+
+    public static float Max(float x, float y)
+    {
+        if (x > y) return x;
+        return y;
+    }
+
+    public static float Min(float x, float y)
+    {
+        if (x < y) return x;
+        return y;
+    }
 }

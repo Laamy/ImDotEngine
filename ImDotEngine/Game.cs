@@ -68,7 +68,7 @@ internal class Game : GameEngine
             
             // grid of shapes for performance debugging
             {
-                for (int cX = 0; cX < 20; ++cX)
+                for (int cX = 0; cX < 2; ++cX)
                 {
                     for (int cY = 0; cY < 2; ++cY)
                     {

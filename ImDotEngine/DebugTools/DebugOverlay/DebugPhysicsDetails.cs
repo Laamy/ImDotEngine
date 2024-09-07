@@ -9,14 +9,35 @@ class DebugPhysicsDetails
     {
         // gonna just reuse this
         RectangleShape debugBox = new RectangleShape(new Vector2f(0, 0));
-        debugBox.FillColor = new Color(255, 0, 0, 255 / 5);
         debugBox.OutlineThickness = 2;
         debugBox.OutlineColor = new Color(0, 255, 0, 255);
 
+        var nearbyChunks = entityComponent.GetNearby();
+
+        // draw the chunks bounding box
+        {
+            foreach (var _chunk in nearbyChunks)
+            {
+                if (_chunk != null)
+                {
+                    // its just accured to me that i scale the group
+                    var chunk = _chunk as SolidGroup;
+
+                    debugBox.FillColor = new Color(0, 0, 255, 255 / 5);
+                    debugBox.OutlineThickness = 2;
+                    debugBox.Size = chunk.GetSize();
+                    debugBox.Position = chunk.GetPosition();
+
+                    ctx.Draw(debugBox);
+                }
+            }
+        }
+
+        debugBox.FillColor = new Color(255, 0, 0, 255 / 5);
+        debugBox.Size = new Vector2f(0, 0);
+
         // push nearby collidables as red partially transparent squares
         {
-            var nearbyChunks = Instance.Level.GetLayer(LevelLayers.ForeBlocks).GetNearbyObjects(entityComponent.BodyRoot.Position, 75);
-            
             foreach (var _chunk in nearbyChunks)
             {
                 if (_chunk != null)

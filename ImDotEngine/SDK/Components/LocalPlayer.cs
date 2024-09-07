@@ -85,9 +85,13 @@ class LocalPlayer : RigidBodyComponent
     {
         BodyRoot = new SolidObject();
 
-        BodyRoot.Position = new Vector2f(100, -100);
-        BodyRoot.Size = new Vector2f(50, 100);
-        BodyRoot.Color = Color.White;
+        BodyRoot.Position = new Vector2f(100, 0);
+        BodyRoot.Size = new Vector2f(49, 100);
+        //BodyRoot.Color = Color.White;
+
+        var playerAsset = Instance.TextureRepository.GetTexture("Assets\\Texture\\player\\female.png");
+
+        BodyRoot.Texture = playerAsset;
 
         prevPos = BodyRoot.Position;
         curPos = BodyRoot.Position;

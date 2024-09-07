@@ -1,5 +1,7 @@
 ﻿using SFML.Graphics;
 using SFML.System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 
 class StaticTile
@@ -87,6 +89,18 @@ class RigidBodyComponent : BaseComponent
         return false;
     }
 
+    public IEnumerable<SolidActor> GetNearby()
+    {
+        var bodyCenter = BodyRoot.Position + (BodyRoot.Size / 2);
+        var radius = Mathf.Max(BodyRoot.Size.X, BodyRoot.Size.Y) / 2;
+
+        radius += 10; // keep it safe
+
+        var nearbyChunks = Instance.Level.GetLayer(LevelLayers.ForeBlocks).GetNearbyObjects(bodyCenter, radius);
+
+        return nearbyChunks;
+    }
+
     // TODO: avoid tunneling by stepping through all the steps ig
     private void ResolveCollisions()
     {
@@ -94,7 +108,7 @@ class RigidBodyComponent : BaseComponent
 
         InAir = true;
 
-        var nearbyChunks = Instance.Level.GetLayer(LevelLayers.ForeBlocks).GetNearbyObjects(BodyRoot.Position, 75);
+        var nearbyChunks = GetNearby();
 
         var playerPos = curPos;
         var playerSize = BodyRoot.GetSize();

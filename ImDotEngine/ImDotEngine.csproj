@@ -126,6 +126,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="Data\Assets\Texture\player\female.pdn" />
     <None Include="Data\Font\Arial.ttf" />
     <None Include="Data\Shaders\fog.frag" />
     <None Include="Data\Shaders\skybox.frag" />
@@ -166,6 +167,9 @@
     <Content Include="Data\Assets\Texture\biome\plain\grass_right.png" />
     <Content Include="Data\Assets\Texture\biome\plain\grass_right_dirt.png" />
     <Content Include="Data\Assets\Texture\dirt.png" />
+    <Content Include="Data\Assets\Texture\player\female.png" />
+    <Content Include="Data\Assets\Texture\player\female_bone.png" />
+    <Content Include="Data\Assets\Texture\player\female_raw.png" />
     <Content Include="Data\Assets\Texture\stone.png" />
     <Content Include="openal32.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
