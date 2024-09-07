@@ -10,6 +10,8 @@ using System.Linq;
 // I also want to move the booleans into "FLAGS" aka just putting an empty component on an entity
 // I want to do my own implementation of ENTT in a unique way that would make cheating harder but make modding easier if that makes sense(?)
 // NOTE: port everything to C++
+
+// TODO: make a physics/rigid body class for the localplayer to inherit
 class LocalPlayer : BaseComponent
 {
     public ClientInstance Instance = ClientInstance.GetSingle();
@@ -18,7 +20,7 @@ class LocalPlayer : BaseComponent
 
     public SolidObject Player;
 
-    public Vector2f Velocity = new Vector2f(0, 15);
+    public Vector2f Velocity = new Vector2f(0, 15); // TODO: add a second velocity vector for speed
     public Vector2f MovementVector = new Vector2f(0, 0); // each float between -1 and 1, TODO: check on each physics step if the player is moving left or right
 
     public Vector2f prevPos;
@@ -78,6 +80,7 @@ class LocalPlayer : BaseComponent
         Player.Position = curPos;
     }
 
+    // TODO: avoid tunneling by stepping through all the steps ig
     private void ResolveCollisions()
     {
         var Instance = ClientInstance.GetSingle();
@@ -104,16 +107,42 @@ class LocalPlayer : BaseComponent
                     // convert blockRect to worldspace
                     var blockRect = new FloatRect(chunk.GetPosition() + block.GetPosition().Mul(chunk.Scale), block.GetSize().Mul(chunk.Scale));
 
-                    if (playerRect.Intersects(blockRect))
+                    // I saw a function abit ago in the floatrect class for this
+                    // (BLOAT ALERT!)
+                    FloatRect overlapRect;
+                    if (playerRect.Intersects(blockRect, out overlapRect))
                     {
-                        // top face
-                        if (Velocity.Y > 0 && playerPos.Y <= blockRect.Top)
-                        {
-                            GroundPlayer(null, blockRect.Top - playerSize.Y);
-                        }
+                        Vector2f overlap = new Vector2f(overlapRect.Width, overlapRect.Height);
 
-                        // left face
-                        //if ((Velocity.X > 0 || MovementVector.X != 0) &&)
+                        // TODO: i want to handle blocks with angles differently.. for example the angled grass blocks should make the player go up if its the left or right (depending on the type)
+
+                        if (overlap.X < overlap.Y)
+                        {
+                            // TODO: add vert & hor collision flags seperately from onground & inair so i can verify this before clearing these flags
+                            ResetGroundFlags();
+
+                            if (playerRect.Left < blockRect.Left)
+                            {
+                                curPos.X -= overlap.X;
+                            }
+                            else
+                            {
+                                curPos.X += overlap.X;
+                            }
+                        }
+                        else
+                        {
+                            if (playerRect.Top < blockRect.Top)
+                            {
+                                GroundPlayer(null, blockRect.Top - playerSize.Y);
+                            }
+                            else
+                            {
+                                ResetGroundFlags();
+
+                                curPos.Y += overlap.Y;
+                            }
+                        }
                     }
                 }
             }
@@ -139,6 +168,12 @@ class LocalPlayer : BaseComponent
         curPos.Y = y == null ? curPos.Y : y.Value;
 
         InAir = false;
+    }
+
+    public void ResetGroundFlags()
+    {
+        OnGround = false;
+        InAir = true;
     }
 
     public override void OnUpdate(RenderWindow ctx)
