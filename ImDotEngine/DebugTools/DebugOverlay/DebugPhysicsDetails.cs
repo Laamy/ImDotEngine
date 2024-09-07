@@ -1,12 +1,11 @@
 ﻿using SFML.Graphics;
 using SFML.System;
-using System.Diagnostics;
 
 class DebugPhysicsDetails
 {
     public static ClientInstance Instance = ClientInstance.GetSingle();
 
-    public static void Draw(LocalPlayer entity, RenderWindow ctx)
+    public static void Draw(RigidBodyComponent entityComponent, RenderWindow ctx)
     {
         // gonna just reuse this
         RectangleShape debugBox = new RectangleShape(new Vector2f(0, 0));
@@ -16,7 +15,7 @@ class DebugPhysicsDetails
 
         // push nearby collidables as red partially transparent squares
         {
-            var nearbyChunks = Instance.Level.GetLayer(LevelLayers.ForeBlocks).GetNearbyObjects(entity.Player.Position, 75);
+            var nearbyChunks = Instance.Level.GetLayer(LevelLayers.ForeBlocks).GetNearbyObjects(entityComponent.BodyRoot.Position, 75);
             
             foreach (var _chunk in nearbyChunks)
             {
@@ -45,9 +44,9 @@ class DebugPhysicsDetails
 
         // Draw the velocity vector & debug text for the speed
         {
-            Vector2f lineDiff = new Vector2f(entity.curPos.X - entity.prevPos.X, entity.curPos.Y - entity.prevPos.Y);
+            Vector2f lineDiff = new Vector2f(entityComponent.curPos.X - entityComponent.prevPos.X, entityComponent.curPos.Y - entityComponent.prevPos.Y);
 
-            var lineStart = entity.curPos + new Vector2f(entity.Player.Size.X / 2, entity.Player.Size.Y);
+            var lineStart = entityComponent.curPos + new Vector2f(entityComponent.BodyRoot.Size.X / 2, entityComponent.BodyRoot.Size.Y);
             var lineEnd = lineStart + lineDiff;
 
             DebugRenderer.DrawLine(ctx, lineStart, lineEnd, Color.Red, 1);
@@ -61,8 +60,8 @@ class DebugPhysicsDetails
                               + $" X:{Mathf.Abs(lineDiff.X)}u/s\r\n"
                               + $" Y:{Mathf.Abs(lineDiff.Y)}u/s\r\n"
                               + $"\r\n"
-                              + $"Pos:{entity.curPos}\r\n"
-                              + $"OnGround: {entity.OnGround}";
+                              + $"Pos:{entityComponent.curPos}\r\n"
+                              + $"OnGround: {entityComponent.OnGround}";
             speedDisplay.Position = lineStart + new Vector2f(20, lineDiff.Y);
 
             ctx.Draw(speedDisplay.GetDrawable());
@@ -70,9 +69,9 @@ class DebugPhysicsDetails
 
         // Draw the prevPos
         {
-            var prevPosBox = new RectangleShape(entity.Player.Size);
+            var prevPosBox = new RectangleShape(entityComponent.BodyRoot.Size);
 
-            prevPosBox.Position = entity.prevPos;
+            prevPosBox.Position = entityComponent.prevPos;
             prevPosBox.FillColor = Color.Transparent;
             prevPosBox.OutlineThickness = 3;
             prevPosBox.OutlineColor = Color.Blue;
@@ -82,9 +81,9 @@ class DebugPhysicsDetails
 
         // Draw the curPos
         {
-            var curPosBox = new RectangleShape(entity.Player.Size);
+            var curPosBox = new RectangleShape(entityComponent.BodyRoot.Size);
 
-            curPosBox.Position = entity.curPos;
+            curPosBox.Position = entityComponent.curPos;
             curPosBox.FillColor = Color.Transparent;
             curPosBox.OutlineThickness = 2;
             curPosBox.OutlineColor = Color.Green;

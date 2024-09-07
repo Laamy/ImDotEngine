@@ -76,13 +76,8 @@ internal class GameEngine
 
             Size = new Vector2u(e.Width, e.Height);
         };
-
-        // Intro loop, I'll probably embed this into a component later for actual game assets loading
-        // for now its cuz when loading the actual level it'll keep the last rendered frame til its done
+        
         {
-            long prevTicks = DateTime.Now.Ticks;
-            long targetTicks = TimeSpan.TicksPerSecond / 8;
-
             // camera view
             View view = new View();
 

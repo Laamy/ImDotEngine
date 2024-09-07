@@ -90,6 +90,7 @@ internal class Game : GameEngine
 
                                 SolidObject chunkBlock = new SolidObject();
 
+                                chunkBlock.Tags.Add(block);
                                 chunkBlock.Position = new Vector2f(x * cellScale, y * cellScale);
                                 chunkBlock.Size = new Vector2f(cellScale, cellScale);
 

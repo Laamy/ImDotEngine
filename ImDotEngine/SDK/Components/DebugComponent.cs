@@ -1,11 +1,18 @@
-using SFML.System;
 using SFML.Window;
-using System.Linq;
 
-class DebugComponent : BaseComponent
+class DebugComponent : BaseComponent//RigidBodyComponent
 {
     public DebugComponent()
     {
+        //BodyRoot = new SolidObject();
+        //
+        //BodyRoot.Position = new Vector2f(200, -100);
+        //BodyRoot.Size = new Vector2f(50, 100);
+        //BodyRoot.Color = Color.Red;
+        //
+        //prevPos = BodyRoot.Position;
+        //curPos = BodyRoot.Position;
+
         DebugLogger.Log("Components", $"Initialized : DebugComponent");
     }
 

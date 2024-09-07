@@ -115,6 +115,7 @@
     <Compile Include="Engine\Objects\SolidText.cs" />
     <Compile Include="SDK\Components\DebugComponent.cs" />
     <Compile Include="SDK\Components\LocalPlayer.cs" />
+    <Compile Include="SDK\Components\RigidBodyComponent.cs" />
     <Compile Include="SDK\Enums\LevelLayers.cs" />
     <Compile Include="Engine\TextureRepository.cs" />
     <Compile Include="SDK\MaterialRepository.cs" />
