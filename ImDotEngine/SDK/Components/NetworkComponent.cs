@@ -105,7 +105,7 @@ class NetworkComponent : BaseComponent
 
         var packet = ImPacket.Decode(message);
 
-        DebugLogger.Log("NetworkComponent", $"{packet.Encode()}");// debug
+        //DebugLogger.Log("NetworkComponent", $"{packet.Encode()}");// debug
 
         if (packet is HandshakePacket handshake)
         {
@@ -172,8 +172,11 @@ class NetworkComponent : BaseComponent
                 return;
 
             // game should smooth it out
-            players[playerupdate.UUID].Item2.curPos = new Vector2f(playerupdate.X, playerupdate.Y);
-            players[playerupdate.UUID].Item2.Velocity = new Vector2f(playerupdate.VX, playerupdate.VY);
+            var bodycomp = players[playerupdate.UUID].Item2;
+
+            bodycomp.prevPos = bodycomp.curPos; // bruh
+            bodycomp.curPos = new Vector2f(playerupdate.X, playerupdate.Y);
+            bodycomp.Velocity = new Vector2f(playerupdate.VX, playerupdate.VY);
         }
     }
 }
