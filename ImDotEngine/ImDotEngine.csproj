@@ -129,7 +129,6 @@
     <Compile Include="SDK\Network\Packet\Packets\PlayerUpdatePacket.cs" />
     <Compile Include="SDK\Network\Packet\PacketType.cs" />
     <Compile Include="SDK\Network\NetworkObjects\Player.cs" />
-    <Compile Include="SDK\Network\ServerSocket.cs" />
     <Compile Include="SDK\Terrain\Blocks\BiomeEnum.cs" />
     <Compile Include="SDK\Terrain\Blocks\BlockEnum.cs" />
     <Compile Include="SDK\Terrain\SimplexPerlin.cs" />

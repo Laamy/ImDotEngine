@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 class NetworkComponent : BaseComponent
 {
@@ -92,14 +93,15 @@ class NetworkComponent : BaseComponent
 
     public override void Initialized()
     {
-        socket = new ClientSocket("127.0.0.1", 4746);
+        // 147.185.221.22:12714
+        socket = new ClientSocket("147.185.221.22", 12714);
 
         socket.OnReceived += OnReceived;
     }
 
     private Dictionary<string, Tuple<Player, RigidBodyComponent>> players = new Dictionary<string, Tuple<Player, RigidBodyComponent>>();
 
-    private async void OnReceived(byte[] msg)
+    private async Task OnReceived(byte[] msg)
     {
         string message = Encoding.ASCII.GetString(msg);
 

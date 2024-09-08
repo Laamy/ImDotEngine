@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading.Tasks;
 
 class GameServer
 {
@@ -26,7 +27,55 @@ class GameServer
         Console.ReadKey();
     }
 
-    private void OnConnect(TcpClient client)
+    /// <summary>
+    /// MAKE SURE TO HEAVILY VERIFY EVERYTHING SENT FROM CLIENT TO CLIENT!
+    /// </summary>
+    private async Task OnReceived(TcpClient client, byte[] arg2)
+    {
+        string message = Encoding.UTF8.GetString(arg2);
+
+        DebugLogger.Warn($"Packet recieved {message}");
+
+        // verify the packet should be broadcasted
+        {
+            var packet = ImPacket.Decode(message);
+
+            // only these specific packets are allowed to be transferred between clients..
+            if (packet is PlayerUpdatePacket playerupdate)
+            {
+                // malformed uuid check
+                if (playerupdate.UUID != "0")
+                {
+                    OnDisconnect(client);
+                    return;
+                }
+
+                // malformed coords check
+                if (Math.Abs(playerupdate.X) > 300000 ||
+                    Math.Abs(playerupdate.Y) > 300000)
+                {
+                    OnDisconnect(client);
+                    return;
+                }
+
+                // malformed coords check
+                if (Math.Abs(playerupdate.VX) > 300000 ||
+                    Math.Abs(playerupdate.VY) > 300000)
+                {
+                    OnDisconnect(client);
+                    return;
+                }
+
+                // update any info
+                playerupdate.UUID = clients[client].UUID;
+
+                // broadcast to clients
+                FireAllClientsEx(playerupdate.Encode(), client);
+            }
+        }
+    }
+
+    private async Task OnConnect(TcpClient client)
     {
         // add clients player to dictionary
         Player player = new Player() { UUID = Guid.NewGuid().ToString() };
@@ -70,7 +119,7 @@ class GameServer
         }
     }
 
-    private void OnDisconnect(TcpClient client)
+    private async Task OnDisconnect(TcpClient client)
     {
         string UUID = clients[client].UUID;
 
@@ -85,52 +134,6 @@ class GameServer
             FireAllClientsEx(playerremove.Encode(), client);
         }
         client?.Close();
-    }
-
-    /// <summary>
-    /// MAKE SURE TO HEAVILY VERIFY EVERYTHING SENT FROM CLIENT TO CLIENT!
-    /// </summary>
-    private void OnReceived(TcpClient client, byte[] arg2)
-    {
-        string message = Encoding.UTF8.GetString(arg2);
-
-        // verify the packet should be broadcasted
-        {
-            var packet = ImPacket.Decode(message);
-
-            // only these specific packets are allowed to be transferred between clients..
-            if (packet is PlayerUpdatePacket playerupdate)
-            {
-                // malformed uuid check
-                if (playerupdate.UUID != "0")
-                {
-                    OnDisconnect(client);
-                    return;
-                }
-
-                // malformed coords check
-                if (Math.Abs(playerupdate.X) > 300000 ||
-                    Math.Abs(playerupdate.Y) > 300000)
-                {
-                    OnDisconnect(client);
-                    return;
-                }
-
-                // malformed coords check
-                if (Math.Abs(playerupdate.VX) > 300000 ||
-                    Math.Abs(playerupdate.VY) > 300000)
-                {
-                    OnDisconnect(client);
-                    return;
-                }
-
-                // update any info
-                playerupdate.UUID = clients[client].UUID;
-
-                // broadcast to clients
-                FireAllClientsEx(playerupdate.Encode(), client);
-            }
-        }
     }
 
     public void FireClient(string message, TcpClient client)

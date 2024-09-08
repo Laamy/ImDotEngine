@@ -16,8 +16,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Experiments", "Experiments"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImDotServer", "ImDotServer\ImDotServer.csproj", "{A8796054-8272-40E8-BE52-D58EEEED14B2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImDotClientHeadless", "ImDotClientHeadless\ImDotClientHeadless.csproj", "{40C56BF0-658F-42D9-9379-DA9CA2D25BD2}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Server", "Server", "{092D34D8-4540-47A4-A71B-8F61C163F845}"
 EndProject
 Global
@@ -52,14 +50,6 @@ Global
 		{A8796054-8272-40E8-BE52-D58EEEED14B2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A8796054-8272-40E8-BE52-D58EEEED14B2}.Release|x64.ActiveCfg = Release|Any CPU
 		{A8796054-8272-40E8-BE52-D58EEEED14B2}.Release|x64.Build.0 = Release|Any CPU
-		{40C56BF0-658F-42D9-9379-DA9CA2D25BD2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{40C56BF0-658F-42D9-9379-DA9CA2D25BD2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{40C56BF0-658F-42D9-9379-DA9CA2D25BD2}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{40C56BF0-658F-42D9-9379-DA9CA2D25BD2}.Debug|x64.Build.0 = Debug|Any CPU
-		{40C56BF0-658F-42D9-9379-DA9CA2D25BD2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{40C56BF0-658F-42D9-9379-DA9CA2D25BD2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{40C56BF0-658F-42D9-9379-DA9CA2D25BD2}.Release|x64.ActiveCfg = Release|Any CPU
-		{40C56BF0-658F-42D9-9379-DA9CA2D25BD2}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -67,7 +57,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{29911FAA-1D48-4AAF-B49D-63A0BF88D727} = {8BFFA146-97D6-4F6D-BA72-BA68616B8D9C}
 		{A8796054-8272-40E8-BE52-D58EEEED14B2} = {092D34D8-4540-47A4-A71B-8F61C163F845}
-		{40C56BF0-658F-42D9-9379-DA9CA2D25BD2} = {092D34D8-4540-47A4-A71B-8F61C163F845}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9BB9A30B-BEFE-4C73-A6A6-918A1E6E67C9}

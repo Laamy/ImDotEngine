@@ -11,13 +11,18 @@ class ServerSocket
 {
     private TcpListener _listener;
 
-    public event Action<TcpClient, byte[]> OnReceived;
-    public event Action<TcpClient> OnDisconnect;
-    public event Action<TcpClient> OnConnect;
+    public event Func<TcpClient, byte[], Task> OnReceived;
+    public event Func<TcpClient, Task> OnDisconnect;
+    public event Func<TcpClient, Task> OnConnect;
 
     public ServerSocket(IPAddress ip, int port)
     {
         _listener = new TcpListener(ip, port);
+        _listener.Server.ReceiveTimeout = 5000; // 5 seconds
+        _listener.Server.SendTimeout = 5000;
+        _listener.Server.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.KeepAlive, true);
+        _listener.Server.NoDelay = true; // batching packets is gay as FUCK
+
         _listener.Start();
 
         StartAcceptingClients();
@@ -32,7 +37,7 @@ class ServerSocket
             if (client == null)
                     continue;
 
-            OnConnect.Invoke(client);
+            OnConnect?.Invoke(client);
 
             Task.Run(() => HandleClient(client));
         }
@@ -45,23 +50,33 @@ class ServerSocket
 
         while (true)
         {
-            try
+            int bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
+
+            if (bytesRead == 0)
+                break;
+
+            byte[] data = new byte[bytesRead];
+            Array.Copy(buffer, data, bytesRead); // clone data
+
+            string message = Encoding.ASCII.GetString(data);
+
+            // handle multiple packets per read being in the network stream
+            if (message.Contains("\n"))
             {
-                int bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
+                string[] packets = message.Trim().Split('\n');
 
-                if (bytesRead == 0)
-                    break;
+                foreach(var packet in packets)
+                {
+                    byte[] bytes = new byte[packet.Length];
+                    bytes = Encoding.ASCII.GetBytes(packet);
 
-                byte[] data = new byte[bytesRead];
-                Array.Copy(buffer, data, bytesRead); // clone data
+                    OnReceived?.Invoke(client, bytes);
+                }
 
-                OnReceived.Invoke(client, data);
+                continue;
             }
-            catch
-            {
-                OnDisconnect.Invoke(client);
-                client.Close();
-            }
+
+            OnReceived?.Invoke(client, data);
         }
     }
 

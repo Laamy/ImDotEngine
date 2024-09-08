@@ -1,6 +1,7 @@
 ﻿class HandshakePacket : Packet
 {
     public string UUID {  get; set; }
+    public string Username {  get; set; }
     public ushort WorldSeed {  get; set; }//65536
 
     public HandshakePacket() : base(PacketType.HANDSHAKE) { } // blank/empty packet
