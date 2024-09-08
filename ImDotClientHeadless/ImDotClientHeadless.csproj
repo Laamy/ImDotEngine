@@ -46,6 +46,13 @@
     <Compile Include="ClientSocket.cs" />
     <Compile Include="DebugLogger.cs" />
     <Compile Include="GameClient.cs" />
+    <Compile Include="Network\Packet\ImPacket.cs" />
+    <Compile Include="Network\Packet\Packets\HandshakePacket.cs" />
+    <Compile Include="Network\Packet\Packet.cs" />
+    <Compile Include="Network\Packet\Packets\PlayerAddPacket.cs" />
+    <Compile Include="Network\Packet\Packets\PlayerRemovePacket.cs" />
+    <Compile Include="Network\Packet\PacketType.cs" />
+    <Compile Include="Network\Packet\Packets\PlayerUpdatePacket.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -53,5 +60,6 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

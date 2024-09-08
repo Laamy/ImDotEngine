@@ -10,11 +10,11 @@ class GameServer
     private ServerSocket _socket;
     private Dictionary<TcpClient, Player> clients = new Dictionary<TcpClient, Player>();
     private Random random = new Random();
-    private int worldSeed;
+    private ushort worldSeed;
 
     public GameServer()
     {
-        worldSeed = random.Next(1, 100001);
+        worldSeed = (ushort)random.Next(0, 65536);
 
         _socket = new ServerSocket(IPAddress.Any, 4746);
         _socket.OnConnect += OnConnect;
@@ -34,12 +34,24 @@ class GameServer
         clients[client] = player;
 
         // tell client world seed
-        _socket.Send(client, $"SEED:{worldSeed}");
+        {
+            var handshake = ImPacket.Create<HandshakePacket>();
+            handshake.WorldSeed = worldSeed;
+
+            _socket.Send(client, handshake.Encode());
+        }
 
         DebugLogger.Log("GameServer", $"Connected client, assigned UUID: {player.UUID}");
 
         // tell other clients to add a new player
-        Broadcast($"ADD_PLAYER:{player.UUID}\n", client);
+        {
+            var playeradd = ImPacket.Create<PlayerAddPacket>();
+            playeradd.UUID = player.UUID;
+            playeradd.X = player.X;
+            playeradd.Y = player.Y;
+
+            Broadcast(playeradd.Encode(), client);
+        }
     }
 
     private void OnDisconnect(TcpClient client)
@@ -50,15 +62,51 @@ class GameServer
 
         // remove from dictionary tell clients to remove player & close connection
         clients.Remove(client);
-        Broadcast($"REMOVE_PLAYER:{UUID}\n", client);
+        {
+            var playerremove = ImPacket.Create<PlayerRemovePacket>();
+            playerremove.UUID = UUID;
+
+            Broadcast(playerremove.Encode(), client);
+        }
         client?.Close();
     }
 
+    /// <summary>
+    /// MAKE SURE TO HEAVILY VERIFY EVERYTHING SENT FROM CLIENT TO CLIENT!
+    /// </summary>
     private void OnReceived(TcpClient client, byte[] arg2)
     {
         string message = Encoding.UTF8.GetString(arg2);
 
-        Broadcast(message, client);
+        // verify the packet should be broadcasted
+        {
+            var packet = ImPacket.Decode(message);
+
+            // only these specific packets are allowed to be transferred between clients..
+            if (packet is PlayerUpdatePacket playerupdate)
+            {
+                // malformed uuid check
+                if (playerupdate.UUID != "0")
+                {
+                    OnDisconnect(client);
+                    return;
+                }
+
+                // malformed coords check
+                if (Math.Abs(playerupdate.X) > 300000 ||
+                    Math.Abs(playerupdate.Y) > 300000)
+                {
+                    OnDisconnect(client);
+                    return;
+                }
+
+                // update any info
+                playerupdate.UUID = clients[client].UUID;
+
+                // broadcast to clients
+                Broadcast(playerupdate.Encode(), client);
+            }
+        }
     }
 
     public void Broadcast(string message, TcpClient excludeClient)

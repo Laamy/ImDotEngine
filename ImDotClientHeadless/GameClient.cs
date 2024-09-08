@@ -7,7 +7,15 @@ class GameClient
     private string myUuid;
     private bool connected = false; // temp
 
-    public void SendPosition(float x, float y) => socket.Send($"UPDATE_POSITION:{myUuid}.{x},{y}");
+    public void SendPosition(float x, float y)
+    {
+        var packet = ImPacket.Create<PlayerUpdatePacket>();
+
+        packet.X = x;
+        packet.Y = y;
+
+        socket.Send(packet.Encode());
+    }
 
     public GameClient(string ip, int port)
     {
@@ -21,45 +29,30 @@ class GameClient
     }
 
     // clean message then pass to ProcessMessage
-    private void OnMessage(byte[] obj) => ProcessMessage(Encoding.ASCII.GetString(obj).Trim());
+    private void OnMessage(byte[] obj) => ProcessMessage(ImPacket.Decode(Encoding.ASCII.GetString(obj).Trim()));
 
-    public void ProcessMessage(string message)
+    public void ProcessMessage(Packet packet)
     {
-        DebugLogger.Log("DEBUG", $"Raw; {message}");
-
-        string[] parts = message.Split(':');
-
-        var type = parts[0].ToString();
-        
-        // TODO: move packets to actual files & packet files with events/overrides
-        if (type == "SEED")
+        if (packet is HandshakePacket handshake)
         {
-            int seed = int.Parse(parts[1]);
-            DebugLogger.Log("ClientPackets", $"Recieved world seed {seed}");
+            DebugLogger.Log("ClientPackets", $"Recieved world seed {handshake.WorldSeed}");
         }
-        else if (type == "REMOVE_PLAYER")
+        else if (packet is PlayerRemovePacket playerremove)
         {
-            string uuid = parts[1];
-            DebugLogger.Log("ClientPackets", $"Lost player {uuid}");
+            DebugLogger.Log("ClientPackets", $"Lost player {playerremove.UUID}");
         }
-        else if (type == "ADD_PLAYER")
+        else if (packet is PlayerAddPacket playeradd)
         {
-            string uuid = parts[1];
-            DebugLogger.Log("ClientPackets", $"Recieved player {uuid}");
+            DebugLogger.Log("ClientPackets", $"Recieved player {playeradd.UUID} at {playeradd.X},{playeradd.Y}");
         }
-        else if (type == "UPDATE_POSITION")
+        else if (packet is PlayerUpdatePacket playerupdate)
         {
-            string uuid = parts[1];
-            string[] pos = parts[2].Split(',');
-
-            float x = float.Parse(pos[0]);
-            float y = float.Parse(pos[1]);
-
-            DebugLogger.Log("ClientPackets", $"Player {uuid} moved to {x},{y}");
+            DebugLogger.Log("ClientPackets", $"Player {playerupdate.Name} moved to {playerupdate.X},{playerupdate.Y}");
         }
         else
         {
-            DebugLogger.Log("ClientPackets", $"Invalid packet type {type}");
+            DebugLogger.Log("ClientPackets", $"Invalid packet type {packet.Name}");
+            throw new Exception("Unexpected packet, check console for details");
         }
     }
 }

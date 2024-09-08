@@ -119,6 +119,7 @@
     <Compile Include="SDK\Enums\LevelLayers.cs" />
     <Compile Include="Engine\TextureRepository.cs" />
     <Compile Include="SDK\MaterialRepository.cs" />
+    <Compile Include="SDK\Network\ClientSocket.cs" />
     <Compile Include="SDK\Terrain\Blocks\BiomeEnum.cs" />
     <Compile Include="SDK\Terrain\Blocks\BlockEnum.cs" />
     <Compile Include="SDK\Terrain\SimplexPerlin.cs" />

@@ -45,6 +45,13 @@
   <ItemGroup>
     <Compile Include="DebugLogger.cs" />
     <Compile Include="GameServer.cs" />
+    <Compile Include="Network\Packet\ImPacket.cs" />
+    <Compile Include="Network\Packet\Packet.cs" />
+    <Compile Include="Network\Packet\Packets\HandshakePacket.cs" />
+    <Compile Include="Network\Packet\Packets\PlayerAddPacket.cs" />
+    <Compile Include="Network\Packet\Packets\PlayerRemovePacket.cs" />
+    <Compile Include="Network\Packet\Packets\PlayerUpdatePacket.cs" />
+    <Compile Include="Network\Packet\PacketType.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
