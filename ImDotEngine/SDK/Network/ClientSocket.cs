@@ -1,6 +1,10 @@
 ﻿using System.Net.Sockets;
 using System.Text;
 using System;
+using System.Data;
+using System.Linq;
+using System.Collections.Generic;
+using System.Windows.Forms;
 
 class ClientSocket
 {
@@ -19,7 +23,7 @@ class ClientSocket
 
     private async void StartReceiving()
     {
-        byte[] buffer = new byte[1024];
+        byte[] buffer = new byte[1024];// large to allow multiple packets at once
 
         while (true)
         {
@@ -33,7 +37,20 @@ class ClientSocket
                 byte[] data = new byte[bytesRead];
                 Array.Copy(buffer, data, bytesRead); // clone
 
-                OnReceived.Invoke(data);
+                if (data.Contains((byte)'\n'))
+                {
+                    // multiple packets in 1 message cuz sockets are fucking gay
+                    string[] messages = Encoding.ASCII.GetString(data).Trim().Split('\n');
+
+                    foreach (var packet in messages)
+                    {
+                        // TODO: i might aswell jsut return the fuckiung string at this point
+                        var freshData = Encoding.ASCII.GetBytes(packet);
+
+                        OnReceived.Invoke(freshData);
+                    }
+                }
+                else OnReceived.Invoke(data);
             }
             catch { };
         }

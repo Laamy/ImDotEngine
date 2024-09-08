@@ -4,7 +4,6 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 
-// temp and insecure!
 class GameServer
 {
     private ServerSocket _socket;
@@ -33,12 +32,28 @@ class GameServer
         Player player = new Player() { UUID = Guid.NewGuid().ToString() };
         clients[client] = player;
 
-        // tell client world seed
+        // tell client info & send client playerlist
         {
             var handshake = ImPacket.Create<HandshakePacket>();
-            handshake.WorldSeed = worldSeed;
 
-            _socket.Send(client, handshake.Encode());
+            handshake.WorldSeed = worldSeed;
+            handshake.UUID = player.UUID;
+
+            FireClient(handshake.Encode(), client);
+
+            foreach (var _client in clients)
+            {
+                if (_client.Key == client)
+                    continue;
+
+                var playeradd = ImPacket.Create<PlayerAddPacket>();
+
+                playeradd.UUID = _client.Value.UUID;//OOPS
+                playeradd.X = _client.Value.X;
+                playeradd.Y = _client.Value.Y;
+
+                FireClient(playeradd.Encode(), client);
+            }
         }
 
         DebugLogger.Log("GameServer", $"Connected client, assigned UUID: {player.UUID}");
@@ -46,11 +61,12 @@ class GameServer
         // tell other clients to add a new player
         {
             var playeradd = ImPacket.Create<PlayerAddPacket>();
+
             playeradd.UUID = player.UUID;
             playeradd.X = player.X;
             playeradd.Y = player.Y;
 
-            Broadcast(playeradd.Encode(), client);
+            FireAllClientsEx(playeradd.Encode(), client);
         }
     }
 
@@ -66,7 +82,7 @@ class GameServer
             var playerremove = ImPacket.Create<PlayerRemovePacket>();
             playerremove.UUID = UUID;
 
-            Broadcast(playerremove.Encode(), client);
+            FireAllClientsEx(playerremove.Encode(), client);
         }
         client?.Close();
     }
@@ -100,16 +116,35 @@ class GameServer
                     return;
                 }
 
+                // malformed coords check
+                if (Math.Abs(playerupdate.VX) > 300000 ||
+                    Math.Abs(playerupdate.VY) > 300000)
+                {
+                    OnDisconnect(client);
+                    return;
+                }
+
                 // update any info
                 playerupdate.UUID = clients[client].UUID;
 
                 // broadcast to clients
-                Broadcast(playerupdate.Encode(), client);
+                FireAllClientsEx(playerupdate.Encode(), client);
             }
         }
     }
 
-    public void Broadcast(string message, TcpClient excludeClient)
+    public void FireClient(string message, TcpClient client)
+    {
+        if (client == null)
+        {
+            OnDisconnect(client);
+            return;
+        }
+
+        _socket.Send(client, message + "\n");
+    }
+
+    public void FireAllClientsEx(string message, TcpClient excludeClient)
     {
         if (excludeClient == null)
         {
@@ -123,7 +158,7 @@ class GameServer
             {
                 if (client.Key != excludeClient)
                 {
-                    _socket.Send(client.Key, message);
+                    FireClient(message, client.Key);
                 }
             }
             catch

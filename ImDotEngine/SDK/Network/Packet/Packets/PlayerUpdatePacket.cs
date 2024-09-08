@@ -1,4 +1,6 @@
-﻿class PlayerUpdatePacket : Packet
+﻿using System;
+
+class PlayerUpdatePacket : Packet
 {
     public string UUID { get; set; }
 
@@ -10,6 +12,7 @@
     public float VX { get; set; }
     public float VY { get; set; }
 
+
     public PlayerUpdatePacket() : base(PacketType.PLAYER_UPDATE) { }
     public PlayerUpdatePacket(string format) : base(PacketType.PLAYER_UPDATE) => Decode(format);
 
@@ -20,6 +23,7 @@
 
     public override void Decode(string format)
     {
+        Console.WriteLine(format);
         var parts = format.Split(':');
 
         if (parts[0] != Name)

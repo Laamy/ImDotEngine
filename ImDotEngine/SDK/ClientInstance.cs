@@ -23,4 +23,6 @@ internal class ClientInstance
     public MaterialRepository MaterialRepository = new MaterialRepository();
     public TextureRepository TextureRepository = new TextureRepository();
     public FontRepository FontRepository = new FontRepository();
+
+    public bool AllowPhysics { get; internal set; }
 }

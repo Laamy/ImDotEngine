@@ -2,6 +2,7 @@
 using SFML.System;
 using SFML.Window;
 using System;
+using System.Security.AccessControl;
 
 // NOTE: move all the properties into components and stack similar ones next to each other in memory (ECS/ENTT)
 // it means I could make physics steps faster by a fuckton
@@ -57,6 +58,7 @@ class LocalPlayer : RigidBodyComponent
     public override void OnFixedUpdate()
     {
         // gonna do this pre-fixed
+        if (Instance.Engine.HasFocus)
         {
             MovementVector = new Vector2f(); // clear
 

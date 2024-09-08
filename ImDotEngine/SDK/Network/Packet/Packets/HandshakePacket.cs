@@ -1,7 +1,7 @@
 ﻿class HandshakePacket : Packet
 {
-    public string UUID { get; set; }
-    public ushort WorldSeed { get; set; }//65536
+    public string UUID {  get; set; }
+    public ushort WorldSeed {  get; set; }//65536
 
     public HandshakePacket() : base(PacketType.HANDSHAKE) { } // blank/empty packet
     public HandshakePacket(string format) : base(PacketType.HANDSHAKE) => Decode(format); // redirect to decode

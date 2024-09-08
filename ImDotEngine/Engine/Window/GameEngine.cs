@@ -240,6 +240,15 @@ internal class GameEngine
     }
 
     /// <summary>
+    /// If the window has focus or not
+    /// </summary>
+    public bool HasFocus
+    {
+        get => window.HasFocus();
+        set => window.RequestFocus(); // TODO: add a check here
+    }
+
+    /// <summary>
     /// Camera Size
     /// </summary>
     public Vector2u Size

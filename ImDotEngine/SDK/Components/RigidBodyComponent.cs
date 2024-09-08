@@ -30,6 +30,8 @@ class RigidBodyComponent : BaseComponent
     public bool OnGround = false;
     public bool InAir = false;
 
+    public bool ActiveCamera { get; set; } = true;
+
     #endregion
 
     public override void OnFixedUpdate()
@@ -211,6 +213,7 @@ class RigidBodyComponent : BaseComponent
         // TODO: allow solidgroups to be rigid bodies and not just solid objects..
         ctx.Draw(BodyRoot.GetShape());
 
+        if (ActiveCamera) // TODO: move this to localplayer cuz i forgot to earlier..
         {
             var camera = Instance.Engine.Components.OfType<Camera2D>().FirstOrDefault();
 
