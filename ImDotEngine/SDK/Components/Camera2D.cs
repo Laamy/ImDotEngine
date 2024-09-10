@@ -15,6 +15,8 @@ internal class Camera2D : BaseComponent
     private Vector2f position = new Vector2f(0, 0);
     private Vector2f size = new Vector2f(800, 700);
     private float zoom = 1;
+    private float maxZoom = 5;
+    private float minZoom = 0;
 
     // for camera zooming
     private bool moving = false;
@@ -79,7 +81,7 @@ internal class Camera2D : BaseComponent
             position = value;
         }
     }
-    
+
     /// <summary>
     /// Camera Zoom
     /// </summary>
@@ -89,6 +91,30 @@ internal class Camera2D : BaseComponent
         set
         {
             zoom = value;
+        }
+    }
+
+    /// <summary>
+    /// Max Camera Zoom
+    /// </summary>
+    public float MaxZoom
+    {
+        get => maxZoom;
+        set
+        {
+            maxZoom = value;
+        }
+    }
+
+    /// <summary>
+    /// Max Camera Zoom
+    /// </summary>
+    public float MinZoom
+    {
+        get => minZoom;
+        set
+        {
+            minZoom = value;
         }
     }
 
@@ -107,7 +133,11 @@ internal class Camera2D : BaseComponent
             Vector2f topLeft = Instance.Engine.window.MapPixelToCoords(new Vector2i(0, 0));
             Vector2f bottomRight = Instance.Engine.window.MapPixelToCoords(new Vector2i((int)size.X, (int)size.Y));
 
-            return new FloatRect(topLeft, bottomRight - topLeft);
+            Vector2f sizeInWorld = bottomRight - topLeft;
+
+            sizeInWorld /= zoom;
+
+            return new FloatRect(topLeft, sizeInWorld);
         }
     }
 
@@ -160,6 +190,9 @@ internal class Camera2D : BaseComponent
                 Zoom /= (1 + zoomAmount);
             else if (e.Delta < 0)
                 Zoom *= (1 + zoomAmount);
+            
+            zoom = Mathf.Max(zoom, minZoom);
+            zoom = Mathf.Min(zoom, maxZoom);
         }
     }
 

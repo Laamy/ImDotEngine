@@ -125,6 +125,7 @@
     <Compile Include="SDK\Network\Packet\Packet.cs" />
     <Compile Include="SDK\Network\Packet\Packets\HandshakePacket.cs" />
     <Compile Include="SDK\Network\Packet\Packets\PlayerAddPacket.cs" />
+    <Compile Include="SDK\Network\Packet\Packets\PlayerBouncePacket.cs" />
     <Compile Include="SDK\Network\Packet\Packets\PlayerRemovePacket.cs" />
     <Compile Include="SDK\Network\Packet\Packets\PlayerUpdatePacket.cs" />
     <Compile Include="SDK\Network\Packet\PacketType.cs" />

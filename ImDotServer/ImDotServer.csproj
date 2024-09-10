@@ -49,16 +49,23 @@
     <Compile Include="Network\Packet\Packet.cs" />
     <Compile Include="Network\Packet\Packets\HandshakePacket.cs" />
     <Compile Include="Network\Packet\Packets\PlayerAddPacket.cs" />
+    <Compile Include="Network\Packet\Packets\PlayerBouncePacket.cs" />
     <Compile Include="Network\Packet\Packets\PlayerRemovePacket.cs" />
     <Compile Include="Network\Packet\Packets\PlayerUpdatePacket.cs" />
     <Compile Include="Network\Packet\PacketType.cs" />
     <Compile Include="Player.cs" />
+    <Compile Include="Plugin\BasePlugin.cs" />
+    <Compile Include="Plugin\PluginList.cs" />
+    <Compile Include="Plugin\Plugins\Anticheat\Anticheat.cs" />
+    <Compile Include="Plugin\Plugins\Anticheat\SpeedHack.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServerSocket.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="Plugin\README.md" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

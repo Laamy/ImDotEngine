@@ -72,11 +72,13 @@ class NetworkComponent : BaseComponent
                         group.Scale = new Vector2f(0.25f, 0.25f);
                         group.Invalidate(); // refresh texture atlas
 
-                        Instance.Level.GetLayer(LevelLayers.ForeBlocks).AddObject(group);
+                        layer.AddObject(group);
                     }
                 }
             }
         }
+
+        Console.WriteLine("Terrain generation finished");
     }
 
     public override void OnFixedUpdate()
@@ -93,8 +95,8 @@ class NetworkComponent : BaseComponent
 
     public override void Initialized()
     {
-        // 147.185.221.22:12714
-        socket = new ClientSocket("147.185.221.22", 12714);
+        //socket = new ClientSocket("147.185.221.22", 12714);
+        socket = new ClientSocket("127.0.0.1", 4746);
 
         socket.OnReceived += OnReceived;
     }
@@ -137,7 +139,7 @@ class NetworkComponent : BaseComponent
                 body.ActiveCamera = false; // disable camera on this body
 
                 body.BodyRoot.Position = new Vector2f(100, 0);
-                body.BodyRoot.Size = new Vector2f(49, 100);
+                body.BodyRoot.Size = new Vector2f(38, 65);
                 //BodyRoot.Color = Color.Red;
 
                 var playerAsset = Instance.TextureRepository.GetTexture("Assets\\Texture\\player\\female.png");
@@ -179,6 +181,19 @@ class NetworkComponent : BaseComponent
             bodycomp.prevPos = bodycomp.curPos; // bruh
             bodycomp.curPos = new Vector2f(playerupdate.X, playerupdate.Y);
             bodycomp.Velocity = new Vector2f(playerupdate.VX, playerupdate.VY);
+        }
+
+        if (packet is PlayerBouncePacket playerbounce)
+        {
+            // reset player info to this (we wont be smoothing this out..)
+
+            var localPlayer = Instance.Engine.Components.OfType<LocalPlayer>().FirstOrDefault();
+
+            localPlayer.curPos = new Vector2f(playerbounce.X, playerbounce.Y);
+            localPlayer.prevPos = localPlayer.curPos;
+            localPlayer.BodyRoot.Position = localPlayer.curPos;
+
+            localPlayer.Velocity = new Vector2f(playerbounce.VX, playerbounce.VY);
         }
     }
 }

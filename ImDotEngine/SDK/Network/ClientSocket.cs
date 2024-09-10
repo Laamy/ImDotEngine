@@ -63,8 +63,15 @@ class ClientSocket
             return;
         }
 
-        byte[] buffer = Encoding.ASCII.GetBytes(message + "\n");
-        _stream.Write(buffer, 0, buffer.Length);
+        try
+        {
+            byte[] buffer = Encoding.ASCII.GetBytes(message + "\n");
+            _stream.Write(buffer, 0, buffer.Length);
+        }
+        catch
+        {
+            Close();
+        }
     }
 
     public void Close()

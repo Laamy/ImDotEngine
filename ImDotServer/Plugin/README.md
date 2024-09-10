@@ -1,0 +1,1 @@
+﻿this will be the actual servers functionality everything else will be handled by GameServer.cs (the actual recieving and storing player info ect)

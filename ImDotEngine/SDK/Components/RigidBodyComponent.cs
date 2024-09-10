@@ -27,12 +27,28 @@ class RigidBodyComponent : BaseComponent
     const float Gravity = 2;
     const int MaxGravity = 240; // in units
 
+    public float Zoom = 1;
+    public float MaxZoom = 1;
+    public float MinZoom = 0.1f;
+
     public bool OnGround = false;
     public bool InAir = false;
 
     public bool ActiveCamera { get; set; } = true;
 
     #endregion
+
+    public void RefreshCamera()
+    {
+        var camera = Instance.Engine.Components.OfType<Camera2D>().FirstOrDefault();
+
+        camera.AllowMove = false;
+        camera.AllowZoom = true;
+
+        camera.Zoom = Zoom;
+        camera.MaxZoom = MaxZoom;
+        camera.MinZoom = MinZoom;
+    }
 
     public override void OnFixedUpdate()
     {
@@ -130,6 +146,7 @@ class RigidBodyComponent : BaseComponent
                     // convert blockRect to worldspace
                     var blockRect = new FloatRect(chunk.GetPosition() + block.GetPosition().Mul(chunk.Scale), block.GetSize().Mul(chunk.Scale));
 
+                    // NOTE: I would like to check if blocks are nearby me before making an intersects check due to how large it is math wise
                     // I saw a function abit ago in the floatrect class for this
                     // (BLOAT ALERT!)
                     FloatRect overlapRect;
@@ -217,10 +234,8 @@ class RigidBodyComponent : BaseComponent
         {
             var camera = Instance.Engine.Components.OfType<Camera2D>().FirstOrDefault();
 
-            camera.AllowMove = false;
-            camera.AllowZoom = false;
-
-            camera.Zoom = 1;
+            if (camera.AllowMove == true)
+                RefreshCamera();
 
             var bounds = camera.CameraBounds;
             camera.Position = new Vector2f(BodyRoot.Position.X - (bounds.Width / 2) + (BodyRoot.Size.X / 2), BodyRoot.Position.Y - (bounds.Height / 2) + (BodyRoot.Size.Y / 2));

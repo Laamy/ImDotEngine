@@ -9,6 +9,7 @@ class ImPacket
         { nameof(PacketType.PLAYER_UPDATE), () => new PlayerUpdatePacket() },
         { nameof(PacketType.PLAYER_ADD), () => new PlayerAddPacket() },
         { nameof(PacketType.PLAYER_REMOVE), () => new PlayerRemovePacket() },
+        { nameof(PacketType.PLAYER_BOUNCE), () => new PlayerBouncePacket() },
     };
 
     public static T Create<T>() where T : Packet, new()
