@@ -9,6 +9,7 @@ using System.Xml.Linq;
 
 #endregion
 
+#if CLIENT
 internal class TextureRepository
 {   
     private Dictionary<string, Texture> m_cache = new Dictionary<string, Texture>();
@@ -49,3 +50,4 @@ internal class TextureRepository
         throw new Exception("Invalid texture");
     }
 }
+#endif

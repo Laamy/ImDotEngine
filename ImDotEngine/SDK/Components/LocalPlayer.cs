@@ -7,6 +7,7 @@ using SFML.Window;
 // I also want to move the booleans into "FLAGS" aka just putting an empty component on an entity
 // I want to do my own implementation of ENTT in a unique way that would make cheating harder but make modding easier if that makes sense(?)
 // NOTE: port everything to C++
+#if CLIENT
 class LocalPlayer : RigidBodyComponent
 {
     #region player properties
@@ -134,3 +135,4 @@ class LocalPlayer : RigidBodyComponent
         DebugLogger.Log("Components", $"Initialized : LocalPlayer");
     }
 }
+#endif

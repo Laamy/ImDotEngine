@@ -6,6 +6,7 @@ using System.IO;
 using System.Text;
 using System.Windows.Forms;
 
+#if CLIENT
 internal class MaterialRepository
 {
     private Dictionary<string, Shader> m_cache = new Dictionary<string, Shader>();
@@ -46,3 +47,4 @@ internal class MaterialRepository
         throw new Exception("Invalid shader");
     }
 }
+#endif

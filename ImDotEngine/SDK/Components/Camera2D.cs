@@ -5,6 +5,7 @@ using System;
 using System.Data;
 
 // funky debug camera I threw together
+#if CLIENT
 internal class Camera2D : BaseComponent
 {
     public ClientInstance Instance = ClientInstance.GetSingle();
@@ -209,3 +210,4 @@ internal class Camera2D : BaseComponent
         Set(ctx); // lol
     }
 }
+#endif

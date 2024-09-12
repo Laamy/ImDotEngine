@@ -35,11 +35,13 @@ internal class SolidCircle : SolidActor
         set => shape.Position = value;
     }
 
-    public override void Draw(RenderWindow e) => e.Draw(shape);
-
     public override Vector2f GetPosition() => Position;
     public override Vector2f GetSize() => new Vector2f((Radius * 2) + 1, (Radius * 2) + 1);
+    public override int ObjectCount() => 1;
+
+#if CLIENT
+    public override void Draw(RenderWindow e) => e.Draw(shape);
     public override Shape GetShape() => shape;
     public override Drawable GetDrawable() => null;
-    public override int ObjectCount() => 1;
+#endif
 }

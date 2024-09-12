@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 internal class SolidGroup : SolidActor
 {
-    private HashSet<SolidActor> Children;
+    private ConcurrentHashset<SolidActor> Children;
     private TextureAtlas textureAtlas;
     private RectangleShape shape;
 
@@ -29,45 +29,57 @@ internal class SolidGroup : SolidActor
 
     public override Vector2f GetPosition() => Position;
     public override Vector2f GetSize() => Size.Mul(Scale);
-    public override Shape GetShape() => shape;
-    public override Drawable GetDrawable() => null;
     public override int ObjectCount() => Children.Count;
-    public HashSet<SolidActor> GetObjects() => Children;
+    public ConcurrentHashset<SolidActor> GetObjects() => Children;
 
     public SolidGroup(TextureAtlas atlas)
     {
-        Children = new HashSet<SolidActor>();
+        Children = new ConcurrentHashset<SolidActor>();
 
         this.textureAtlas = atlas;
 
         shape = new RectangleShape();
 
+#if CLIENT
         UpdateTexture();
+#endif
     }
 
     public void AddObject(SolidActor obj)
     {
         Children.Add(obj); // i must be high or smth
     }
+    public void RemoveObject(SolidActor obj)
+    {
+        Children.Remove(obj);
+    }
 
     public void Invalidate()
     {
         textureAtlas.AddObjects(Children);
+#if CLIENT
         UpdateTexture();
+#endif
     }
 
     public void SetObjects(IEnumerable<SolidActor> actors)
     {
         textureAtlas.AddObjects(actors);
 
+#if CLIENT
         UpdateTexture();
+#endif
     }
 
+#if CLIENT
     private void UpdateTexture()
     {
         shape.Texture = textureAtlas.Texture;
         shape.Size = (Vector2f)textureAtlas.Texture.Size;
     }
+
+    public override Shape GetShape() => shape;
+    public override Drawable GetDrawable() => null;
 
     public override void Draw(RenderWindow ctx)
     {
@@ -83,4 +95,5 @@ internal class SolidGroup : SolidActor
             }
         }
     }
+#endif
 }

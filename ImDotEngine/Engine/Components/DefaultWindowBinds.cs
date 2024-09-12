@@ -3,6 +3,7 @@ using System;
 
 using static User32;
 
+#if CLIENT
 class BorderlessInfo
 {
     public int Style = 0;
@@ -83,3 +84,4 @@ class DefaultWindowBinds : BaseComponent
         SetWindowPos(form, HWND_NOTOPMOST, x, y, width, height, SWP_SHOWWINDOW);
     }
 }
+#endif

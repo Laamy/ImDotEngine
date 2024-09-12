@@ -4,8 +4,10 @@ using SFML.Graphics;
 using SFML.System;
 using System;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 #endregion
+
 
 internal class Level
 {
@@ -24,6 +26,13 @@ internal class Level
         init = true;
     }
 
+    public int HashPosition(Vector2f position)
+    {
+        int x = (int)Math.Floor(position.X / 50); // TODO: stop hardcoding shit
+        int y = (int)Math.Floor(position.Y / 50);
+        return x + y * 73856093;
+    }
+
     public SpatialHash GetLayer(LevelLayers layer)
     {
         if (!init) Initialize();
@@ -31,6 +40,7 @@ internal class Level
         return Layers[(int)layer];
     }
 
+#if CLIENT
     public void Draw(RenderWindow e)
     {
         Camera2D camera = ClientInstance.GetSingle().Engine.Components.OfType<Camera2D>().FirstOrDefault();
@@ -139,4 +149,5 @@ internal class Level
     }
 
     #endregion
+#endif
 }

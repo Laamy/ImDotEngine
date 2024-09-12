@@ -14,12 +14,14 @@ abstract class SolidActor
     public abstract Vector2f GetPosition();
     public abstract Vector2f GetSize();
 
+    // spatial hash counter
+    public abstract int ObjectCount();
+
+#if CLIENT
     // drawables & shapes
     public abstract Shape GetShape();
     public abstract Drawable GetDrawable();
 
-    // spatial hash counter
-    public abstract int ObjectCount();
-
     public virtual void Draw(RenderWindow e) { }
+#endif
 }

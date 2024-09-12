@@ -1,6 +1,6 @@
 ﻿using SFML.Graphics;
 using SFML.System;
-using System.Collections;
+
 using System.Collections.Generic;
 using System.Linq;
 
@@ -34,10 +34,15 @@ class RigidBodyComponent : BaseComponent
     public bool OnGround = false;
     public bool InAir = false;
 
+    public bool IsAnchored = false;
+
+#if CLIENT
     public bool ActiveCamera { get; set; } = true;
+#endif
 
     #endregion
 
+#if CLIENT
     public void RefreshCamera()
     {
         var camera = Instance.Engine.Components.OfType<Camera2D>().FirstOrDefault();
@@ -49,12 +54,16 @@ class RigidBodyComponent : BaseComponent
         camera.MaxZoom = MaxZoom;
         camera.MinZoom = MinZoom;
     }
+#endif
 
     public override void OnFixedUpdate()
     {
         var Instance = ClientInstance.GetSingle();
 
         prevPos = curPos;
+
+        if (IsAnchored)
+            return;
 
         Velocity.Y += Gravity;
 
@@ -212,6 +221,7 @@ class RigidBodyComponent : BaseComponent
         InAir = true;
     }
 
+#if CLIENT
     public override void OnUpdate(RenderWindow ctx)
     {
         // keep the player smoothing interpolating between the
@@ -241,9 +251,10 @@ class RigidBodyComponent : BaseComponent
             camera.Position = new Vector2f(BodyRoot.Position.X - (bounds.Width / 2) + (BodyRoot.Size.X / 2), BodyRoot.Position.Y - (bounds.Height / 2) + (BodyRoot.Size.Y / 2));
         }
 
-        if (DebugConfig.ShowPhysicsDetails) // draw debug stuff
+        if (!IsAnchored && DebugConfig.ShowPhysicsDetails) // draw debug stuff
         {
             DebugPhysicsDetails.Draw(this, ctx);
         }
     }
+#endif
 }

@@ -2,6 +2,7 @@ using SFML.Graphics;
 using SFML.System;
 using System.Linq;
 
+#if CLIENT
 class CameraCursor : BaseComponent
 {
     public const int Radius = 1;
@@ -47,3 +48,4 @@ class CameraCursor : BaseComponent
         //shape.Draw(ctx);
     }
 }
+#endif

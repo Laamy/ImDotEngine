@@ -1,6 +1,7 @@
 ﻿using SFML.Graphics;
 using System;
 
+#if CLIENT
 internal class Assets
 {
     public static Image Icon_x32 { get; set; }
@@ -27,3 +28,4 @@ internal class Assets
         Intro_x580 = new Image(Assets.Contents["Assets\\icon_intro.png"]);
     }
 }
+#endif

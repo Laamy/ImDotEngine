@@ -2,6 +2,7 @@
 
 using System.Collections.Generic;
 
+#if CLIENT
 class BlockRegistry
 {
     private static ClientInstance Instance = ClientInstance.GetSingle();
@@ -30,3 +31,4 @@ class BlockRegistry
         return null;
     }
 }
+#endif

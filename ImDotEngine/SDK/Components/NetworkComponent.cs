@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+#if CLIENT
 class NetworkComponent : BaseComponent
 {
     private ClientSocket socket;
@@ -14,9 +15,49 @@ class NetworkComponent : BaseComponent
     public NetworkComponent()
     {
         DebugLogger.Log("Components", $"Initialized : NetworkComponent");
+
+        var tmc = Instance.Engine.Components.OfType<TerrainMorpherComponent>().FirstOrDefault();
+
+        tmc.OnChunkChanged += OnChunkChanged;
+    }
+
+    // what the fuck is this mess i just wrote
+    // NOTE: rewrite this
+    void OnChunkChanged(int chunkHash)
+    {
+        // initialize a new packet & chunkstate for our changes
+        var packet = ImPacket.Create<WorldStatePacket>();
+
+        ChunkState chunkState = new ChunkState()
+        {
+            chunkHash = chunkHash,
+        };
+
+        // NOTE: might cause some bugs in the future (though 2 chunks should never be in the same region..)
+        // get the chunk by the hash provided
+        var chunkByHash = Instance.Level.GetLayer(LevelLayers.ForeBlocks).GetRegionByHash(chunkHash);
+
+        // convert chunk to SolidGroup
+        var chunk = chunkByHash.FirstOrDefault() as SolidGroup;
+
+        // copy all the ID's from the chunk to the chunkstate
+        int blockId = 0;
+        foreach (var _block in chunk.GetObjects())
+        {
+            var block = _block as SolidObject;
+
+            chunkState.blocks[blockId] = (BlockEnum)block.Tags[0];
+            blockId++;
+        }
+
+        // finally add the chunk to the packet & send it
+        packet.states.Add(chunkState);
+        
+        socket.Send(packet.Encode());
     }
 
     // temp messy fucked code
+    // TODO: reuse rectangleshape objects to lower memory usage (some kind of hash)
     public void GenerateWorld(int seed)
     {
         TerrainGenerator.Seed = seed;
@@ -78,7 +119,7 @@ class NetworkComponent : BaseComponent
             }
         }
 
-        Console.WriteLine("Terrain generation finished");
+        DebugLogger.Log("NetworkComponent", "Terrain generation finished");
     }
 
     public override void OnFixedUpdate()
@@ -140,6 +181,7 @@ class NetworkComponent : BaseComponent
 
                 body.BodyRoot.Position = new Vector2f(100, 0);
                 body.BodyRoot.Size = new Vector2f(38, 65);
+                body.IsAnchored = true; // temp
                 //BodyRoot.Color = Color.Red;
 
                 var playerAsset = Instance.TextureRepository.GetTexture("Assets\\Texture\\player\\female.png");
@@ -197,3 +239,4 @@ class NetworkComponent : BaseComponent
         }
     }
 }
+#endif

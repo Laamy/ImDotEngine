@@ -10,20 +10,22 @@ class SpatialHash
     private readonly int cellSize;
 
     // I gotta figure out a new way to do this that allows me an infinite grid, dynamic shapes & sizes, constant updating of shapes (10k+..) (second TODO note)
-    private readonly Dictionary<int, HashSet<SolidActor>> hashGrid;
+    private readonly Dictionary<int, ConcurrentHashset<SolidActor>> hashGrid;
     private readonly Dictionary<SolidActor, int[]> objectToHashesMap;
 
     public int Count { get; private set; } = 0;
     public int Hashes { get; private set; } = 0;
 
+    public ConcurrentHashset<SolidActor> GetRegionByHash(int hash) => hashGrid[hash];
+
     public SpatialHash(int cellSize)
     {
         this.cellSize = cellSize;
-        this.hashGrid = new Dictionary<int, HashSet<SolidActor>>();
+        this.hashGrid = new Dictionary<int, ConcurrentHashset<SolidActor>>();
         this.objectToHashesMap = new Dictionary<SolidActor, int[]>();
     }
 
-    private int HashPosition(Vector2f position)
+    public int HashPosition(Vector2f position)
     {
         int x = (int)Math.Floor(position.X / cellSize);
         int y = (int)Math.Floor(position.Y / cellSize);
@@ -60,7 +62,7 @@ class SpatialHash
         {
             if (!hashGrid.ContainsKey(hash))
             {
-                hashGrid[hash] = new HashSet<SolidActor>();
+                hashGrid[hash] = new ConcurrentHashset<SolidActor>();
                 Hashes++;
             }
 
@@ -114,12 +116,15 @@ class SpatialHash
         {
             if (hashGrid.TryGetValue(hash, out var objects))
             {
-                foreach (var obj in objects)
+                lock (objects)
                 {
-                    if (!seenObjects.Contains(obj) && new FloatRect(obj.GetPosition(), obj.GetSize()).Intersects(bounds))
+                    foreach (var obj in objects)
                     {
-                        seenObjects.Add(obj);
-                        yield return obj;
+                        if (!seenObjects.Contains(obj) && new FloatRect(obj.GetPosition(), obj.GetSize()).Intersects(bounds))
+                        {
+                            seenObjects.Add(obj);
+                            yield return obj;
+                        }
                     }
                 }
             }

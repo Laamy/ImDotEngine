@@ -59,10 +59,11 @@ internal class SolidObject : SolidActor
 
     public override Vector2f GetPosition() => Position;
     public override Vector2f GetSize() => Size;
-    public override Shape GetShape() => shape;
-    public override Drawable GetDrawable() => null;
     public override int ObjectCount() => 1;
 
+#if CLIENT
+    public override Shape GetShape() => shape;
+    public override Drawable GetDrawable() => null;
     public override void Draw(RenderWindow e)
     {
         if (Shader == null)
@@ -79,4 +80,5 @@ internal class SolidObject : SolidActor
             e.Draw(shape, new RenderStates(Shader));
         }
     }
+#endif
 }

@@ -1,6 +1,7 @@
 ﻿using SFML.Graphics;
 using SFML.System;
 
+#if CLIENT
 class DebugPhysicsDetails
 {
     public static ClientInstance Instance = ClientInstance.GetSingle();
@@ -113,3 +114,4 @@ class DebugPhysicsDetails
         }
     }
 }
+#endif

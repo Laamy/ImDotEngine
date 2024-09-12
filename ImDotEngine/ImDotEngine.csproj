@@ -15,48 +15,44 @@
     <Deterministic>true</Deterministic>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x64\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <LangVersion>7.3</LangVersion>
-    <ErrorReport>prompt</ErrorReport>
-    <Prefer32Bit>true</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <OutputPath>bin\x64\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <LangVersion>7.3</LangVersion>
-    <ErrorReport>prompt</ErrorReport>
-    <Prefer32Bit>true</Prefer32Bit>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Data/Assets/icon_x64.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Server|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Server\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;SERVER</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Client|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Client\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;CLIENT</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="SFML.Graphics, Version=2.5.1.0, Culture=neutral, processorArchitecture=MSIL">
@@ -87,6 +83,7 @@
     <Compile Include="DebugTools\DebugRenderer.cs" />
     <Compile Include="Engine\BundleRepository.cs" />
     <Compile Include="Engine\Components\BaseComponent.cs" />
+    <Compile Include="Engine\ConcurrentHashset.cs" />
     <Compile Include="Engine\Extensions\MathExtension.cs" />
     <Compile Include="Engine\Extensions\Vector2fExtensions.cs" />
     <Compile Include="Engine\Internal\Assets.cs" />
@@ -96,6 +93,13 @@
     <Compile Include="Engine\Rendering\Spatial\SpatialHash.cs" />
     <Compile Include="Engine\System32\Winmm.cs" />
     <Compile Include="Engine\Rendering\TextureAtlas.cs" />
+    <Compile Include="Network\CID.cs" />
+    <Compile Include="GameServer.cs" />
+    <Compile Include="Network\Plugin\BasePlugin.cs" />
+    <Compile Include="Network\Plugin\PluginList.cs" />
+    <Compile Include="Network\Plugin\Plugins\Anticheat\Anticheat.cs" />
+    <Compile Include="Network\Plugin\Plugins\Anticheat\SpeedHack.cs" />
+    <Compile Include="Network\ServerSocket.cs" />
     <Compile Include="SDK\BlockRegistry.cs" />
     <Compile Include="SDK\Components\CameraCursor.cs" />
     <Compile Include="Engine\Components\DefaultWindowBinds.cs" />
@@ -117,19 +121,35 @@
     <Compile Include="SDK\Components\LocalPlayer.cs" />
     <Compile Include="SDK\Components\NetworkComponent.cs" />
     <Compile Include="SDK\Components\RigidBodyComponent.cs" />
+    <Compile Include="SDK\Components\TerrainMorpherComponent.cs" />
     <Compile Include="SDK\Enums\LevelLayers.cs" />
     <Compile Include="Engine\TextureRepository.cs" />
+    <Compile Include="SDK\Item\BaseBlock.cs" />
+    <Compile Include="SDK\Item\BaseItem.cs" />
+    <Compile Include="SDK\Item\BaseWeapon.cs" />
+    <Compile Include="SDK\Item\Blocks\DirtBlock.cs" />
+    <Compile Include="SDK\Item\Blocks\GrassBlock.cs" />
+    <Compile Include="SDK\Item\Blocks\Grass_LeftBlock.cs" />
+    <Compile Include="SDK\Item\Blocks\Grass_RightBlock.cs" />
+    <Compile Include="SDK\Item\Blocks\Grass_Left_DirtBlock.cs" />
+    <Compile Include="SDK\Item\Blocks\Grass_Right_DirtBlock.cs" />
+    <Compile Include="SDK\Item\Blocks\SandBlock.cs" />
+    <Compile Include="SDK\Item\Blocks\StoneBlock.cs" />
+    <Compile Include="SDK\Item\Blocks\StoneGrassyBlock.cs" />
+    <Compile Include="SDK\Item\ItemRegistry.cs" />
     <Compile Include="SDK\MaterialRepository.cs" />
-    <Compile Include="SDK\Network\ClientSocket.cs" />
-    <Compile Include="SDK\Network\Packet\ImPacket.cs" />
-    <Compile Include="SDK\Network\Packet\Packet.cs" />
-    <Compile Include="SDK\Network\Packet\Packets\HandshakePacket.cs" />
-    <Compile Include="SDK\Network\Packet\Packets\PlayerAddPacket.cs" />
-    <Compile Include="SDK\Network\Packet\Packets\PlayerBouncePacket.cs" />
-    <Compile Include="SDK\Network\Packet\Packets\PlayerRemovePacket.cs" />
-    <Compile Include="SDK\Network\Packet\Packets\PlayerUpdatePacket.cs" />
-    <Compile Include="SDK\Network\Packet\PacketType.cs" />
-    <Compile Include="SDK\Network\NetworkObjects\Player.cs" />
+    <Compile Include="Network\ClientSocket.cs" />
+    <Compile Include="Network\Packet\ImPacket.cs" />
+    <Compile Include="Network\Packet\Packet.cs" />
+    <Compile Include="Network\Packet\Packets\HandshakePacket.cs" />
+    <Compile Include="Network\Packet\Packets\PlayerAddPacket.cs" />
+    <Compile Include="Network\Packet\Packets\PlayerBouncePacket.cs" />
+    <Compile Include="Network\Packet\Packets\PlayerRemovePacket.cs" />
+    <Compile Include="Network\Packet\Packets\PlayerUpdatePacket.cs" />
+    <Compile Include="Network\Packet\Packets\WorldStatePacket.cs" />
+    <Compile Include="Network\Packet\PacketType.cs" />
+    <Compile Include="Network\NetworkObjects\Player.cs" />
+    <Compile Include="SDK\ServerWorld.cs" />
     <Compile Include="SDK\Terrain\Blocks\BiomeEnum.cs" />
     <Compile Include="SDK\Terrain\Blocks\BlockEnum.cs" />
     <Compile Include="SDK\Terrain\SimplexPerlin.cs" />
@@ -142,6 +162,7 @@
     <None Include="Data\Shaders\fog.frag" />
     <None Include="Data\Shaders\skybox.frag" />
     <None Include="Data\Shaders\texture_noise.frag" />
+    <None Include="Network\Plugin\README.md" />
     <None Include="pack-assets.bat">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -186,7 +207,22 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="SDK\Item\Items\" />
+    <Folder Include="SDK\Item\Weapons\" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.7.2 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
@@ -201,6 +237,7 @@
     </PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>pack-assets.bat</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
 </Project>

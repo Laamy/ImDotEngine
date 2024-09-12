@@ -6,6 +6,7 @@ using System.Collections.Generic;
 
 #endregion
 
+#if CLIENT
 internal class FontRepository
 {
     private static Dictionary<string, Font> _fonts = new Dictionary<string, Font>() {};
@@ -29,3 +30,4 @@ internal class FontRepository
 
     public Font GetFont(string name) => _fonts[name.ToLower()];
 }
+#endif

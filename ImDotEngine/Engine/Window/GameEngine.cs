@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 
 #endregion
 
+#if CLIENT
 internal class GameEngine
 {
     #region Internal Crap
@@ -439,3 +440,4 @@ internal class GameEngine
 
     #endregion
 }
+#endif

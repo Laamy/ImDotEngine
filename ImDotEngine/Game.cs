@@ -10,6 +10,7 @@ using System.Runtime.CompilerServices;
 
 #endregion
 
+#if CLIENT
 internal class Game : GameEngine
 {
     public Game() => Start(); // we've finished so start the app
@@ -41,6 +42,9 @@ internal class Game : GameEngine
 
             Components.Add(new DebugComponent());
             Components.Add(new LocalPlayer());
+            Components.Add(new TerrainMorpherComponent());
+
+            // this accesses terrain morpher early on
             Components.Add(new NetworkComponent());
 
             DebugLogger.Log("Components", $"Initialized Components");
@@ -111,3 +115,4 @@ internal class Game : GameEngine
         base.OnUpdate(ctx); // call to allow components access to them
     }
 }
+#endif
