@@ -1,7 +1,6 @@
 ﻿class HandshakePacket : Packet
 {
     public string UUID {  get; set; }
-    public string Username {  get; set; }
     public ushort WorldSeed {  get; set; }//65536
 
     public HandshakePacket() : base(PacketType.HANDSHAKE) { } // blank/empty packet
@@ -18,7 +17,7 @@
             var variables = parts[1].Trim().Split(',');
 
             UUID = variables[0];
-            WorldSeed = ushort.Parse(variables[1]);
+            WorldSeed = ushort.Parse(variables[2]);
         }
     }
 

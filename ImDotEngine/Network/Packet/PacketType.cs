@@ -7,4 +7,5 @@
     PLAYER_REMOVE, // SERVER, sent to the clients to remove a player from the scene
     PLAYER_BOUNCE, // SERVER, cause a client to bounce back (lagback)
     WORLD_STATE, // SERVER/CLIENT, sent to clients to update chunks, sent from clients to alert of new changes
+    LOGIN, // CLIENT, sent to the server with auth info like username or whatever the else i want
 }

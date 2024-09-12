@@ -1,5 +1,8 @@
 ﻿using System;
 
+// TODO: store the packets in some kind of binary way
+// probably gonna just do what I saw narrow.one do
+// sockets with fixed packet sizes and some json sometimes
 class PlayerUpdatePacket : Packet
 {
     public string UUID { get; set; }
@@ -11,7 +14,6 @@ class PlayerUpdatePacket : Packet
     // velocity so its more smoothed out/synced client to client
     public float VX { get; set; }
     public float VY { get; set; }
-
 
     public PlayerUpdatePacket() : base(PacketType.PLAYER_UPDATE) { }
     public PlayerUpdatePacket(string format) : base(PacketType.PLAYER_UPDATE) => Decode(format);

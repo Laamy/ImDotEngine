@@ -28,6 +28,44 @@ class GameServer
 
     public GameServer(CommandUtility args)
     {
+        // NOTE: clean this up later into its own set of classes maybe
+        if (args.HasFlag("h") || args.HasFlag("help"))
+        {
+            Console.WriteLine("Usage: dot_server.exe [options]\r\n");
+
+            Console.WriteLine("Arguments look similar to this");
+            Console.WriteLine("# Description/info");
+            Console.WriteLine("# Defaults or extras");
+            Console.WriteLine("# argument requirements");
+            Console.WriteLine("--key default\r\n");
+
+            //Console.WriteLine("# The maximum number of players before the server starts rejecting connections");
+            //Console.WriteLine("# set to 0 for no player-cap (not recommmended)");
+            //Console.WriteLine("# (Positiive Integers, 0 & above)");
+            //Console.WriteLine("--max-players 32\r\n");
+
+            Console.WriteLine("# Which IPv4 port the server should listen to");
+            Console.WriteLine("# (Positiive Integers, 1-65535)");
+            Console.WriteLine("--port 4746\r\n");
+
+            //Console.WriteLine("# The folder the world will be saved to");
+            //Console.WriteLine("# (Any string)");
+            //Console.WriteLine("--world-name world\r\n");
+
+            Console.WriteLine("# The seed the world will use to randomize");
+            Console.WriteLine("# Dont set for random");
+            Console.WriteLine("# (Positiive Integers, 0-65535)");
+            Console.WriteLine("--seed 1\r\n");
+
+            //Console.WriteLine("# Tell the client to generate chunks unless the server specifically tells it otherwise");
+            //Console.WriteLine("# (true,false)");
+            //Console.WriteLine("--client-side-chunk-generation true");
+
+            // cancel server start
+            Console.ReadKey();
+            return;
+        }
+
         Instance.World.Seed = (ushort)args.GetNumber("seed", (ushort)random.Next(0, 65536));
         Instance.ServerPort = (ushort)args.GetNumber("port", 4746);
 
@@ -69,6 +107,7 @@ class GameServer
 
             if (packet is WorldStatePacket worldstate)
             {
+                // TODO: unwrap this into the level
                 DebugLogger.Warn($"world state packet recieved with {worldstate.states.Count} states");
             }
 

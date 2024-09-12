@@ -11,6 +11,7 @@ class ImPacket
         { nameof(PacketType.PLAYER_REMOVE), () => new PlayerRemovePacket() },
         { nameof(PacketType.PLAYER_BOUNCE), () => new PlayerBouncePacket() },
         { nameof(PacketType.WORLD_STATE), () => new WorldStatePacket() },
+        { nameof(PacketType.LOGIN), () => new LoginPacket() },
     };
 
     public static T Create<T>() where T : Packet, new()

@@ -19,9 +19,12 @@ class SpeedHack
             {
                 var dx = curPos.Item1 - prev.Item1;
                 var dy = curPos.Item2 - prev.Item2;
-                float dt = (float)Math.Sqrt(dx * dx + dy * dy);
-                float dv = (float)Math.Sqrt(playerupdate.VX * playerupdate.VX + playerupdate.VY * playerupdate.VY);
+                float dt = Mathf.Sqrt(dx * dx + dy * dy);
+                float dv = Mathf.Sqrt(playerupdate.VX * playerupdate.VX + playerupdate.VY * playerupdate.VY);
                 
+                dt = Mathf.Abs(dt);
+                dv = Mathf.Abs(dv);
+
                 if (dt > plugin.MaxVelocity || // position travel is higher then game threshold
                     dv > plugin.MaxVelocity || // velocity is higher then game threshold
                     (dv + 30) < dx) // velocity is to high compared to position (buffer for movement speed)
