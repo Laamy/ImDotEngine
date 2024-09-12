@@ -36,6 +36,7 @@ internal class ClientInstance
     public ServerWorld World = new ServerWorld();
 
     public ushort ServerPort { get; set; }
+    public float MaxPlayers { get; set; }
 #endif
 
     // shared between both
