@@ -2,6 +2,7 @@
 {
     public string UUID {  get; set; }
     public ushort WorldSeed {  get; set; }//65536
+    public bool AllowChunkGen { get; set; } = true;
 
     public HandshakePacket() : base(PacketType.HANDSHAKE) { } // blank/empty packet
     public HandshakePacket(string format) : base(PacketType.HANDSHAKE) => Decode(format); // redirect to decode
@@ -18,8 +19,9 @@
 
             UUID = variables[0];
             WorldSeed = ushort.Parse(variables[2]);
+            AllowChunkGen = bool.Parse(variables[3]);
         }
     }
 
-    public override string Encode() => $"{Name}:{UUID},{WorldSeed}";
+    public override string Encode() => $"{Name}:{UUID},{WorldSeed},{AllowChunkGen}";
 }

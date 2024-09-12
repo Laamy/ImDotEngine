@@ -32,7 +32,7 @@ class SpatialHash
         return x + y * 73856093;
     }
 
-    private void GetHashesForBounds(FloatRect bounds, int[] hashes)
+    public void GetHashesForBounds(FloatRect bounds, int[] hashes)
     {
         int index = 0;
         int minX = (int)Math.Floor(bounds.Left / cellSize);
@@ -137,7 +137,7 @@ class SpatialHash
         return GetObjectsInBounds(bounds);
     }
 
-    private int GetHashCount(FloatRect bounds)
+    public int GetHashCount(FloatRect bounds)
     {
         int minX = (int)Math.Floor(bounds.Left / cellSize);
         int maxX = (int)Math.Floor((bounds.Left + bounds.Width) / cellSize);
@@ -145,5 +145,14 @@ class SpatialHash
         int maxY = (int)Math.Floor((bounds.Top + bounds.Height) / cellSize);
 
         return (maxX - minX + 1) * (maxY - minY + 1);
+    }
+
+    public void Clear()
+    {
+        foreach (var hash in hashGrid)
+        {
+            //hash.Value.Clear();
+            hashGrid.Remove(hash.Key);
+        }
     }
 }

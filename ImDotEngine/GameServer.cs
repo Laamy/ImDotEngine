@@ -53,13 +53,13 @@ class GameServer
             Console.WriteLine("# (Positiive Integers, 0-65535)");
             Console.WriteLine("--seed 1\r\n");
 
+            Console.WriteLine("# Tell the client to generate chunks unless the server specifically tells it otherwise");
+            Console.WriteLine("# (true,false)");
+            Console.WriteLine("--client-side-chunk-generation true");
+
             //Console.WriteLine("# The folder the world will be saved to");
             //Console.WriteLine("# (Any string)");
             //Console.WriteLine("--world-name world\r\n");
-
-            //Console.WriteLine("# Tell the client to generate chunks unless the server specifically tells it otherwise");
-            //Console.WriteLine("# (true,false)");
-            //Console.WriteLine("--client-side-chunk-generation true");
 
             // cancel server start
             Console.ReadKey();
@@ -69,6 +69,7 @@ class GameServer
         Instance.World.Seed = (ushort)args.GetNumber("seed", (ushort)random.Next(0, 65536));
         Instance.ServerPort = (ushort)args.GetNumber("port", 4746);
         Instance.MaxPlayers = args.GetNumber("max-players", 32);
+        Instance.ClientSideChunkGeneration = args.GetBool("client-side-chunk-generation", true);
 
         _socket = new ServerSocket(IPAddress.Any, Instance.ServerPort);
         _socket.OnConnect += OnConnect;
@@ -179,6 +180,9 @@ class GameServer
 
             handshake.WorldSeed = Instance.World.Seed;
             handshake.UUID = player.UUID;
+            
+            // apply some settings
+            handshake.AllowChunkGen = Instance.ClientSideChunkGeneration;
 
             FireClient(handshake, client);
 

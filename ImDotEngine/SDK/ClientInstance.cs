@@ -37,6 +37,9 @@ internal class ClientInstance
 
     public ushort ServerPort { get; set; }
     public float MaxPlayers { get; set; }
+
+    // some basic packet related settings
+    public bool ClientSideChunkGeneration { get; set; }
 #endif
 
     // shared between both

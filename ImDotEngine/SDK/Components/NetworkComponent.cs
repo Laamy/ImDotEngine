@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -65,9 +66,7 @@ class NetworkComponent : BaseComponent
         var layer = Instance.Level.GetLayer(LevelLayers.ForeBlocks);
 
         if (layer.Count > 0)
-        {
-            // TODO: add a way to clear a spatial partioning hashmap completely
-        }
+            layer.Clear();
 
         {
             uint cellScale = 128;
@@ -154,8 +153,9 @@ class NetworkComponent : BaseComponent
 
         if (packet is HandshakePacket handshake)
         {
-            // generate servers terrain on the client
-            GenerateWorld(handshake.WorldSeed);
+            // TEMP CODE
+            if (handshake.AllowChunkGen)
+                GenerateWorld(handshake.WorldSeed);
 
             Instance.AllowPhysics = true; // world is finished generating so place player in
         }
