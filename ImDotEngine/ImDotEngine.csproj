@@ -95,12 +95,14 @@
     <Compile Include="Engine\Rendering\TextureAtlas.cs" />
     <Compile Include="Network\CID.cs" />
     <Compile Include="GameServer.cs" />
+    <Compile Include="Network\Packet\Packets\WorldStatePacket\ChunkState.cs" />
     <Compile Include="Network\Plugin\BasePlugin.cs" />
     <Compile Include="Network\Plugin\PluginList.cs" />
     <Compile Include="Network\Plugin\Plugins\Anticheat\Anticheat.cs" />
     <Compile Include="Network\Plugin\Plugins\Anticheat\SpeedHack.cs" />
     <Compile Include="Network\ServerSocket.cs" />
     <Compile Include="SDK\BlockRegistry.cs" />
+    <Compile Include="SDK\Commandline\CommandUtility.cs" />
     <Compile Include="SDK\Components\CameraCursor.cs" />
     <Compile Include="Engine\Components\DefaultWindowBinds.cs" />
     <Compile Include="Engine\System32\User32.cs" />
@@ -146,7 +148,7 @@
     <Compile Include="Network\Packet\Packets\PlayerBouncePacket.cs" />
     <Compile Include="Network\Packet\Packets\PlayerRemovePacket.cs" />
     <Compile Include="Network\Packet\Packets\PlayerUpdatePacket.cs" />
-    <Compile Include="Network\Packet\Packets\WorldStatePacket.cs" />
+    <Compile Include="Network\Packet\Packets\WorldStatePacket\WorldStatePacket.cs" />
     <Compile Include="Network\Packet\PacketType.cs" />
     <Compile Include="Network\NetworkObjects\Player.cs" />
     <Compile Include="SDK\ServerWorld.cs" />

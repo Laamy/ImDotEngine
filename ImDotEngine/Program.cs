@@ -6,7 +6,8 @@ internal class Program
     static void Main(string[] args)
     {
 #if SERVER
-        GameServer server = new GameServer();
+        CommandUtility cmdLine = new CommandUtility(args);
+        GameServer server = new GameServer(cmdLine);
 #elif CLIENT
         new Game();
 #endif

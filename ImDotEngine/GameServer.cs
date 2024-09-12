@@ -26,11 +26,12 @@ class GameServer
         return CID.New().ToString();
     }
 
-    public GameServer()
+    public GameServer(CommandUtility args)
     {
-        Instance.World.Seed = (ushort)random.Next(0, 65536);
+        Instance.World.Seed = (ushort)args.GetNumber("seed", (ushort)random.Next(0, 65536));
+        Instance.ServerPort = (ushort)args.GetNumber("port", 4746);
 
-        _socket = new ServerSocket(IPAddress.Any, 4746);
+        _socket = new ServerSocket(IPAddress.Any, Instance.ServerPort);
         _socket.OnConnect += OnConnect;
         _socket.OnDisconnect += OnDisconnect;
         _socket.OnReceived += OnReceived;
@@ -38,7 +39,7 @@ class GameServer
         // start plugins here
         PluginList.StartPlugins(this);
 
-        DebugLogger.Log("GameServer", $"Server started on 127.0.0.1:{4746}");
+        DebugLogger.Log("GameServer", $"Server started on 127.0.0.1:{Instance.ServerPort}");
         DebugLogger.Log("GameServer", $"World seed {Instance.World.Seed}");
 
         Console.ReadKey();

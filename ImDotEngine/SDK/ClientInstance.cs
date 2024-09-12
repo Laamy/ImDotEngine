@@ -34,6 +34,8 @@ internal class ClientInstance
 #if SERVER
     public Dictionary<TcpClient, Player> Clients = new Dictionary<TcpClient, Player>();
     public ServerWorld World = new ServerWorld();
+
+    public ushort ServerPort { get; set; }
 #endif
 
     // shared between both

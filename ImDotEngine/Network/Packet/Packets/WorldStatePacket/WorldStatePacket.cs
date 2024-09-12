@@ -2,19 +2,6 @@
 using System.Collections.Generic;
 using System.Text;
 
-class ChunkState
-{
-    public int chunkHash = -1;
-    public BlockEnum[] blocks = new BlockEnum[16*16];// 16x16 for the blocks per chunk
-
-    public ChunkState()
-    {
-        // initialize blockid array
-        foreach (int i in blocks)
-            blocks[i] = BlockEnum.Air;
-    }
-}
-
 // TODO: find a way to get larger then 16x16 chunks for LINUX (they cap at 2048x2048 for the texture atlas which is 16x16 blocks)
 class WorldStatePacket : Packet
 {
