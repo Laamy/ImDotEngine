@@ -28,21 +28,33 @@ internal class Game : GameEngine
         // NOTE: make these classes inherit a repository class
         Instance.TextureRepository.Initialize(); // load all assets
         Instance.MaterialRepository.Initialize(); // load all materials
+        Instance.AudioRepository.Initialize(); // load all sound effects & music
     }
 
     public override void Initialized()
     {
         {
+            DebugLogger.Log("EntityComponents", $"Initializing ECS (Entity Component System).");
+
+            Instance.EntityRegistry = new SimpleRegistry();
+
+            Instance.GameContext = new EntityContext(Instance.EntityRegistry);
+
+            DebugLogger.Log("EntityComponents", $"Initialized ECS.");
+        }
+
+        {
             DebugLogger.Log("Components", $"Initializing Components..");
 
             // some start components
-            Components.Add(new DefaultWindowBinds()); // Escape for quit, F11 for fullscreen (inbuilt to the engine)
-            Components.Add(Camera = new Camera2D()); // Example of 2D camera
+            Components.Add(new DefaultWindowBinds()); // default game keybinds you would expect to exist
+            Components.Add(Camera = new Camera2D()); // movable camera for the scene
             //Components.Add(new CameraCursor()); // cursor visualization
 
-            Components.Add(new DebugComponent());
-            Components.Add(new LocalPlayer());
-            Components.Add(new TerrainMorpherComponent());
+            Components.Add(new DebugComponent()); // debug stuff
+            Components.Add(new LocalPlayer()); // the actual player
+            Components.Add(new TerrainMorpherComponent()); // ability to morph terrain
+            Components.Add(new SoundComponent()); // sound effects & music
 
             // this accesses terrain morpher early on
             Components.Add(new NetworkComponent());

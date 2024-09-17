@@ -13,9 +13,7 @@ class BorderlessInfo
 class DefaultWindowBinds : BaseComponent
 {
     public ClientInstance Instance = ClientInstance.GetSingle();
-
-    bool isFullScreen = false;
-
+    
     // old data from when it wasn't fullscreen
     BorderlessInfo desktopMode;
 
@@ -24,6 +22,7 @@ class DefaultWindowBinds : BaseComponent
         DebugLogger.Log("Components", $"Initialized : DefaultWindowBinds");
     }
 
+    // todo make it so this is actually ufcking useful so i can actually toggle fullscreen by modifying the games context flags
     public override void KeyPressed(KeyEventArgs e)
     {
         if (e.Code == Keyboard.Key.Escape)
@@ -31,11 +30,11 @@ class DefaultWindowBinds : BaseComponent
 
         if (e.Code == Keyboard.Key.F11)
         {
-            isFullScreen = !isFullScreen;
+            Instance.GameContext.TryToggleFlag<FlagComponent<FullscreenFlag>>();
 
             IntPtr hwnd = Instance.Engine.window.SystemHandle;
 
-            if (isFullScreen)
+            if (Instance.GameContext.HasComponent<FlagComponent<FullscreenFlag>>())
             {
                 desktopMode = SetBorderlessFullscreen(hwnd);
             }

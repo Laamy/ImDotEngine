@@ -72,9 +72,9 @@ class NetworkComponent : BaseComponent
             uint cellScale = 128;
 
             {
-                for (int cX = 0; cX < 10; ++cX)
+                for (int cX = 0; cX < 6; ++cX)
                 {
-                    for (int cY = 0; cY < 2; ++cY)
+                    for (int cY = 0; cY < 6; ++cY)
                     {
                         // texture atlas/object group (not scaled up or down cuz its a fucking square)
                         SolidGroup group = new SolidGroup(new TextureAtlas((uint)(16 * cellScale), (uint)(16 * cellScale)));
@@ -181,7 +181,7 @@ class NetworkComponent : BaseComponent
 
                 body.BodyRoot.Position = new Vector2f(100, 0);
                 body.BodyRoot.Size = new Vector2f(38, 65);
-                body.IsAnchored = true; // temp
+                body.Context.EmplaceComponent<FlagComponent<AnchorFlag>>();
                 //BodyRoot.Color = Color.Red;
 
                 var playerAsset = Instance.TextureRepository.GetTexture("Assets\\Texture\\player\\female.png");

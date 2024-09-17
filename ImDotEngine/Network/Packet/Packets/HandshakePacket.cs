@@ -18,8 +18,8 @@
             var variables = parts[1].Trim().Split(',');
 
             UUID = variables[0];
-            WorldSeed = ushort.Parse(variables[2]);
-            AllowChunkGen = bool.Parse(variables[3]);
+            WorldSeed = ushort.Parse(variables[1]);
+            AllowChunkGen = bool.Parse(variables[2]);
         }
     }
 

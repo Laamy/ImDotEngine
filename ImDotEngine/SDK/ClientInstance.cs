@@ -25,6 +25,7 @@ internal class ClientInstance
 
     public MaterialRepository MaterialRepository = new MaterialRepository();
     public TextureRepository TextureRepository = new TextureRepository();
+    public AudioRepository AudioRepository = new AudioRepository();
     public FontRepository FontRepository = new FontRepository();
 
     public bool AllowPhysics { get; internal set; }
@@ -44,4 +45,8 @@ internal class ClientInstance
 
     // shared between both
     public Level Level = new Level();
+
+    // the ECS stuff & a context for the game/instance
+    public SimpleRegistry EntityRegistry { get; set; }
+    public EntityContext GameContext { get; set; }
 }

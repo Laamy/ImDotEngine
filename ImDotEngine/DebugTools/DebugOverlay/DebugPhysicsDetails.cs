@@ -83,7 +83,7 @@ class DebugPhysicsDetails
                               + $" Y:{Mathf.Abs(lineDiff.Y)}u/s\r\n"
                               + $"\r\n"
                               + $"Pos:{entityComponent.curPos}\r\n"
-                              + $"OnGround: {entityComponent.OnGround}";
+                              + $"OnGround: {entityComponent.Context.HasComponent<FlagComponent<OnGroundFlag>>()}";
             speedDisplay.Position = lineStart + new Vector2f(20, lineDiff.Y);
 
             ctx.Draw(speedDisplay.GetDrawable());

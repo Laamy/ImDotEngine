@@ -91,7 +91,7 @@ class LocalPlayer : RigidBodyComponent
                 Keyboard.IsKeyPressed(Keyboard.Key.Space) ||
                 Keyboard.IsKeyPressed(Keyboard.Key.Up))
             {
-                if (OnGround) // make sure the player is grounded before applying velocity
+                if (Context.HasComponent<FlagComponent<OnGroundFlag>>()) // make sure the player is grounded before applying velocity
                     Velocity.Y = -JumpHeight;
             }
         }
@@ -121,9 +121,10 @@ class LocalPlayer : RigidBodyComponent
         //BodyRoot.Color = Color.White;
 
         // zoom limit
-        MaxZoom = 0.5f;
-        Zoom = 0.3f;
-        MinZoom = 0.2f;
+        var zoomComp = Context.TryGetComponent<ZoomComponent>();
+        zoomComp.MaxZoom = 0.5f;
+        zoomComp.Zoom = 0.3f;
+        zoomComp.MinZoom = 0.2f;
 
         var playerAsset = Instance.TextureRepository.GetTexture("Assets\\Texture\\player\\female.png");
 

@@ -3,25 +3,38 @@
 using SFML.Graphics;
 using SFML.System;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
 #endregion
-
 
 internal class Level
 {
     private bool init = false;
 
     public SpatialHash[] Layers;
+    public List<UIActor>[] UILayers;
 
     public void Initialize()
     {
-        Layers = new SpatialHash[(int)LevelLayers.Count];
-        Layers.Initialize();
+        // actual scene stuff
+        {
+            Layers = new SpatialHash[(int)LevelLayers.Count];
+            Layers.Initialize();
 
-        for (int i = 0; i < Layers.Length; ++i)
-            Layers[i] = new SpatialHash(50);
+            for (int i = 0; i < Layers.Length; ++i)
+                Layers[i] = new SpatialHash(50);
+        }
+
+        // ui scene
+        {
+            UILayers = new List<UIActor>[Layers.Length];
+            UILayers.Initialize();
+
+            for (int i = 0; i < Layers.Length; ++i)
+                UILayers[i] = new List<UIActor>();
+        }
 
         init = true;
     }
@@ -106,23 +119,6 @@ internal class Level
             Position = position,
             Size = size,
             Color = colour,
-        });
-
-        return result;
-    }
-
-    public SolidCircle CreateCircle(LevelLayers layer, Vector2f position, float radius, Color colour)
-    {
-        // get pointers n references
-        var Instance = ClientInstance.GetSingle();
-
-        // temp
-        SolidCircle result;
-
-        GetLayer(layer).AddObject(result = new SolidCircle(radius)
-        {
-            Position = position,
-            Color = colour
         });
 
         return result;

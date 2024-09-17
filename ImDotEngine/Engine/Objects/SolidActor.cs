@@ -8,7 +8,13 @@ using SFML.System;
 abstract class SolidActor
 {
     // base
-    public Vector2f Position;
+    public EntityContext Context;
+
+    public SolidActor()
+    {
+        // link entitycontext to the global entity registry
+        Context = new EntityContext(ClientInstance.GetSingle().EntityRegistry);
+    }
 
     // dimensions
     public abstract Vector2f GetPosition();

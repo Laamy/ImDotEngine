@@ -15,6 +15,18 @@ class RigidBodyComponent : BaseComponent
 {
     public ClientInstance Instance = ClientInstance.GetSingle();
 
+    public EntityContext Context;
+
+    public RigidBodyComponent()
+    {
+        Context = new EntityContext(Instance.EntityRegistry);
+
+        Context.EmplaceComponent<ZoomComponent>(); // setup the zoom stuff
+        Context.EmplaceComponent<GravityComponent>(); // setup the gravity stuff
+
+
+    }
+
     #region body properties
 
     public SolidObject BodyRoot;
@@ -24,17 +36,17 @@ class RigidBodyComponent : BaseComponent
     public Vector2f prevPos;
     public Vector2f curPos;
 
-    const float Gravity = 2;
-    const int MaxGravity = 240; // in units
+    //const float Gravity = 2;
+    //const int MaxGravity = 240; // in units
 
-    public float Zoom = 1;
-    public float MaxZoom = 1;
-    public float MinZoom = 0.1f;
+    //public float Zoom = 1;
+    //public float MaxZoom = 1;
+    //public float MinZoom = 0.1f;
 
-    public bool OnGround = false;
-    public bool InAir = false;
+    //public bool OnGround = false;
+    //public bool InAir = false;
 
-    public bool IsAnchored = false;
+    //public bool IsAnchored = false;
 
 #if CLIENT
     public bool ActiveCamera { get; set; } = true;
@@ -50,9 +62,11 @@ class RigidBodyComponent : BaseComponent
         camera.AllowMove = false;
         camera.AllowZoom = true;
 
-        camera.Zoom = Zoom;
-        camera.MaxZoom = MaxZoom;
-        camera.MinZoom = MinZoom;
+        var zoomComp = Context.TryGetComponent<ZoomComponent>();
+
+        camera.Zoom = zoomComp.Zoom;
+        camera.MaxZoom = zoomComp.MaxZoom;
+        camera.MinZoom = zoomComp.MinZoom;
     }
 #endif
 
@@ -62,13 +76,15 @@ class RigidBodyComponent : BaseComponent
 
         prevPos = curPos;
 
-        if (IsAnchored)
+        if (Context.HasComponent<FlagComponent<AnchorFlag>>())
             return;
 
-        Velocity.Y += Gravity;
+        var gravComp = Context.TryGetComponent<GravityComponent>();
 
-        if (Mathf.Abs(Velocity.Y) > MaxGravity)
-            Velocity.Y = MaxGravity; // not the best thing to do
+        Velocity.Y += gravComp.Gravity;
+
+        if (Mathf.Abs(Velocity.Y) > gravComp.MaxGravity)
+            Velocity.Y = gravComp.MaxGravity; // not the best thing to do
 
         curPos += Velocity; // apply velocity
         
@@ -133,7 +149,7 @@ class RigidBodyComponent : BaseComponent
     {
         var Instance = ClientInstance.GetSingle();
 
-        InAir = true;
+        Context.EmplaceComponent<FlagComponent<InAirFlag>>(); // set in air (temp)
 
         var nearbyChunks = GetNearby();
 
@@ -199,26 +215,26 @@ class RigidBodyComponent : BaseComponent
         if (Velocity.Y > 0 && playerPos.Y > 4750)
             GroundBody(null, 4750);
 
-        if (InAir)
-            OnGround = false;
+        if (Context.HasComponent<FlagComponent<InAirFlag>>())
+            Context.RemoveComponent<FlagComponent<OnGroundFlag>>();
     }
 
     // hacky helper function to ground the player properly
     public void GroundBody(float? x = null, float? y = null)
     {
-        OnGround = true; // NOTE: probably better to move this up to where i set onground to false
+        Context.EmplaceComponent<FlagComponent<OnGroundFlag>>(); // NOTE: probably better to move this up to where i remove onground flag
 
         Velocity.Y = 0;
         curPos.X = x == null ? curPos.X : x.Value;
         curPos.Y = y == null ? curPos.Y : y.Value;
 
-        InAir = false;
+        Context.RemoveComponent<FlagComponent<InAirFlag>>();
     }
 
     public void ResetGroundFlags()
     {
-        OnGround = false;
-        InAir = true;
+        Context.RemoveComponent<FlagComponent<OnGroundFlag>>(); // set off ground
+        Context.EmplaceComponent<FlagComponent<InAirFlag>>(); // set to in air
     }
 
 #if CLIENT
@@ -251,7 +267,7 @@ class RigidBodyComponent : BaseComponent
             camera.Position = new Vector2f(BodyRoot.Position.X - (bounds.Width / 2) + (BodyRoot.Size.X / 2), BodyRoot.Position.Y - (bounds.Height / 2) + (BodyRoot.Size.Y / 2));
         }
 
-        if (!IsAnchored && DebugConfig.ShowPhysicsDetails) // draw debug stuff
+        if (!Context.HasComponent<FlagComponent<AnchorFlag>>() && DebugConfig.ShowPhysicsDetails) // draw debug stuff
         {
             DebugPhysicsDetails.Draw(this, ctx);
         }

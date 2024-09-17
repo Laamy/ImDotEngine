@@ -17,15 +17,8 @@ class CameraCursor : BaseComponent
     public override void Initialized()
     {
         shape = new SolidGroup(new TextureAtlas(100, 100));
-
-        {
-            SolidCircle circle = new SolidCircle(Radius * 50);
-
-            circle.Color = new Color(255, 255, 255, 128);
-
-            shape.AddObject(circle);
-            shape.Invalidate();
-        }
+        
+        
     }
 
     public override void OnUpdate(RenderWindow ctx)

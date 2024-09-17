@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\CSFML.2.5.2\build\netframework\CSFML.props" Condition="Exists('..\packages\CSFML.2.5.2\build\netframework\CSFML.props')" />
+  <Import Project="..\packages\CSFML.2.6.1\build\netframework\CSFML.props" Condition="Exists('..\packages\CSFML.2.6.1\build\netframework\CSFML.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -55,11 +55,14 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="SFML.Audio, Version=2.6.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SFML.Audio.2.6.0\lib\netstandard2.0\SFML.Audio.dll</HintPath>
+    </Reference>
     <Reference Include="SFML.Graphics, Version=2.5.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SFML.Graphics.2.5.1\lib\netstandard2.0\SFML.Graphics.dll</HintPath>
     </Reference>
-    <Reference Include="SFML.System, Version=2.5.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SFML.System.2.5.1\lib\netstandard2.0\SFML.System.dll</HintPath>
+    <Reference Include="SFML.System, Version=2.6.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SFML.System.2.6.0\lib\netstandard2.0\SFML.System.dll</HintPath>
     </Reference>
     <Reference Include="SFML.Window, Version=2.5.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SFML.Window.2.5.1\lib\netstandard2.0\SFML.Window.dll</HintPath>
@@ -81,15 +84,29 @@
     <Compile Include="DebugTools\DebugConfig.cs" />
     <Compile Include="DebugTools\DebugOverlay\DebugPhysicsDetails.cs" />
     <Compile Include="DebugTools\DebugRenderer.cs" />
+    <Compile Include="Engine\AudioRepository.cs" />
     <Compile Include="Engine\BundleRepository.cs" />
     <Compile Include="Engine\Components\BaseComponent.cs" />
     <Compile Include="Engine\ConcurrentHashset.cs" />
+    <Compile Include="Engine\ECS\Components\AABBShapeComponent.cs" />
+    <Compile Include="Engine\ECS\Components\Flags\InAirFlag.cs" />
+    <Compile Include="Engine\ECS\Components\Flags\AnchorFlag.cs" />
+    <Compile Include="Engine\ECS\Components\Flags\FullscreenFlag.cs" />
+    <Compile Include="Engine\ECS\Components\GravityComponent.cs" />
+    <Compile Include="Engine\ECS\Components\ZoomComponent.cs" />
+    <Compile Include="Engine\ECS\EntityContext.cs" />
+    <Compile Include="Engine\ECS\Components\Flags\OnGroundFlag.cs" />
+    <Compile Include="Engine\ECS\FlagComponent.cs" />
+    <Compile Include="Engine\ECS\IEntityComponent.cs" />
+    <Compile Include="Engine\ECS\SimpleRegistry.cs" />
     <Compile Include="Engine\Extensions\MathExtension.cs" />
     <Compile Include="Engine\Extensions\Vector2fExtensions.cs" />
     <Compile Include="Engine\Internal\Assets.cs" />
-    <Compile Include="Engine\Objects\SolidConvex.cs" />
     <Compile Include="Engine\BasicShapes.cs" />
-    <Compile Include="Engine\Objects\SolidGroup.cs" />
+    <Compile Include="Engine\Objects\Level\SolidGroup.cs" />
+    <Compile Include="Engine\Objects\Level\SoundEffect.cs" />
+    <Compile Include="Engine\Objects\UIActor.cs" />
+    <Compile Include="Engine\Objects\UI\UILabel.cs" />
     <Compile Include="Engine\Rendering\Spatial\SpatialHash.cs" />
     <Compile Include="Engine\System32\Winmm.cs" />
     <Compile Include="Engine\Rendering\TextureAtlas.cs" />
@@ -116,14 +133,14 @@
     <Compile Include="Engine\FontRepository.cs" />
     <Compile Include="Engine\GuiData.cs" />
     <Compile Include="Engine\Level.cs" />
-    <Compile Include="Engine\Objects\SolidCircle.cs" />
     <Compile Include="Engine\Objects\SolidActor.cs" />
-    <Compile Include="Engine\Objects\SolidObject.cs" />
-    <Compile Include="Engine\Objects\SolidText.cs" />
+    <Compile Include="Engine\Objects\Level\SolidObject.cs" />
+    <Compile Include="Engine\Objects\Level\SolidText.cs" />
     <Compile Include="SDK\Components\DebugComponent.cs" />
     <Compile Include="SDK\Components\LocalPlayer.cs" />
     <Compile Include="SDK\Components\NetworkComponent.cs" />
     <Compile Include="SDK\Components\RigidBodyComponent.cs" />
+    <Compile Include="SDK\Components\SoundComponent.cs" />
     <Compile Include="SDK\Components\TerrainMorpherComponent.cs" />
     <Compile Include="SDK\Enums\LevelLayers.cs" />
     <Compile Include="Engine\TextureRepository.cs" />
@@ -165,6 +182,9 @@
     <None Include="Data\Shaders\fog.frag" />
     <None Include="Data\Shaders\skybox.frag" />
     <None Include="Data\Shaders\texture_noise.frag" />
+    <None Include="Licenses\README.md">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Network\Plugin\README.md" />
     <None Include="pack-assets.bat">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -206,6 +226,7 @@
     <Content Include="Data\Assets\Texture\player\female_bone.png" />
     <Content Include="Data\Assets\Texture\player\female_raw.png" />
     <Content Include="Data\Assets\Texture\stone.png" />
+    <Content Include="Data\Audio\boards_of_canada_5978.ogg" />
     <Content Include="openal32.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -227,20 +248,19 @@
     </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\CSFML.2.5.2\build\netframework\CSFML.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\CSFML.2.5.2\build\netframework\CSFML.props'))" />
-    <Error Condition="!Exists('..\packages\CSFML.2.5.2\build\netframework\CSFML.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\CSFML.2.5.2\build\netframework\CSFML.targets'))" />
-  </Target>
-  <Import Project="..\packages\CSFML.2.5.2\build\netframework\CSFML.targets" Condition="Exists('..\packages\CSFML.2.5.2\build\netframework\CSFML.targets')" />
   <PropertyGroup>
-    <PreBuildEvent>
-    </PreBuildEvent>
+    <PreBuildEvent>pack-assets.bat</PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PostBuildEvent>
     </PostBuildEvent>
   </PropertyGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\CSFML.2.6.1\build\netframework\CSFML.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\CSFML.2.6.1\build\netframework\CSFML.props'))" />
+    <Error Condition="!Exists('..\packages\CSFML.2.6.1\build\netframework\CSFML.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\CSFML.2.6.1\build\netframework\CSFML.targets'))" />
+  </Target>
+  <Import Project="..\packages\CSFML.2.6.1\build\netframework\CSFML.targets" Condition="Exists('..\packages\CSFML.2.6.1\build\netframework\CSFML.targets')" />
 </Project>
