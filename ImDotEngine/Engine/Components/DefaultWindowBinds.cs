@@ -10,7 +10,7 @@ class BorderlessInfo
     public RECT Dimensions = new RECT();
 }
 
-class DefaultWindowBinds : BaseComponent
+class DefaultWindowBinds : BaseService
 {
     public ClientInstance Instance = ClientInstance.GetSingle();
     

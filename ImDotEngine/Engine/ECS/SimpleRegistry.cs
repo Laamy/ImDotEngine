@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 class SimpleRegistry
 {
@@ -12,6 +13,7 @@ class SimpleRegistry
     /// Create a new entity inside of the registry
     /// </summary>
     /// <returns>EntityID</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int CreateEntity()
     {
         int entityId = nextEntityId++;
@@ -23,6 +25,7 @@ class SimpleRegistry
     /// <summary>
     /// Emplace a component inside of an entity
     /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Emplace<T>(int entityId, T component) where T : IEntityComponent
     {
         Type type = typeof(T);
@@ -37,6 +40,7 @@ class SimpleRegistry
     /// <summary>
     /// Check if an entity has a component
     /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasComponent<T>(int entityId) where T : IEntityComponent
     {
         Type type = typeof(T);
@@ -47,6 +51,7 @@ class SimpleRegistry
     /// <summary>
     /// Remove an emplaced component from inside an entity
     /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Remove<T>(int entityId) where T : IEntityComponent
     {
         Type type = typeof(T);
@@ -72,6 +77,7 @@ class SimpleRegistry
     /// <summary>
     /// Attempt to get a component from an entity
     /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool Try_Get<T>(int entityId, out T component) where T : IEntityComponent
     {
         Type type = typeof(T);
@@ -89,6 +95,7 @@ class SimpleRegistry
     /// <summary>
     /// 
     /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public IEnumerable<int> EntitiesWithComponents(params Type[] componentTypes)
     {
         HashSet<int> entities = new HashSet<int>();
@@ -108,6 +115,7 @@ class SimpleRegistry
         return entities;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private bool AllComponentsPresent(int entityId, Type[] componentTypes)
     {
         foreach (var componentType in componentTypes)
@@ -120,6 +128,7 @@ class SimpleRegistry
     }
 
     #region lazy stuff for concept
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public IEnumerable<(int entityId, T1 component1)> GetComponents<T1>() where T1 : IEntityComponent
     {
         Type type1 = typeof(T1);
@@ -131,6 +140,7 @@ class SimpleRegistry
         }
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public IEnumerable<(int entityId, T1 component1, T2 component2)> GetComponents<T1, T2>()
         where T1 : IEntityComponent
         where T2 : IEntityComponent
@@ -145,6 +155,7 @@ class SimpleRegistry
         }
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public IEnumerable<(int entityId, T1 component1, T2 component2, T3 component3)> GetComponents<T1, T2, T3>()
         where T1 : IEntityComponent
         where T2 : IEntityComponent
@@ -162,6 +173,7 @@ class SimpleRegistry
     }
     #endregion
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private bool TryGetComponent(int entityId, Type type, out object component)
     {
         if (componentStore.TryGetValue(type, out var store) && store.TryGetValue(entityId, out var comp))

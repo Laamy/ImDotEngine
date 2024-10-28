@@ -4,9 +4,9 @@ using SFML.System;
 using System.Linq;
 
 #if CLIENT
-class SoundComponent : BaseComponent
+class SoundService : BaseService
 {
-    public SoundComponent()
+    public SoundService()
     {
         DebugLogger.Log("Components", $"Initialized : SoundComponent");
     }
@@ -17,9 +17,11 @@ class SoundComponent : BaseComponent
 
         var Audio = Instance.AudioRepository;
 
-        var player = Instance.Engine.Components.OfType<LocalPlayer>().FirstOrDefault();
+        var player = Instance.Engine.Services.OfType<LocalPlayerService>().FirstOrDefault();
 
-        Listener.Position = new Vector3f(player.curPos.X, player.curPos.Y, 0);
+        var stateComp = player.Context.TryGetComponent<StateVectorComponent>();
+
+        Listener.Position = new Vector3f(stateComp.CurPosition.X, stateComp.CurPosition.Y, 0);
         Listener.Direction = new Vector3f(1, 0, 0);
         Listener.UpVector = new Vector3f(0, 1, 0);
     }

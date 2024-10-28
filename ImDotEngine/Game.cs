@@ -19,7 +19,7 @@ internal class Game : GameEngine
     public SolidText debugOverlay;
 
     // components
-    public Camera2D Camera;
+    public Camera2DService Camera;
 
     public override void LoadAssets()
     {
@@ -47,17 +47,17 @@ internal class Game : GameEngine
             DebugLogger.Log("Components", $"Initializing Components..");
 
             // some start components
-            Components.Add(new DefaultWindowBinds()); // default game keybinds you would expect to exist
-            Components.Add(Camera = new Camera2D()); // movable camera for the scene
+            Services.Add(new DefaultWindowBinds()); // default game keybinds you would expect to exist
+            Services.Add(Camera = new Camera2DService()); // movable camera for the scene
             //Components.Add(new CameraCursor()); // cursor visualization
 
-            Components.Add(new DebugComponent()); // debug stuff
-            Components.Add(new LocalPlayer()); // the actual player
-            Components.Add(new TerrainMorpherComponent()); // ability to morph terrain
-            Components.Add(new SoundComponent()); // sound effects & music
+            Services.Add(new DebugService()); // debug stuff
+            Services.Add(new LocalPlayerService()); // the actual player
+            Services.Add(new TerrainMorpherService()); // ability to morph terrain
+            Services.Add(new SoundService()); // sound effects & music
 
             // this accesses terrain morpher early on
-            Components.Add(new NetworkComponent());
+            Services.Add(new NetworkService());
 
             DebugLogger.Log("Components", $"Initialized Components");
         }
@@ -102,7 +102,7 @@ internal class Game : GameEngine
     protected override void OnUpdate(RenderWindow ctx)
     {
         //ctx.Clear(new Color(0, 72, 105)); // clear buffer ready for next frame
-        var camera = Components.OfType<Camera2D>().FirstOrDefault();
+        var camera = Services.OfType<Camera2DService>().FirstOrDefault();
 
         //ctx.Clear(new Color(0, 72, 105));
 

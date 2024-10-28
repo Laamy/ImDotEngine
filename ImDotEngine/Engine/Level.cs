@@ -56,7 +56,7 @@ internal class Level
 #if CLIENT
     public void Draw(RenderWindow e)
     {
-        Camera2D camera = ClientInstance.GetSingle().Engine.Components.OfType<Camera2D>().FirstOrDefault();
+        Camera2DService camera = ClientInstance.GetSingle().Engine.Services.OfType<Camera2DService>().FirstOrDefault();
 
         FloatRect bounds = camera.CameraBounds;
 
@@ -72,11 +72,11 @@ internal class Level
     public void ApplyShader(string shader, Action<Shader> Init)
     {
         var Instance = ClientInstance.GetSingle();
-        var Components = Instance.Engine.Components;
+        var Components = Instance.Engine.Services;
 
         var Size = Instance.Engine.Size;
 
-        var camera = Components.OfType<Camera2D>().FirstOrDefault();
+        var camera = Components.OfType<Camera2DService>().FirstOrDefault();
 
         Vector2i topLeft = Instance.Engine.window.MapCoordsToPixel(new Vector2f(0, 0));
 

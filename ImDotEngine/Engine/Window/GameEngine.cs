@@ -37,7 +37,7 @@ internal class GameEngine
     public RenderWindow window;
 
     // Components that inherit game overrides
-    public List<BaseComponent> Components = new List<BaseComponent>();
+    public List<BaseService> Services = new List<BaseService>();
 
     // all the game things insida here !
     public ClientInstance Instance = ClientInstance.GetSingle();
@@ -284,98 +284,98 @@ internal class GameEngine
     protected virtual void OnUpdate(RenderWindow ctx)
     {
         // bad version of ECS
-        foreach (BaseComponent component in Components)
+        foreach (BaseService component in Services)
             component.OnUpdate(ctx);
     }
 
     protected virtual void OnFixedUpdate()
     {
         // bad version of ECS
-        foreach (BaseComponent component in Components)
+        foreach (BaseService component in Services)
             component.OnFixedUpdate();
     }
 
     public virtual void Initialized()
     {
-        foreach (BaseComponent component in Components)
+        foreach (BaseService component in Services)
             component.Initialized();
     }
 
     public virtual void Closing()
     {
-        foreach (BaseComponent component in Components)
+        foreach (BaseService component in Services)
             component.Closing();
     }
 
     public virtual void Resize(SizeEventArgs e)
     {
-        foreach (BaseComponent component in Components)
+        foreach (BaseService component in Services)
             component.Resize(e);
     }
 
     public virtual void Focus()
     {
-        foreach (BaseComponent component in Components)
+        foreach (BaseService component in Services)
             component.Focus();
     }
 
     public virtual void LostFocus()
     {
-        foreach (BaseComponent component in Components)
+        foreach (BaseService component in Services)
             component.LostFocus();
     }
 
     public virtual void JoystickButtonPressed(JoystickButtonEventArgs e)
     {
-        foreach (BaseComponent component in Components)
+        foreach (BaseService component in Services)
             component.JoystickButtonPressed(e);
     }
 
     public virtual void JoystickButtonReleased(JoystickButtonEventArgs e)
     {
-        foreach (BaseComponent component in Components)
+        foreach (BaseService component in Services)
             component.JoystickButtonReleased(e);
     }
 
     public virtual void JoystickConnected(JoystickConnectEventArgs e)
     {
-        foreach (BaseComponent component in Components)
+        foreach (BaseService component in Services)
             component.JoystickConnected(e);
     }
 
     public virtual void JoystickDisconnected(JoystickConnectEventArgs e)
     {
-        foreach (BaseComponent component in Components)
+        foreach (BaseService component in Services)
             component.JoystickDisconnected(e);
     }
 
     public virtual void JoystickMoved(JoystickMoveEventArgs e)
     {
-        foreach (BaseComponent component in Components)
+        foreach (BaseService component in Services)
             component.JoystickMoved(e);
     }
 
     public virtual void KeyPressed(KeyEventArgs e)
     {
-        foreach (BaseComponent component in Components)
+        foreach (BaseService component in Services)
             component.KeyPressed(e);
     }
 
     public virtual void KeyReleased(KeyEventArgs e)
     {
-        foreach (BaseComponent component in Components)
+        foreach (BaseService component in Services)
             component.KeyReleased(e);
     }
 
     public virtual void MouseButtonPressed(MouseButtonEventArgs e)
     {
-        foreach (BaseComponent component in Components)
+        foreach (BaseService component in Services)
             component.MouseButtonPressed(e);
     }
 
     public virtual void MouseButtonReleased(MouseButtonEventArgs e)
     {
-        foreach (BaseComponent component in Components)
+        foreach (BaseService component in Services)
             component.MouseButtonReleased(e);
     }
 
@@ -384,55 +384,55 @@ internal class GameEngine
         //update guidata
         Instance.GuiData.CursorPos = new Vector2f(e.X, e.Y);
 
-        foreach (BaseComponent component in Components)
+        foreach (BaseService component in Services)
             component.MouseMoved(e);
     }
 
     public virtual void MouseWheelScrolled(MouseWheelScrollEventArgs e)
     {
-        foreach (BaseComponent component in Components)
+        foreach (BaseService component in Services)
             component.MouseWheelScrolled(e);
     }
 
     public virtual void MouseEntered()
     {
-        foreach (BaseComponent component in Components)
+        foreach (BaseService component in Services)
             component.MouseEntered();
     }
 
     public virtual void MouseLeft()
     {
-        foreach (BaseComponent component in Components)
+        foreach (BaseService component in Services)
             component.MouseLeft();
     }
 
     public virtual void SensorChanged(SensorEventArgs e)
     {
-        foreach (BaseComponent component in Components)
+        foreach (BaseService component in Services)
             component.SensorChanged(e);
     }
 
     public virtual void TextEntered(TextEventArgs e)
     {
-        foreach (BaseComponent component in Components)
+        foreach (BaseService component in Services)
             component.TextEntered(e);
     }
 
     public virtual void TouchBegan(TouchEventArgs e)
     {
-        foreach (BaseComponent component in Components)
+        foreach (BaseService component in Services)
             component.TouchBegan(e);
     }
 
     public virtual void TouchEnded(TouchEventArgs e)
     {
-        foreach (BaseComponent component in Components)
+        foreach (BaseService component in Services)
             component.TouchEnded(e);
     }
 
     public virtual void TouchMoved(TouchEventArgs e)
     {
-        foreach (BaseComponent component in Components)
+        foreach (BaseService component in Services)
             component.TouchMoved(e);
     }
 

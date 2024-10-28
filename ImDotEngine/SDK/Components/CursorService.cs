@@ -3,13 +3,13 @@ using SFML.System;
 using System.Linq;
 
 #if CLIENT
-class CameraCursor : BaseComponent
+class CursorService : BaseService
 {
     public const int Radius = 1;
 
     SolidGroup shape;
 
-    public CameraCursor()
+    public CursorService()
     {
         DebugLogger.Log("Components", $"Initialized : CameraCursor");
     }
@@ -30,10 +30,10 @@ class CameraCursor : BaseComponent
         var Engine = Instance.Engine;
 
         // get the components list from the engine
-        var Components = Engine.Components;
+        var Components = Engine.Services;
 
         // get the camera component
-        Camera2D Camera = Components.OfType<Camera2D>().FirstOrDefault();
+        Camera2DService Camera = Components.OfType<Camera2DService>().FirstOrDefault();
 
         // visualize cursor
         shape.Position = Camera.CursorToWorld(ctx, ClientInstance.GetSingle().GuiData.CursorPos) - new Vector2f(Radius, Radius);

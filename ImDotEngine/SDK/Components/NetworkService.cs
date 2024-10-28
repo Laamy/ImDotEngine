@@ -3,21 +3,21 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Tab;
 
 #if CLIENT
-class NetworkComponent : BaseComponent
+class NetworkService : BaseService
 {
     private ClientSocket socket;
     private ClientInstance Instance = ClientInstance.GetSingle();
 
-    public NetworkComponent()
+    public NetworkService()
     {
         DebugLogger.Log("Components", $"Initialized : NetworkComponent");
 
-        var tmc = Instance.Engine.Components.OfType<TerrainMorpherComponent>().FirstOrDefault();
+        var tmc = Instance.Engine.Services.OfType<TerrainMorpherService>().FirstOrDefault();
 
         tmc.OnChunkChanged += OnChunkChanged;
     }
@@ -123,12 +123,14 @@ class NetworkComponent : BaseComponent
 
     public override void OnFixedUpdate()
     {
-        var localPlayer = Instance.Engine.Components.OfType<LocalPlayer>().FirstOrDefault();
+        var localPlayer = Instance.Engine.Services.OfType<LocalPlayerService>().FirstOrDefault();
 
         var playerupdate = ImPacket.Create<PlayerUpdatePacket>();
+        
+        var stateComp = localPlayer.Context.TryGetComponent<StateVectorComponent>();
 
-        playerupdate.X = localPlayer.curPos.X;
-        playerupdate.Y = localPlayer.curPos.Y;
+        playerupdate.X = stateComp.CurPosition.X;
+        playerupdate.Y = stateComp.CurPosition.Y;
 
         socket.Send(playerupdate.Encode());
     }
@@ -141,7 +143,7 @@ class NetworkComponent : BaseComponent
         socket.OnReceived += OnReceived;
     }
 
-    private Dictionary<string, Tuple<Player, RigidBodyComponent>> players = new Dictionary<string, Tuple<Player, RigidBodyComponent>>();
+    private Dictionary<string, Tuple<Player, RigidBodyService>> players = new Dictionary<string, Tuple<Player, RigidBodyService>>();
 
     private async Task OnReceived(byte[] msg)
     {
@@ -173,8 +175,10 @@ class NetworkComponent : BaseComponent
                 Y = playeradd.Y
             };
 
-            RigidBodyComponent body = new RigidBodyComponent();
+            RigidBodyService body = new RigidBodyService();
             {
+                var stateComp = body.Context.TryGetComponent<StateVectorComponent>();
+
                 body.BodyRoot = new SolidObject();
 
                 body.ActiveCamera = false; // disable camera on this body
@@ -188,15 +192,15 @@ class NetworkComponent : BaseComponent
 
                 body.BodyRoot.Texture = playerAsset;
 
-                body.prevPos = body.BodyRoot.Position;
-                body.curPos = body.BodyRoot.Position;
+                stateComp.PrevPosition = body.BodyRoot.Position;
+                stateComp.CurPosition = body.BodyRoot.Position;
             }
 
             // add player to list
-            players.Add(playeradd.UUID, new Tuple<Player, RigidBodyComponent>(player, body));
+            players.Add(playeradd.UUID, new Tuple<Player, RigidBodyService>(player, body));
 
             // add to scene as an actual physics object
-            Instance.Engine.Components.Add(body);
+            Instance.Engine.Services.Add(body);
         }
 
         // remove disconnected players cuz their USELESS !
@@ -208,7 +212,7 @@ class NetworkComponent : BaseComponent
             var player = players[playerremove.UUID];
 
             players.Remove(player.Item1.UUID);
-            Instance.Engine.Components.Remove(player.Item2);
+            Instance.Engine.Services.Remove(player.Item2);
         }
 
         // NOTE: sometimes the players aren't smoothed out between packets
@@ -220,22 +224,26 @@ class NetworkComponent : BaseComponent
             // game should smooth it out
             var bodycomp = players[playerupdate.UUID].Item2;
 
-            bodycomp.prevPos = bodycomp.curPos; // bruh
-            bodycomp.curPos = new Vector2f(playerupdate.X, playerupdate.Y);
-            bodycomp.Velocity = new Vector2f(playerupdate.VX, playerupdate.VY);
+            var stateComp = bodycomp.Context.TryGetComponent<StateVectorComponent>();
+
+            stateComp.PrevPosition = stateComp.CurPosition; // bruh
+            stateComp.CurPosition = new Vector2f(playerupdate.X, playerupdate.Y);
+            stateComp.Velocity = new Vector2f(playerupdate.VX, playerupdate.VY);
         }
 
         if (packet is PlayerBouncePacket playerbounce)
         {
             // reset player info to this (we wont be smoothing this out..)
 
-            var localPlayer = Instance.Engine.Components.OfType<LocalPlayer>().FirstOrDefault();
+            var localPlayer = Instance.Engine.Services.OfType<LocalPlayerService>().FirstOrDefault();
 
-            localPlayer.curPos = new Vector2f(playerbounce.X, playerbounce.Y);
-            localPlayer.prevPos = localPlayer.curPos;
-            localPlayer.BodyRoot.Position = localPlayer.curPos;
+            var stateComp = localPlayer.Context.TryGetComponent<StateVectorComponent>();
 
-            localPlayer.Velocity = new Vector2f(playerbounce.VX, playerbounce.VY);
+            stateComp.CurPosition = new Vector2f(playerbounce.X, playerbounce.Y);
+            stateComp.PrevPosition = stateComp.CurPosition;
+            localPlayer.BodyRoot.Position = stateComp.CurPosition;
+
+            stateComp.Velocity = new Vector2f(playerbounce.VX, playerbounce.VY);
         }
     }
 }

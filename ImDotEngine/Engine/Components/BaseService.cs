@@ -1,7 +1,7 @@
 using SFML.Graphics;
 using SFML.Window;
 
-class BaseComponent
+class BaseService
 {
     public virtual void OnUpdate(RenderWindow ctx) { }
     public virtual void OnFixedUpdate() { }

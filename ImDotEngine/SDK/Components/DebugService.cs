@@ -1,8 +1,8 @@
 using SFML.Window;
 
-class DebugComponent : BaseComponent//RigidBodyComponent
+class DebugService : BaseService//RigidBodyComponent
 {
-    public DebugComponent()
+    public DebugService()
     {
         //BodyRoot = new SolidObject();
         //

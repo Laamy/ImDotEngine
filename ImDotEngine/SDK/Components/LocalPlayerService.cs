@@ -8,7 +8,7 @@ using SFML.Window;
 // I want to do my own implementation of ENTT in a unique way that would make cheating harder but make modding easier if that makes sense(?)
 // NOTE: port everything to C++
 #if CLIENT
-class LocalPlayer : RigidBodyComponent
+class LocalPlayerService : RigidBodyService
 {
     #region player properties
 
@@ -21,8 +21,10 @@ class LocalPlayer : RigidBodyComponent
 
     public override void OnCollisionResolve()
     {
+        var stateComp = Context.TryGetComponent<StateVectorComponent>();
+
         // apply our movement vector to the curPos
-        curPos += MovementVector * Speed;
+        stateComp.CurPosition += MovementVector * Speed;
     }
 
     public override bool OnCollisionY(FloatRect Body, StaticTile Tile, Vector2f Overlap)
@@ -48,11 +50,13 @@ class LocalPlayer : RigidBodyComponent
         // allow body to handle its original collisions
         base.OnCollisionX(Body, Tile, Overlap);
 
+        var stateComp = Context.TryGetComponent<StateVectorComponent>();
+
         if (Body.Left < Tile.Bounds.Left)
         {
             if ((BlockEnum)Tile.Block.Tags[0] == BlockEnum.Grass_Left)
             {
-                curPos.X += Overlap.X; // undo
+                stateComp.CurPosition.X += Overlap.X; // undo
                 GroundBody(null, Tile.Bounds.Top - BodyRoot.Size.Y); // jump to top of block
 
                 return true; // end collisions early TODO: dont do this
@@ -62,7 +66,7 @@ class LocalPlayer : RigidBodyComponent
         {
             if ((BlockEnum)Tile.Block.Tags[0] == BlockEnum.Grass_Right)
             {
-                curPos.X -= Overlap.X; // undo
+                stateComp.CurPosition.X -= Overlap.X; // undo
                 GroundBody(null, Tile.Bounds.Top - BodyRoot.Size.Y); // jump to top of block
 
                 return true;
@@ -74,6 +78,8 @@ class LocalPlayer : RigidBodyComponent
 
     public override void OnFixedUpdate()
     {
+        var stateComp = Context.TryGetComponent<StateVectorComponent>();
+
         // gonna do this pre-fixed
         if (Instance.Engine.HasFocus)
         {
@@ -92,7 +98,7 @@ class LocalPlayer : RigidBodyComponent
                 Keyboard.IsKeyPressed(Keyboard.Key.Up))
             {
                 if (Context.HasComponent<FlagComponent<OnGroundFlag>>()) // make sure the player is grounded before applying velocity
-                    Velocity.Y = -JumpHeight;
+                    stateComp.Velocity.Y = -JumpHeight;
             }
         }
 
@@ -110,15 +116,22 @@ class LocalPlayer : RigidBodyComponent
     {
         if (e.Code == Keyboard.Key.LShift)
             Speed = 20;
+
+        while (true)
+        {
+            
+        }
     }
 
-    public LocalPlayer()
+    public LocalPlayerService()
     {
         BodyRoot = new SolidObject();
 
         BodyRoot.Position = new Vector2f(0, 0);
         BodyRoot.Size = new Vector2f(38, 65);
         //BodyRoot.Color = Color.White;
+
+        var stateComp = Context.TryGetComponent<StateVectorComponent>();
 
         // zoom limit
         var zoomComp = Context.TryGetComponent<ZoomComponent>();
@@ -130,8 +143,8 @@ class LocalPlayer : RigidBodyComponent
 
         BodyRoot.Texture = playerAsset;
 
-        prevPos = BodyRoot.Position;
-        curPos = BodyRoot.Position;
+        stateComp.PrevPosition = BodyRoot.Position;
+        stateComp.CurPosition = BodyRoot.Position;
 
         DebugLogger.Log("Components", $"Initialized : LocalPlayer");
     }

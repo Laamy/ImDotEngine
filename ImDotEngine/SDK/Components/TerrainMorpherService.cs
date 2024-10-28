@@ -5,7 +5,7 @@ using System;
 using System.Linq;
 
 #if CLIENT
-class TerrainMorpherComponent : BaseComponent
+class TerrainMorpherService : BaseService
 {
     public ClientInstance Instance = ClientInstance.GetSingle();
 
@@ -17,7 +17,7 @@ class TerrainMorpherComponent : BaseComponent
     {
         if (e.Button == Mouse.Button.Left)
         {
-            Camera2D camera = Instance.Engine.Components.OfType<Camera2D>().FirstOrDefault();
+            Camera2DService camera = Instance.Engine.Services.OfType<Camera2DService>().FirstOrDefault();
 
             Vector2f inWorld = camera.CursorToWorld(Instance.Engine.window, new Vector2f(e.X, e.Y));
 
@@ -55,7 +55,7 @@ class TerrainMorpherComponent : BaseComponent
         }
     }
 
-    public TerrainMorpherComponent()
+    public TerrainMorpherService()
     {
         DebugLogger.Log("Components", $"Initialized : TerrainMorpher");
     }

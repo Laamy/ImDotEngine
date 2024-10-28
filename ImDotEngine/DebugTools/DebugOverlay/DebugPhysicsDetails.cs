@@ -6,7 +6,7 @@ class DebugPhysicsDetails
 {
     public static ClientInstance Instance = ClientInstance.GetSingle();
 
-    public static void Draw(RigidBodyComponent entityComponent, RenderWindow ctx)
+    public static void Draw(RigidBodyService entityComponent, RenderWindow ctx)
     {
         // gonna just reuse this
         RectangleShape debugBox = new RectangleShape(new Vector2f(0, 0));
@@ -64,11 +64,13 @@ class DebugPhysicsDetails
             }
         }
 
+        var stateComp = entityComponent.Context.TryGetComponent<StateVectorComponent>();
+
         // Draw the velocity vector & debug text for the speed
         {
-            Vector2f lineDiff = new Vector2f(entityComponent.curPos.X - entityComponent.prevPos.X, entityComponent.curPos.Y - entityComponent.prevPos.Y);
+            Vector2f lineDiff = new Vector2f(stateComp.CurPosition.X - stateComp.PrevPosition.X, stateComp.CurPosition.Y - stateComp.PrevPosition.Y);
 
-            var lineStart = entityComponent.curPos + new Vector2f(entityComponent.BodyRoot.Size.X / 2, entityComponent.BodyRoot.Size.Y);
+            var lineStart = stateComp.CurPosition + new Vector2f(entityComponent.BodyRoot.Size.X / 2, entityComponent.BodyRoot.Size.Y);
             var lineEnd = lineStart + lineDiff;
 
             DebugRenderer.DrawLine(ctx, lineStart, lineEnd, Color.Red, 1);
@@ -82,7 +84,7 @@ class DebugPhysicsDetails
                               + $" X:{Mathf.Abs(lineDiff.X)}u/s\r\n"
                               + $" Y:{Mathf.Abs(lineDiff.Y)}u/s\r\n"
                               + $"\r\n"
-                              + $"Pos:{entityComponent.curPos}\r\n"
+                              + $"Pos:{stateComp.CurPosition}\r\n"
                               + $"OnGround: {entityComponent.Context.HasComponent<FlagComponent<OnGroundFlag>>()}";
             speedDisplay.Position = lineStart + new Vector2f(20, lineDiff.Y);
 
@@ -93,7 +95,7 @@ class DebugPhysicsDetails
         {
             var prevPosBox = new RectangleShape(entityComponent.BodyRoot.Size);
 
-            prevPosBox.Position = entityComponent.prevPos;
+            prevPosBox.Position = stateComp.PrevPosition;
             prevPosBox.FillColor = Color.Transparent;
             prevPosBox.OutlineThickness = 3;
             prevPosBox.OutlineColor = Color.Blue;
@@ -105,7 +107,7 @@ class DebugPhysicsDetails
         {
             var curPosBox = new RectangleShape(entityComponent.BodyRoot.Size);
 
-            curPosBox.Position = entityComponent.curPos;
+            curPosBox.Position = stateComp.CurPosition;
             curPosBox.FillColor = Color.Transparent;
             curPosBox.OutlineThickness = 2;
             curPosBox.OutlineColor = Color.Green;

@@ -14,20 +14,16 @@ class CommandUtility
         {
             string arg = args[i];
 
-            // make sure its a key
             if (arg.StartsWith("--"))
             {
-                // trim key prefix
                 string key = arg.TrimStart('-').ToLower();
 
-                // make sure theres something after it & its not another key
                 if (i + 1 < args.Length && !args[i + 1].StartsWith("--"))
                 {
-                    //Console.WriteLine($"Recieved {key}");
                     _arguments[key] = args[i+1];
-                    ++i; // skip next
+                    ++i;
                 }
-                else _arguments[key] = null; // probably a flag
+                else _arguments[key] = null;
             }
         }
     }

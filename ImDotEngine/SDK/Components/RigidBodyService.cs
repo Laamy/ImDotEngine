@@ -11,30 +11,29 @@ class StaticTile
     public FloatRect Bounds;
 }
 
-class RigidBodyComponent : BaseComponent
+class RigidBodyService : BaseService
 {
     public ClientInstance Instance = ClientInstance.GetSingle();
 
     public EntityContext Context;
 
-    public RigidBodyComponent()
+    public RigidBodyService()
     {
         Context = new EntityContext(Instance.EntityRegistry);
 
         Context.EmplaceComponent<ZoomComponent>(); // setup the zoom stuff
         Context.EmplaceComponent<GravityComponent>(); // setup the gravity stuff
-
-
+        Context.EmplaceComponent<StateVectorComponent>();
     }
 
     #region body properties
 
     public SolidObject BodyRoot;
 
-    public Vector2f Velocity = new Vector2f(0, 15); // TODO: add a second velocity vector for speed for bodies that can move
+    //public Vector2f Velocity = new Vector2f(0, 15); // TODO: add a second velocity vector for speed for bodies that can move
 
-    public Vector2f prevPos;
-    public Vector2f curPos;
+    //public Vector2f prevPos;
+    //public Vector2f curPos;
 
     //const float Gravity = 2;
     //const int MaxGravity = 240; // in units
@@ -57,7 +56,7 @@ class RigidBodyComponent : BaseComponent
 #if CLIENT
     public void RefreshCamera()
     {
-        var camera = Instance.Engine.Components.OfType<Camera2D>().FirstOrDefault();
+        var camera = Instance.Engine.Services.OfType<Camera2DService>().FirstOrDefault();
 
         camera.AllowMove = false;
         camera.AllowZoom = true;
@@ -74,26 +73,27 @@ class RigidBodyComponent : BaseComponent
     {
         var Instance = ClientInstance.GetSingle();
 
-        prevPos = curPos;
+        var gravComp = Context.TryGetComponent<GravityComponent>();
+        var stateComp = Context.TryGetComponent<StateVectorComponent>();
+
+        stateComp.PrevPosition = stateComp.CurPosition;
 
         if (Context.HasComponent<FlagComponent<AnchorFlag>>())
             return;
 
-        var gravComp = Context.TryGetComponent<GravityComponent>();
+        stateComp.Velocity.Y += gravComp.Gravity;
 
-        Velocity.Y += gravComp.Gravity;
+        if (Mathf.Abs(stateComp.Velocity.Y) > gravComp.MaxGravity)
+            stateComp.Velocity.Y = gravComp.MaxGravity; // not the best thing to do
 
-        if (Mathf.Abs(Velocity.Y) > gravComp.MaxGravity)
-            Velocity.Y = gravComp.MaxGravity; // not the best thing to do
-
-        curPos += Velocity; // apply velocity
+        stateComp.CurPosition += stateComp.Velocity; // apply velocity
         
         // collision events too for control
         OnCollisionResolve();
         ResolveCollisions();
         AfterCollisionResolve();
 
-        BodyRoot.Position = curPos;
+        BodyRoot.Position = stateComp.CurPosition;
     }
 
     public virtual void OnCollisionResolve() { }
@@ -104,13 +104,15 @@ class RigidBodyComponent : BaseComponent
         // TODO: add vert & hor collision flags seperately from onground & inair so i can verify this before clearing these flags
         ResetGroundFlags();
 
+        var stateComp = Context.TryGetComponent<StateVectorComponent>();
+
         if (Body.Left < Tile.Bounds.Left)
         {
-            curPos.X -= Overlap.X;
+            stateComp.CurPosition.X -= Overlap.X;
         }
         else
         {
-            curPos.X += Overlap.X;
+            stateComp.CurPosition.X += Overlap.X;
         }
 
         return false;
@@ -126,7 +128,9 @@ class RigidBodyComponent : BaseComponent
         {
             ResetGroundFlags();
 
-            curPos.Y += Overlap.Y;
+            var stateComp = Context.TryGetComponent<StateVectorComponent>();
+
+            stateComp.CurPosition.Y += Overlap.Y;
         }
 
         return false;
@@ -151,11 +155,13 @@ class RigidBodyComponent : BaseComponent
 
         Context.EmplaceComponent<FlagComponent<InAirFlag>>(); // set in air (temp)
 
+        var stateComp = Context.TryGetComponent<StateVectorComponent>();
+
         var nearbyChunks = GetNearby();
 
-        var playerPos = curPos;
+        var playerPos = stateComp.CurPosition;
         var playerSize = BodyRoot.GetSize();
-        var playerRect = new FloatRect(curPos, BodyRoot.GetSize());
+        var playerRect = new FloatRect(stateComp.CurPosition, BodyRoot.GetSize());
 
         foreach (var _chunk in nearbyChunks)
         {
@@ -212,7 +218,7 @@ class RigidBodyComponent : BaseComponent
         // world bottom
         // NOTE: call death functions once below this coordinate level (I might not do this cuz i want an infinite world height
         // NOTE: I might switch the world to a signed 32bit integer instead of floats, it'll make debugging easier & stop floating point errors
-        if (Velocity.Y > 0 && playerPos.Y > 4750)
+        if (stateComp.Velocity.Y > 0 && playerPos.Y > 4750)
             GroundBody(null, 4750);
 
         if (Context.HasComponent<FlagComponent<InAirFlag>>())
@@ -224,9 +230,11 @@ class RigidBodyComponent : BaseComponent
     {
         Context.EmplaceComponent<FlagComponent<OnGroundFlag>>(); // NOTE: probably better to move this up to where i remove onground flag
 
-        Velocity.Y = 0;
-        curPos.X = x == null ? curPos.X : x.Value;
-        curPos.Y = y == null ? curPos.Y : y.Value;
+        var stateComp = Context.TryGetComponent<StateVectorComponent>();
+
+        stateComp.Velocity.Y = 0;
+        stateComp.CurPosition.X = x == null ? stateComp.CurPosition.X : x.Value;
+        stateComp.CurPosition.Y = y == null ? stateComp.CurPosition.Y : y.Value;
 
         Context.RemoveComponent<FlagComponent<InAirFlag>>();
     }
@@ -240,6 +248,8 @@ class RigidBodyComponent : BaseComponent
 #if CLIENT
     public override void OnUpdate(RenderWindow ctx)
     {
+        var stateComp = Context.TryGetComponent<StateVectorComponent>();
+
         // keep the player smoothing interpolating between the
         // prevPos and curPos so the physics ticks aren't as visible
         {
@@ -250,7 +260,7 @@ class RigidBodyComponent : BaseComponent
 
             float lerpFactor = Mathf.Clamp(timeSinceLastTick / tickInterval, 0.0f, 1.0f);
 
-            BodyRoot.Position = prevPos.Lerp(curPos, lerpFactor);
+            BodyRoot.Position = stateComp.PrevPosition.Lerp(stateComp.CurPosition, lerpFactor);
         }
 
         // TODO: allow solidgroups to be rigid bodies and not just solid objects..
@@ -258,7 +268,7 @@ class RigidBodyComponent : BaseComponent
 
         if (ActiveCamera) // TODO: move this to localplayer cuz i forgot to earlier..
         {
-            var camera = Instance.Engine.Components.OfType<Camera2D>().FirstOrDefault();
+            var camera = Instance.Engine.Services.OfType<Camera2DService>().FirstOrDefault();
 
             if (camera.AllowMove == true)
                 RefreshCamera();

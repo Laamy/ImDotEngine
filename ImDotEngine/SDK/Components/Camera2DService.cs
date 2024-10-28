@@ -6,7 +6,7 @@ using System.Data;
 
 // funky debug camera I threw together
 #if CLIENT
-internal class Camera2D : BaseComponent
+internal class Camera2DService : BaseService
 {
     public ClientInstance Instance = ClientInstance.GetSingle();
 
@@ -28,7 +28,7 @@ internal class Camera2D : BaseComponent
     public bool AllowZoom = true;
     public bool AllowMove = true;
 
-    public Camera2D()
+    public Camera2DService()
     {
         size = (Vector2f)Instance.Engine.Size;
 

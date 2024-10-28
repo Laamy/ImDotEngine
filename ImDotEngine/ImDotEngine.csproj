@@ -3,6 +3,7 @@
   <Import Project="..\packages\CSFML.2.6.1\build\netframework\CSFML.props" Condition="Exists('..\packages\CSFML.2.6.1\build\netframework\CSFML.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
+    <LangVersion>12.0</LangVersion>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{EBB7B2BB-D301-4C11-8B18-A345D87DBABD}</ProjectGuid>
@@ -32,27 +33,34 @@
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup>
+    <LangVersion>12.0</LangVersion>
     <ApplicationIcon>Data/Assets/icon_x64.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Server|x64'">
-    <DebugSymbols>true</DebugSymbols>
+    <LangVersion>12.0</LangVersion>
+    <DebugSymbols>false</DebugSymbols>
     <OutputPath>bin\x64\Server\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;SERVER</DefineConstants>
-    <DebugType>full</DebugType>
+    <DefineConstants>SERVER</DefineConstants>
+    <DebugType>none</DebugType>
     <PlatformTarget>x64</PlatformTarget>
     <LangVersion>7.3</LangVersion>
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Optimize>true</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Client|x64'">
-    <DebugSymbols>true</DebugSymbols>
+    <LangVersion>12.0</LangVersion>
+    <DebugSymbols>false</DebugSymbols>
     <OutputPath>bin\x64\Client\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;CLIENT</DefineConstants>
-    <DebugType>full</DebugType>
+    <DefineConstants>CLIENT</DefineConstants>
+    <DebugType>none</DebugType>
     <PlatformTarget>x64</PlatformTarget>
     <LangVersion>7.3</LangVersion>
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
+    <Optimize>true</Optimize>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="SFML.Audio, Version=2.6.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -86,13 +94,14 @@
     <Compile Include="DebugTools\DebugRenderer.cs" />
     <Compile Include="Engine\AudioRepository.cs" />
     <Compile Include="Engine\BundleRepository.cs" />
-    <Compile Include="Engine\Components\BaseComponent.cs" />
+    <Compile Include="Engine\Components\BaseService.cs" />
     <Compile Include="Engine\ConcurrentHashset.cs" />
     <Compile Include="Engine\ECS\Components\AABBShapeComponent.cs" />
     <Compile Include="Engine\ECS\Components\Flags\InAirFlag.cs" />
     <Compile Include="Engine\ECS\Components\Flags\AnchorFlag.cs" />
     <Compile Include="Engine\ECS\Components\Flags\FullscreenFlag.cs" />
     <Compile Include="Engine\ECS\Components\GravityComponent.cs" />
+    <Compile Include="Engine\ECS\Components\StateVectorComponent.cs" />
     <Compile Include="Engine\ECS\Components\ZoomComponent.cs" />
     <Compile Include="Engine\ECS\EntityContext.cs" />
     <Compile Include="Engine\ECS\Components\Flags\OnGroundFlag.cs" />
@@ -121,7 +130,7 @@
     <Compile Include="Network\ServerSocket.cs" />
     <Compile Include="SDK\BlockRegistry.cs" />
     <Compile Include="SDK\Commandline\CommandUtility.cs" />
-    <Compile Include="SDK\Components\CameraCursor.cs" />
+    <Compile Include="SDK\Components\CursorService.cs" />
     <Compile Include="Engine\Components\DefaultWindowBinds.cs" />
     <Compile Include="Engine\System32\User32.cs" />
     <Compile Include="Game.cs" />
@@ -129,19 +138,19 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SDK\ClientInstance.cs" />
-    <Compile Include="SDK\Components\Camera2D.cs" />
+    <Compile Include="SDK\Components\Camera2DService.cs" />
     <Compile Include="Engine\FontRepository.cs" />
     <Compile Include="Engine\GuiData.cs" />
     <Compile Include="Engine\Level.cs" />
     <Compile Include="Engine\Objects\SolidActor.cs" />
     <Compile Include="Engine\Objects\Level\SolidObject.cs" />
     <Compile Include="Engine\Objects\Level\SolidText.cs" />
-    <Compile Include="SDK\Components\DebugComponent.cs" />
-    <Compile Include="SDK\Components\LocalPlayer.cs" />
-    <Compile Include="SDK\Components\NetworkComponent.cs" />
-    <Compile Include="SDK\Components\RigidBodyComponent.cs" />
-    <Compile Include="SDK\Components\SoundComponent.cs" />
-    <Compile Include="SDK\Components\TerrainMorpherComponent.cs" />
+    <Compile Include="SDK\Components\DebugService.cs" />
+    <Compile Include="SDK\Components\LocalPlayerService.cs" />
+    <Compile Include="SDK\Components\NetworkService.cs" />
+    <Compile Include="SDK\Components\RigidBodyService.cs" />
+    <Compile Include="SDK\Components\SoundService.cs" />
+    <Compile Include="SDK\Components\TerrainMorpherService.cs" />
     <Compile Include="SDK\Enums\LevelLayers.cs" />
     <Compile Include="Engine\TextureRepository.cs" />
     <Compile Include="SDK\Item\BaseBlock.cs" />
@@ -249,11 +258,11 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>pack-assets.bat</PreBuildEvent>
+    <PreBuildEvent>
+    </PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>pack-assets.bat</PostBuildEvent>
   </PropertyGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
