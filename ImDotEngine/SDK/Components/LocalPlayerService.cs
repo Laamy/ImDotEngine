@@ -117,10 +117,10 @@ class LocalPlayerService : RigidBodyService
         if (e.Code == Keyboard.Key.LShift)
             Speed = 20;
 
-        while (true)
-        {
-            
-        }
+        //while (true)
+        //{
+        //    
+        //}
     }
 
     public LocalPlayerService()

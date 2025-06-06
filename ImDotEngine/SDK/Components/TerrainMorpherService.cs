@@ -51,7 +51,7 @@ class TerrainMorpherService : BaseService
                 }
             }
 
-            DebugLogger.Warn($"clicked {inWorld}");
+            //DebugLogger.Warn($"clicked {inWorld}");
         }
     }
 
