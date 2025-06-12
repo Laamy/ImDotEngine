@@ -60,4 +60,6 @@ public class SimplexPerlin
         float v = h < 4 ? y : x;
         return ((h & 1) == 0 ? u : -u) + ((h & 2) == 0 ? v : -v);
     }
+
+    internal double GetValue(double v1, double v2) => throw new NotImplementedException();
 }

@@ -21,7 +21,7 @@ class TerrainMorpherService : BaseService
 
             Vector2f inWorld = camera.CursorToWorld(Instance.Engine.window, new Vector2f(e.X, e.Y));
 
-            var nearbyChunks = Instance.Level.GetLayer(LevelLayers.ForeBlocks).GetNearbyObjects(inWorld, 1);
+            var nearbyChunks = Instance.Level.GetLayer(LevelLayers.ForeBlocks).GetNearbyObjects(inWorld, 11);
 
             foreach (var _chunk in nearbyChunks)
             {

@@ -10,6 +10,7 @@
     Grass_Left_Dirt,
     Sand,
     Stone,
+    Stone_Iron,
     Grassy_Stone,
     Count
 }

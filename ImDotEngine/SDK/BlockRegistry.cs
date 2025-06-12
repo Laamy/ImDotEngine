@@ -11,6 +11,7 @@ class BlockRegistry
     {
         { BlockEnum.Dirt, "Assets\\Texture\\dirt.png" },
         { BlockEnum.Stone, "Assets\\Texture\\stone.png" },
+        { BlockEnum.Stone_Iron, "Assets\\Texture\\stone_iron.png" },
 
         { BlockEnum.Grass, "Assets\\Texture\\biome\\plain\\grass.png" }, // plain biome
         { BlockEnum.Grass_Right, "Assets\\Texture\\biome\\plain\\grass_right.png" },

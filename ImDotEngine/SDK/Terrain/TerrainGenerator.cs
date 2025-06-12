@@ -1,4 +1,30 @@
 ﻿using System;
+using System.Collections.Generic;
+
+class OreRegistry
+{
+    public class OreEntry
+    {
+        public BlockEnum oreBlock = BlockEnum.Stone_Iron;
+        public int oreRarity = 13;
+        public int minSize = 1,
+            maxSize = 9;
+
+        public OreEntry(BlockEnum oreBlock, int oreRarity, int minSize, int maxSize)
+        {
+            this.oreBlock = oreBlock;
+            this.oreRarity = oreRarity;
+            this.minSize = minSize;
+            this.maxSize = maxSize;
+        }
+    }
+
+    public static Dictionary<BlockEnum, OreEntry> Ores { get; private set; } = new Dictionary<BlockEnum, OreEntry>()
+    {
+        { BlockEnum.Stone_Iron, new OreEntry(BlockEnum.Stone_Iron, 13, 1, 9) },
+        { BlockEnum.Dirt, new OreEntry(BlockEnum.Dirt, 2, 75,250) },
+    };
+}
 
 class TerrainGenerator
 {
@@ -102,39 +128,186 @@ class TerrainGenerator
             }
         }
 
-        float baseCaveWeight = 0.1f;
         int caveThresholdY = 20;
-        
-        for (int y = Y; y < height + Y; y++)
+
+        // caves
         {
-            int chunkY = y - Y;
-        
-            if (y >= caveThresholdY)
+            float baseCaveWeight = 0.3f;
+            int minCaveSize = 20;
+
+            bool[,] visited = new bool[height, width];
+
+            int FloodFill(int startX, int startY)
             {
-                for (int x = X; x < width + X; x++)
+                int size = 0;
+                Queue<(int x, int y)> q = new Queue<(int x, int y)>();
+                q.Enqueue((startX, startY));
+                visited[startY, startX] = true;
+                int[] dx = { 1, -1, 0, 0 };
+                int[] dy = { 0, 0, 1, -1 };
+
+                while (q.Count > 0)
                 {
-                    int chunkX = x - X;
-        
-                    double wormNoiseX = perlin.GetValue((float)(x * baseCaveWeight) / 20, (float)(y * baseCaveWeight));
-                    double wormNoiseY = perlin.GetValue((float)(x * baseCaveWeight), (float)(y * baseCaveWeight));
-        
-                    if (wormNoiseX > 0.5f || wormNoiseY > 0.6f)
+                    var (x, y) = q.Dequeue();
+                    size++;
+
+                    for (int i = 0; i < 4; i++)
                     {
-                        rawChunk[chunkY][chunkX] = BlockEnum.Air;
+                        int nx = x + dx[i];
+                        int ny = y + dy[i];
+
+                        if (nx >= 0 && ny >= 0 && nx < width && ny < height)
+                        {
+                            if (!visited[ny, nx] && rawChunk[ny][nx] == BlockEnum.Air)
+                            {
+                                visited[ny, nx] = true;
+                                q.Enqueue((nx, ny));
+                            }
+                        }
+                    }
+                }
+
+                return size;
+            }
+
+            for (int y = Y; y < height + Y; y++)
+            {
+                int chunkY = y - Y;
+
+                if (y >= caveThresholdY)
+                {
+                    for (int x = X; x < width + X; x++)
+                    {
+                        int chunkX = x - X;
+
+                        double wormNoiseX = perlin.GetValue((float)(x * baseCaveWeight) / 20, (float)(y * baseCaveWeight) / 10);
+                        double wormNoiseY = perlin.GetValue((float)(x * baseCaveWeight), (float)(y * baseCaveWeight));
+
+                        if (wormNoiseX > 0.3f || wormNoiseY > 0.6f)
+                        {
+                            rawChunk[chunkY][chunkX] = BlockEnum.Air;
+                        }
+                    }
+                }
+            }
+
+            for (int y = 0; y < height; y++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    if (!visited[y, x] && rawChunk[y][x] == BlockEnum.Air)
+                    {
+                        int caveSize = FloodFill(x, y);
+                        if (caveSize < minCaveSize)
+                        {
+                            RemoveCave(x, y);
+                        }
+                    }
+                }
+            }
+
+            void RemoveCave(int startX, int startY)
+            {
+                Queue<(int x, int y)> q = new Queue<(int x, int y)>();
+                q.Enqueue((startX, startY));
+                visited[startY, startX] = true;
+
+                int[] dx = { 1, -1, 0, 0 };
+                int[] dy = { 0, 0, 1, -1 };
+
+                while (q.Count > 0)
+                {
+                    var (x, y) = q.Dequeue();
+                    rawChunk[y][x] = BlockEnum.Stone;
+
+                    for (int i = 0; i < 4; i++)
+                    {
+                        int nx = x + dx[i];
+                        int ny = y + dy[i];
+
+                        if (nx >= 0 && ny >= 0 && nx < width && ny < height)
+                        {
+                            if (rawChunk[ny][nx] == BlockEnum.Air)
+                            {
+                                rawChunk[ny][nx] = BlockEnum.Stone;
+                                q.Enqueue((nx, ny));
+                            }
+                        }
                     }
                 }
             }
         }
-        
+
+        // ores
+        Random oreRng = new Random(Seed + 1 + X * 73856093 + Y * 19349663);
+        foreach (var ore in OreRegistry.Ores)
+        {
+            int oreRarity = ore.Value.oreRarity;
+
+            for (int y = Y; y < height + Y; y++)
+            {
+                int chunkY = y - Y;
+
+                if (y >= caveThresholdY)
+                {
+                    for (int x = X; x < width + X; x++)
+                    {
+                        int chunkX = x - X;
+
+                        if (oreRng.Next(0, 1000) < oreRarity)
+                        {
+                            int oreSize = oreRng.Next(ore.Value.minSize, ore.Value.maxSize);
+                            int dx = x;
+                            int dy = y;
+                            int dirX = oreRng.Next(-1, 2);
+                            int dirY = oreRng.Next(-1, 2);
+
+                            for (int i = 0; i < oreSize; i++)
+                            {
+                                int cx = dx - X;
+                                int cy = dy - Y;
+
+                                if (cx >= 0 && cx < width && cy >= 0 && cy < height)
+                                {
+                                    if (rawChunk[cy][cx] == BlockEnum.Stone)
+                                        rawChunk[cy][cx] = ore.Value.oreBlock;
+                                }
+
+                                if (oreRng.Next(0, 2) == 0)
+                                {
+                                    int topY = dy - 1 - Y;
+                                    if (cx >= 0 && cx < width && topY >= 0 && topY < height)
+                                    {
+                                        if (rawChunk[topY][cx] == BlockEnum.Stone)
+                                            rawChunk[topY][cx] = ore.Value.oreBlock;
+                                    }
+                                }
+
+                                if (oreRng.Next(0, 4) == 0)
+                                {
+                                    dirX = oreRng.Next(-1, 2);
+                                    dirY = oreRng.Next(-1, 2);
+                                }
+
+                                dx += dirX;
+                                dy += dirY;
+                            }
+                        }
+                    }
+                }
+            }
+
+        }
+
         // experiments
         for (int y = Y; y < height + Y; y++)
         {
             int chunkY = y - Y;
-        
+
             for (int x = X; x < width + X; x++)
             {
                 int chunkX = x - X;
-        
+
                 var block = GetBlock(rawChunk, chunkX, chunkY);
         
                 if (block == BlockEnum.Stone &&
