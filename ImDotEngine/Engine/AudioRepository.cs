@@ -11,11 +11,10 @@ using System.IO;
 #if CLIENT
 internal class AudioRepository
 {
-    private Dictionary<string, SoundBuffer> m_cache = new Dictionary<string, SoundBuffer>();
+    private readonly Dictionary<string, SoundBuffer> m_cache = new();
+    private readonly List<SoundEffect> active_sounds = new();
 
     private BundleInfo m_assetBundle;
-
-    private List<SoundEffect> active_sounds = new List<SoundEffect>();
 
     public void Initialize()
     {

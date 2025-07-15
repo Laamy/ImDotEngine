@@ -3,6 +3,8 @@ using SFML.Window;
 
 class BaseService
 {
+    public bool isInit = false;
+
     public virtual void OnUpdate(RenderWindow ctx) { }
     public virtual void OnFixedUpdate() { }
 

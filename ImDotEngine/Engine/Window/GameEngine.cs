@@ -151,13 +151,13 @@ internal class GameEngine
         // physics thread
         Task.Factory.StartNew(() =>
         {
-            long targetTicksPerFrame = TimeSpan.TicksPerSecond / targetPPS;
-            long prevTicks = DateTime.Now.Ticks;
+            var targetTicksPerFrame = TimeSpan.TicksPerSecond / targetPPS;
+            var prevTicks = DateTime.Now.Ticks;
 
             while (window.IsOpen)
             {
-                long currTicks = DateTime.Now.Ticks;
-                long elapsedTicks = currTicks - prevTicks;
+                var currTicks = DateTime.Now.Ticks;
+                var elapsedTicks = currTicks - prevTicks;
 
                 if (elapsedTicks >= targetTicksPerFrame)
                 {
@@ -168,7 +168,7 @@ internal class GameEngine
 
                     physicStepCount++;
 
-                    long curTime = DateTime.Now.Ticks;
+                    var curTime = DateTime.Now.Ticks;
                     if (curTime - lastPhysicsStep >= TimeSpan.TicksPerSecond)
                     {
                         CurrentPPS = physicStepCount;
@@ -183,12 +183,12 @@ internal class GameEngine
 
         {
 
-            long prevTicks = DateTime.Now.Ticks;
+            var prevTicks = DateTime.Now.Ticks;
 
             while (window.IsOpen)
             {
-                long currTicks = DateTime.Now.Ticks;
-                long elapsedTicks = currTicks - prevTicks;
+                var currTicks = DateTime.Now.Ticks;
+                var elapsedTicks = currTicks - prevTicks;
 
                 prevTicks = currTicks;
 
@@ -298,7 +298,11 @@ internal class GameEngine
     public virtual void Initialized()
     {
         foreach (BaseService component in Services)
-            component.Initialized();
+            if (!component.isInit)
+            {
+                component.isInit = true;
+                component.Initialized();
+            }
     }
 
     public virtual void Closing()

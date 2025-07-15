@@ -13,7 +13,7 @@ class BundleInfo
 // then get rid of the unloaded bundle from memory
 class BundleRepository
 {
-    Dictionary<string, BundleInfo> Bundles = new Dictionary<string, BundleInfo>();
+    private readonly Dictionary<string, BundleInfo> Bundles = new();
 
     public void Initialize()
     {
@@ -38,21 +38,18 @@ class BundleRepository
     {
         var assets = new Dictionary<string, byte[]>();
 
-        byte[] rawBundle = File.ReadAllBytes($"Data\\{bundleName}.bundle");
+        var rawBundle = File.ReadAllBytes($"Data\\{bundleName}.bundle");
 
         using (MemoryStream zipStream = new MemoryStream(rawBundle))
         using (ZipArchive archive = new ZipArchive(zipStream, ZipArchiveMode.Read))
         {
             foreach (ZipArchiveEntry entry in archive.Entries)
             {
-                using (var entryStream = entry.Open())
-                {
-                    using (var memoryStream = new MemoryStream())
-                    {
-                        entryStream.CopyTo(memoryStream);
-                        assets[entry.FullName] = memoryStream.ToArray();
-                    }
-                }
+                using var entryStream = entry.Open();
+                using var memoryStream = new MemoryStream();
+
+                entryStream.CopyTo(memoryStream);
+                assets[entry.FullName] = memoryStream.ToArray();
             }
         }
 

@@ -9,7 +9,7 @@ using System.Collections.Generic;
 #if CLIENT
 internal class FontRepository
 {
-    private static Dictionary<string, Font> _fonts = new Dictionary<string, Font>() {};
+    private static readonly Dictionary<string, Font> _fonts = new();
 
     public void Initialize()
     {

@@ -142,11 +142,16 @@ internal class Camera2DService : BaseService
         }
     }
 
-    public Vector2f CursorToWorld(RenderWindow window, Vector2f mousePixelPos)
+    public Vector2f ScreenToWorld(RenderWindow window, Vector2f mousePixelPos)
     {
         Vector2f worldPos = window.MapPixelToCoords(new Vector2i((int)mousePixelPos.X, (int)mousePixelPos.Y), view);
-
         return worldPos;
+    }
+
+    public Vector2f WorldToScreen(RenderWindow window, Vector2f worldPos)
+    {
+        Vector2i pixelPos = window.MapCoordsToPixel(worldPos, view);
+        return new Vector2f(pixelPos.X, pixelPos.Y);
     }
 
     #region Movement & Zooming

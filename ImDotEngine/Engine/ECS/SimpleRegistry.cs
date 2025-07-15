@@ -4,8 +4,8 @@ using System.Runtime.CompilerServices;
 
 class SimpleRegistry
 {
-    private Dictionary<Type, Dictionary<int, IEntityComponent>> componentStore = new Dictionary<Type, Dictionary<int, IEntityComponent>>();
-    private Dictionary<int, HashSet<Type>> entityComponents = new Dictionary<int, HashSet<Type>>();
+    private readonly Dictionary<Type, Dictionary<int, IEntityComponent>> componentStore = new();
+    private readonly Dictionary<int, HashSet<Type>> entityComponents = new();
 
     private int nextEntityId = 1;
 

@@ -9,7 +9,7 @@
     <ProjectGuid>{EBB7B2BB-D301-4C11-8B18-A345D87DBABD}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>ImDotEngine</RootNamespace>
-    <AssemblyName>dot_server</AssemblyName>
+    <AssemblyName>dotgame</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -43,7 +43,6 @@
     <DefineConstants>SERVER</DefineConstants>
     <DebugType>none</DebugType>
     <PlatformTarget>x64</PlatformTarget>
-    <LangVersion>7.3</LangVersion>
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -56,7 +55,6 @@
     <DefineConstants>CLIENT</DefineConstants>
     <DebugType>none</DebugType>
     <PlatformTarget>x64</PlatformTarget>
-    <LangVersion>7.3</LangVersion>
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
     <Optimize>true</Optimize>
@@ -147,6 +145,7 @@
     <Compile Include="Engine\Objects\Level\SolidText.cs" />
     <Compile Include="SDK\Components\DebugService.cs" />
     <Compile Include="SDK\Components\LocalPlayerService.cs" />
+    <Compile Include="SDK\Components\UISceneService.cs" />
     <Compile Include="SDK\Components\NetworkService.cs" />
     <Compile Include="SDK\Components\RigidBodyService.cs" />
     <Compile Include="SDK\Components\SoundService.cs" />
@@ -183,6 +182,7 @@
     <Compile Include="SDK\Terrain\Blocks\BlockEnum.cs" />
     <Compile Include="SDK\Terrain\SimplexPerlin.cs" />
     <Compile Include="SDK\Terrain\TerrainGenerator.cs" />
+    <Compile Include="SDK\UIScene\MainMenuScene.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -9,7 +9,7 @@ using System.Windows.Forms;
 #if CLIENT
 internal class MaterialRepository
 {
-    private Dictionary<string, Shader> m_cache = new Dictionary<string, Shader>();
+    private readonly Dictionary<string, Shader> m_cache = new();
 
     private BundleInfo m_assetBundle;
 

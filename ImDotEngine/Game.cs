@@ -11,24 +11,21 @@ using System.Runtime.CompilerServices;
 #endregion
 
 #if CLIENT
+using ImDotEngine.SDK.UIScene;
 internal class Game : GameEngine
 {
-    public Game() => Start(); // we've finished so start the app
+    public Game() => Start();
 
-    // ui stuff
     public SolidText debugOverlay;
-
-    // components
     public Camera2DService Camera;
 
     public override void LoadAssets()
     {
-        base.LoadAssets(); // send signal to components
+        base.LoadAssets();
 
-        // NOTE: make these classes inherit a repository class
-        Instance.TextureRepository.Initialize(); // load all assets
-        Instance.MaterialRepository.Initialize(); // load all materials
-        Instance.AudioRepository.Initialize(); // load all sound effects & music
+        Instance.TextureRepository.Initialize();
+        Instance.MaterialRepository.Initialize();
+        Instance.AudioRepository.Initialize();
     }
 
     public override void Initialized()
@@ -46,36 +43,35 @@ internal class Game : GameEngine
         {
             DebugLogger.Log("Components", $"Initializing Components..");
 
-            // some start components
-            Services.Add(new DefaultWindowBinds()); // default game keybinds you would expect to exist
-            Services.Add(Camera = new Camera2DService()); // movable camera for the scene
-            //Components.Add(new CameraCursor()); // cursor visualization
+            Services.Add(new DefaultWindowBinds());
+            Services.Add(Camera = new Camera2DService());
+            Services.Add(new SoundService());
+            //Components.Add(new CameraCursor());
 
-            Services.Add(new DebugService()); // debug stuff
-            Services.Add(new LocalPlayerService()); // the actual player
-            Services.Add(new TerrainMorpherService()); // ability to morph terrain
-            Services.Add(new SoundService()); // sound effects & music
+            Services.Add(new DebugService());
 
-            // this accesses terrain morpher early on
-            Services.Add(new NetworkService());
+            Services.Add(new UISceneService());
 
             DebugLogger.Log("Components", $"Initialized Components");
         }
 
-        base.Initialized(); // allow components to initialize
-
-        TargetFramerate = 0; // unlimited FPS
-        VSync = false; // fuck vsync, here for completeness
-
-        TargetPhysicsRate = 20; // physics rate at 20
-
-        // other bits and bobs
         {
-            // debug stuff
-            debugOverlay = Instance.Level.CreateText(LevelLayers.UI, new Vector2f(-250, 10), Color.Red);
-
-            Instance.Level.CreateRectangle(LevelLayers.Background, new Vector2f(-260, -3), new Vector2f(250, 275), new Color(0x20, 0x20, 0x20));// in-world menu box
+            ClientInstance.GetService<UISceneService>().SetUIScene(new MainMenuScene());
         }
+
+        base.Initialized();
+
+        TargetFramerate = 0;
+        VSync = false;
+
+        TargetPhysicsRate = 20;
+
+        //{
+        //    debugOverlay = Instance.Level.CreateText(LevelLayers.UI, new Vector2f(-250, 10), Color.Red);
+        //
+        //    Instance.Level.CreateRectangle(LevelLayers.Background, new Vector2f(-260, -3), new Vector2f(250, 275), new Color(0x20, 0x20, 0x20));// in-world menu box
+        //}
+        Instance.Level.Warm();
 
         //TerrainGenerator.Seed = 1;
 
@@ -91,12 +87,12 @@ internal class Game : GameEngine
             base.OnFixedUpdate(); // call to allow components access to them
 
         // update the debug crap
-        debugOverlay.Text =
-            $"Frames: {CurrentFPS}\n" +
-            $"PhysicSteps: {CurrentPPS}\n" +
-            $"\n" +
-            $"Layers: {Instance.Level.Layers.Length}\n" +
-            $"Block Count: {Instance.Level.GetLayer(LevelLayers.ForeBlocks).Count}\n";
+        //debugOverlay.Text =
+        //    $"Frames: {CurrentFPS}\n" +
+        //    $"PhysicSteps: {CurrentPPS}\n" +
+        //    $"\n" +
+        //    $"Layers: {Instance.Level.Layers.Length}\n" +
+        //    $"Block Count: {Instance.Level.GetLayer(LevelLayers.ForeBlocks).Count}\n";
     }
 
     protected override void OnUpdate(RenderWindow ctx)
@@ -113,18 +109,27 @@ internal class Game : GameEngine
 
         Instance.Level.Draw(ctx); // draw scene
 
-        //Instance.Level.ApplyShader("fog.frag", (fogFrag) =>
-        //{
-        //    var fogNoise = Instance.TextureRepository.GetTexture("Assets\\Noise\\FogTexture_Tile.png");
-        //    fogNoise.Repeated = true;
-        //    
-        //    fogFrag.SetUniform("u_fog_noise", fogNoise);
-        //    fogFrag.SetUniform("u_fog_width", 150.0f);
-        //    fogFrag.SetUniform("u_fog_strength", 0.2f);
-        //    fogFrag.SetUniform("u_fog_color_factor", new Vec3(1, 1, 1));
-        //});
+        Instance.Level.ApplyShader("fog.frag", (fogFrag) =>
+        {
+            var fogNoise = Instance.TextureRepository.GetTexture("Assets\\Noise\\FogTexture_Tile.png");
+            fogNoise.Repeated = true;
+            
+            fogFrag.SetUniform("u_fog_noise", fogNoise);
+            fogFrag.SetUniform("u_fog_width", 100.0f);
+            fogFrag.SetUniform("u_fog_strength", 0.1f);
+            fogFrag.SetUniform("u_fog_color_factor", new Vec3(1, 1, 1));
+        });
 
         base.OnUpdate(ctx); // call to allow components access to them
+
+        foreach (BaseService component in Services)
+            if (!component.isInit)
+            {
+                component.isInit = true;
+                component.Initialized();
+            }
+
+        ClientInstance.DoDeffered();
     }
 }
 #endif

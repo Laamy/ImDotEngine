@@ -11,21 +11,30 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.Tab;
 class NetworkService : BaseService
 {
     private ClientSocket socket;
-    private ClientInstance Instance = ClientInstance.GetSingle();
+    private readonly ClientInstance Instance = ClientInstance.GetSingle();
 
     public NetworkService()
     {
-        DebugLogger.Log("Components", $"Initialized : NetworkComponent");
-
         var tmc = Instance.Engine.Services.OfType<TerrainMorpherService>().FirstOrDefault();
 
         tmc.OnChunkChanged += OnChunkChanged;
+    }
+
+    public override void Initialized()
+    {
+        DebugLogger.Log("NetworkComponent", $"Debug : Initialized");
+
+        //socket = new ClientSocket("147.185.221.22", 12714);
+        socket = new ClientSocket("127.0.0.1", 4746);
+
+        socket.OnReceived += OnReceived;
     }
 
     // what the fuck is this mess i just wrote
     // NOTE: rewrite this
     void OnChunkChanged(int chunkHash)
     {
+        DebugLogger.Log("NetworkComponent", $"Debug : OnChunkChanged");
         // initialize a new packet & chunkstate for our changes
         var packet = ImPacket.Create<WorldStatePacket>();
 
@@ -61,6 +70,7 @@ class NetworkService : BaseService
     // TODO: reuse rectangleshape objects to lower memory usage (some kind of hash)
     public void GenerateWorld(int seed)
     {
+        DebugLogger.Log("NetworkComponent", $"Debug : GenerateWorld");
         TerrainGenerator.Seed = seed;
 
         var layer = Instance.Level.GetLayer(LevelLayers.ForeBlocks);
@@ -135,18 +145,12 @@ class NetworkService : BaseService
         socket.Send(playerupdate.Encode());
     }
 
-    public override void Initialized()
-    {
-        //socket = new ClientSocket("147.185.221.22", 12714);
-        socket = new ClientSocket("127.0.0.1", 4746);
-
-        socket.OnReceived += OnReceived;
-    }
-
     private Dictionary<string, Tuple<Player, RigidBodyService>> players = new Dictionary<string, Tuple<Player, RigidBodyService>>();
 
     private async Task OnReceived(byte[] msg)
     {
+        DebugLogger.Log("NetworkComponent", $"Debug : OnReceived");
+
         string message = Encoding.ASCII.GetString(msg);
 
         var packet = ImPacket.Decode(message);
@@ -158,6 +162,8 @@ class NetworkService : BaseService
             // TEMP CODE
             if (handshake.AllowChunkGen)
                 GenerateWorld(handshake.WorldSeed);
+
+            DebugLogger.Log("NetworkComponent", $"Handshake received, world seed: {handshake.WorldSeed}");
 
             Instance.AllowPhysics = true; // world is finished generating so place player in
         }
@@ -245,6 +251,26 @@ class NetworkService : BaseService
 
             stateComp.Velocity = new Vector2f(playerbounce.VX, playerbounce.VY);
         }
+    }
+
+    public static void Connect(string ip, int port)
+    {
+        if (ClientInstance.GetService<NetworkService>() != null)
+             throw new Exception("Already connected to a server!");
+
+        ClientInstance.DeferTask(() =>
+        {
+            var Camera = ClientInstance.GetService<Camera2DService>();
+            Camera.AllowZoom = true;
+            Camera.AllowMove = true;
+
+            var Services = ClientInstance.instance.Engine.Services;
+            Services.Add(new LocalPlayerService());
+            Services.Add(new TerrainMorpherService());
+            Services.Add(new NetworkService());
+
+            ClientInstance.GetService<UISceneService>().DropAll();
+        });
     }
 }
 #endif

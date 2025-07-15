@@ -3,8 +3,8 @@ using System.Collections.Generic;
 
 class ConcurrentHashset<T> : IEnumerable<T>
 {
-    private readonly HashSet<T> _set = new HashSet<T>();
-    private readonly object _lock = new object();
+    private readonly HashSet<T> _set = new();
+    private readonly object _lock = new();
 
     public bool Add(T item)
     {
@@ -54,7 +54,7 @@ class ConcurrentHashset<T> : IEnumerable<T>
     {
         lock (_lock)
         {
-            return new List<T>(_set);
+            return [.. _set];
         }
     }
 
@@ -65,7 +65,7 @@ class ConcurrentHashset<T> : IEnumerable<T>
 
         lock (_lock)
         {
-            snapshot = new List<T>(_set);
+            snapshot = [.. _set];
         }
 
         return snapshot.GetEnumerator();

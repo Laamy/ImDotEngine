@@ -1,4 +1,3 @@
-
 using System.Runtime.InteropServices;
 using System;
 
@@ -32,8 +31,8 @@ internal class User32
     public const int SW_MAXIMIZE = 3;
     public const int SW_MINIMIZE = 6;
 
-    public static readonly IntPtr HWND_TOPMOST = new IntPtr(-1);
-    public static readonly IntPtr HWND_NOTOPMOST = new IntPtr(-2);
+    public static readonly IntPtr HWND_TOPMOST = new(-1);
+    public static readonly IntPtr HWND_NOTOPMOST = new(-2);
 
     [DllImport("user32.dll")]
     public static extern IntPtr GetActiveWindow();

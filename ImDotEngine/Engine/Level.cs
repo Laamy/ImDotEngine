@@ -41,8 +41,8 @@ internal class Level
 
     public int HashPosition(Vector2f position)
     {
-        int x = (int)Math.Floor(position.X / 50); // TODO: stop hardcoding shit
-        int y = (int)Math.Floor(position.Y / 50);
+        var x = (int)Math.Floor(position.X / 50); // TODO: stop hardcoding shit
+        var y = (int)Math.Floor(position.Y / 50);
         return x + y * 73856093;
     }
 
@@ -85,7 +85,7 @@ internal class Level
 
         shaderFrag.SetUniform("u_res", (Vector2f)Size);
         shaderFrag.SetUniform("u_pos", (Vector2f)topLeft);
-        shaderFrag.SetUniform("u_time", Convert.ToSingle(Instance.Engine.TimeSinceStart.Elapsed.TotalSeconds));
+        //shaderFrag.SetUniform("u_time", Convert.ToSingle(Instance.Engine.TimeSinceStart.Elapsed.TotalSeconds));
 
         View temp = new View(new FloatRect(camera.Position, (Vector2f)camera.Size));
         temp.Zoom(camera.Zoom);
@@ -142,6 +142,13 @@ internal class Level
         });
 
         return result;
+    }
+
+    public void Warm()
+    {
+        Layers = new SpatialHash[(int)LevelLayers.Count];
+        for (int i = 0; i < Layers.Length; ++i)
+            Layers[i] = new SpatialHash(50);
     }
 
     #endregion

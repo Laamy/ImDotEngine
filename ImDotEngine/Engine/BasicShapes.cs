@@ -5,10 +5,10 @@ using SFML.System;
 /// </summary>
 class BasicShapes
 {
-    public static Vector2f[] Triangle = new Vector2f[]
-    {
-        new Vector2f(0, 0),
-        new Vector2f(10, 0),
-        new Vector2f(5, 10)
-    };
+    public static Vector2f[] Triangle =
+    [
+        new(0, 0),
+        new(10, 0),
+        new(5, 10)
+    ];
 }

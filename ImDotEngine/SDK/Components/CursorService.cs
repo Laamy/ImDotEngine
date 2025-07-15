@@ -36,7 +36,7 @@ class CursorService : BaseService
         Camera2DService Camera = Components.OfType<Camera2DService>().FirstOrDefault();
 
         // visualize cursor
-        shape.Position = Camera.CursorToWorld(ctx, ClientInstance.GetSingle().GuiData.CursorPos) - new Vector2f(Radius, Radius);
+        shape.Position = Camera.ScreenToWorld(ctx, ClientInstance.GetSingle().GuiData.CursorPos) - new Vector2f(Radius, Radius);
 
         //shape.Draw(ctx);
     }
